@@ -1,0 +1,13 @@
+.opacity-transition {
+  transition: opacity 0.2s ease-out;
+  opacity: 1;
+}
+
+.opacity-enter {
+  opacity: 0;
+}
+
+.opacity-leave {
+  transition: opacity 0.2s ease-in;
+  opacity: 0;
+}

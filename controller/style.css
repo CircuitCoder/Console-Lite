@@ -1,0 +1,22 @@
+@import '../fonts/fonts.css';
+
+@import '../shared/style/selector.css';
+@import '../shared/style/transitions.css';
+
+@import './startup.css';
+@import './frame.css';
+
+body {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+
+  padding: 0;
+  margin: 0;
+
+  font-family: 'NotoSansCJK SC';
+
+  overflow: hidden;
+}

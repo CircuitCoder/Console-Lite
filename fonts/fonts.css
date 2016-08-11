@@ -1,0 +1,92 @@
+/* Material icons */
+
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url('./material.woff2')  format('woff2');
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Rules for sizing the icon. */
+.material-icons.md-18 { font-size: 18px; }
+.material-icons.md-24 { font-size: 24px; }
+.material-icons.md-36 { font-size: 36px; }
+.material-icons.md-48 { font-size: 48px; }
+
+/* Rules for using icons as black on a light background. */
+.material-icons.md-dark { color: rgba(0, 0, 0, 0.54); }
+.material-icons.md-dark.md-inactive { color: rgba(0, 0, 0, 0.26); }
+
+/* Rules for using icons as white on a dark background. */
+.material-icons.md-light { color: rgba(255, 255, 255, 1); }
+.material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
+
+.material-icons.md-18 { font-size: 18px; }
+.material-icons.md-24 { font-size: 24px; }
+.material-icons.md-36 { font-size: 36px; }
+.material-icons.md-48 { font-size: 48px; }
+
+.material-icons.md-dark { color: rgba(0, 0, 0, 0.54); }
+.material-icons.md-dark.md-inactive { color: rgba(0, 0, 0, 0.26); }
+
+.material-icons.md-light { color: rgba(255, 255, 255, 1); }
+.material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
+
+@font-face {
+  font-family: 'NotoSansCJK SC';
+  font-style: normal;
+  font-weight: 200;
+  src: url('./NotoSansCJKsc-Thin.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'NotoSansCJK SC';
+  font-style: normal;
+  font-weight: 300;
+  src: url('./NotoSansCJKsc-Light.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'NotoSansCJK SC';
+  font-style: normal;
+  font-weight: 400;
+  src: url('./NotoSansCJKsc-Regular.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'NotoSansCJK SC';
+  font-style: normal;
+  font-weight: 500;
+  src: url('./NotoSansCJKsc-Medium.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'NotoSansCJK SC';
+  font-style: normal;
+  font-weight: 700;
+  src: url('./NotoSansCJKsc-Bold.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'NotoSansCJK SC';
+  font-style: normal;
+  font-weight: 900;
+  src: url('./NotoSansCJKsc-Black.otf') format('opentype');
+}

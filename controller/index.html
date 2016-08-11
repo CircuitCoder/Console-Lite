@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link href="style.css" rel="stylesheet">
+    <script src="action.js"></script>
+  </head>
+  <body onload="setup()">
+    <div class="mask" transition="opacity" v-show="!started"></div>
+    <div class="startup" :class="{ ready: ready }" v-if="!frame" transition="opacity">
+      <div class="brand">
+        Console Next
+      </div>
+      <div class="selector">
+        <div class="selector-item" @click="connectBackend">
+          <i class="material-icons">settings_ethernet</i>连接到会话...
+        </div>
+        <div class="selector-item" @click="createBackend">
+          <i class="material-icons">wifi_tethering</i>在本地创建一个新会话...
+        </div>
+        <div class="loading-hint" transition="opacity" v-show="loading">
+          喵喵喵...
+        </div>
+      </div>
+    </div>
+
+    <div class="frame">
+      <div class="action-bar">
+        <div class="title">{{ title }}</div>
+        <div class="actions">
+          <div class="action" @click="pauseSession">
+            <i class="material-icons">pause</i>
+          </div>
+          <div class="action" @click="sendFile">
+            <i class="material-icons">insert_drive_file</i>
+          </div>
+          <div class="action" @click="startOrganized">
+            <i class="material-icons">record_voice_over</i>
+          </div>
+          <div class="action" @click="startFree">
+            <i class="material-icons">timer</i>
+          </div>
+          <div class="action" @click="startProjector">
+            <i class="material-icons">cast</i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

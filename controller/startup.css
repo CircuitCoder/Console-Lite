@@ -1,0 +1,69 @@
+.mask {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+
+  z-index: 3000;
+  background: white;
+}
+
+.startup {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+
+  z-index: 2000;
+
+  background: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-direction: column;
+
+  transform: translateY(100px);
+  transition: transform 2s ease, opacity 0.5s ease-in;
+}
+
+.startup .selector {
+  opacity: 0;
+  transition: opacity 2s ease-out;
+  position: relative;
+}
+
+.startup.ready {
+  transform: translateY(0);
+}
+
+.startup.ready .selector {
+  opacity: 1;
+}
+
+.brand {
+  font-size: 48px;
+  font-weight: 100;
+
+  margin-bottom: 40px;
+}
+
+.loading-hint {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background: white;
+
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: rgba(0,0,0,.3);
+}
+

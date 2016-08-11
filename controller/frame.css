@@ -1,0 +1,48 @@
+.frame {
+  z-index: 1000;
+}
+
+.action-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100px;
+  border-top: 1px solid rgba(0,0,0,.12);
+
+  -webkit-user-select: none;
+}
+
+.title {
+  margin-left: 40px;
+  font-size: 32px;
+  height: 100%;
+  line-height: 100px;
+  display: inline-block;
+}
+
+.actions {
+  margin-right: 20px;
+  float: right;
+  
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.action {
+  margin-right: 15px;
+  font-size: 16px;
+  display: inline-block;
+  cursor: pointer;
+  opacity: 0.54;
+  transition: opacity 0.2s ease;
+}
+
+.action:hover {
+  opacity: 1;
+}
+
+.action:last-child {
+  margin-right: 0;
+}
