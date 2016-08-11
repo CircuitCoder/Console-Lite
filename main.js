@@ -1,5 +1,6 @@
 const electron = require('electron');
-const {app, BrowserWindow} = electron;
+const {ipcMain, app, BrowserWindow} = electron;
+const server = require('./server/server');
 
 // Windows, not the OS, but windows
 let controller, projector;
@@ -33,4 +34,29 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   if(!controller)
     initController();
+});
+
+let serverStarted = false;
+let passkey;
+let shutdown;
+
+ipcMain.on('startServer', (event, data) => {
+  if(serverStarted)
+    return event.sender.send('serverCallback', { url: 'http://localhost:4928', passkey: passkey });
+
+  server((err, pk, sd) => {
+    if(err) {
+      console.error(err);
+      return event.sender.send('serverCallback', { error: err });
+    }
+
+    serverStarted = true;
+    passkey = pk;
+    shutdown = sd;
+    event.sender.send('serverCallback', { url: 'http://localhost:4928', passkey: passkey });
+  });
+});
+
+app.on('quit', () => {
+  if(serverStarted) shutdown();
 });

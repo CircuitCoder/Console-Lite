@@ -6,23 +6,6 @@
     <script src="action.js"></script>
   </head>
   <body onload="setup()">
-    <div class="mask" transition="opacity" v-show="!started"></div>
-    <div class="startup" :class="{ ready: ready }" v-if="!frame" transition="opacity">
-      <div class="brand">
-        Console Next
-      </div>
-      <div class="selector">
-        <div class="selector-item" @click="connectBackend">
-          <i class="material-icons">settings_ethernet</i>连接到会话...
-        </div>
-        <div class="selector-item" @click="createBackend">
-          <i class="material-icons">wifi_tethering</i>在本地创建一个新会话...
-        </div>
-        <div class="loading-hint" transition="opacity" v-show="loading">
-          喵喵喵...
-        </div>
-      </div>
-    </div>
 
     <div class="frame">
       <div class="action-bar">
@@ -43,6 +26,59 @@
           <div class="action" @click="startProjector">
             <i class="material-icons">cast</i>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="picker" transition="opacity" v-show="!frame">
+      <div class="picker-content">
+        <div class="picker-title">请选择委员会</div>
+        <div class="selector">
+          <div class="selector-item" v-for="conf of confNames" @click="connectConf(conf.id)">
+            {{ conf.name }}
+          </div>
+          <div class="selector-item" @click="createConf()">
+            <i class="material-icons">add</i>创建一个新委员会
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="startup" :class="{ ready: ready }" v-show="!picker" transition="opacity">
+      <div class="brand">
+        Console Next
+      </div>
+      <div class="selector">
+        <div class="loading-hint" transition="opacity" v-show="loading">
+          喵喵喵...
+        </div>
+        <div class="selector-item" @click="connectBackend">
+          <i class="material-icons">settings_ethernet</i>连接到会话...
+        </div>
+        <div class="selector-item" @click="createBackend">
+          <i class="material-icons">wifi_tethering</i>在本地创建一个新会话...
+        </div>
+      </div>
+    </div>
+
+    <div class="mask" transition="opacity" v-show="!started"></div>
+
+    <div class="dialog-overlap" transition="opacity" v-show="createConfFlag" @click="discardConfCreation">
+      <div class="dialog" @click="blocker">
+        <div class="dialog-title">
+          创建委员会
+        </div>
+        <div class="dialog-content">
+          <div class="input-group">
+            <div class="hint">委员会名</div>
+            <input v-model="confName" @keyup.enter="performConfCreation" @keyup.esc="discardConfCreation" v-el:conf-name-input>
+            <div class="border-line"></div>
+          </div>
+          <button @click="performConfCreation" class="confirmation-btn">
+            继续
+            <i class="material-icons">keyboard_arrow_right</i>
+          </button>
+          <div class="clearfix"></div>
         </div>
       </div>
     </div>

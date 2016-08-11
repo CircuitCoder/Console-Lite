@@ -1,9 +1,8 @@
-const routes = require('./routes/base');
 const backend = require('./backend/main');
+const socket= require('./socket.js');
 
 const crypto = require('crypto');
-const express = require('express');
-const bodyParser = require('body-parser');
+const http = require('http');
 
 function shutdown(cb) {
   console.log('Shuting down backend...')
@@ -15,43 +14,31 @@ module.exports = (cb, port = 4928) => {
   backend.init((err) => {
     if(err) {
       backend.shutdown();
-      cb(err);
+      return cb(err);
     }
 
     console.log('Backend initialization completed');
 
-    const app = express();
-    app.use(bodyParser.json());
-
     const passkey = crypto.randomBytes(4).toString('hex');
-    app.use((req, res, next) => {
-      const requested = req.get('Console-Passkey');
-      if(!requested || requested !== passkey) {
-        if(req.method !== 'GET')
-          return res.send(403);
-        else
-          req.consoleAuthorized = false;
-      } else {
-        req.consoleAuthorized = true;
-      }
 
-      next();
+    // Setup sockets 
+    const server = http.createServer((req, res) => {
+      res.writeHead(404);
+      res.end('Please use socket.io to connect.');
     });
 
-    app.use(routes);
+    socket.init(server);
+    const confs = backend.list();
+    for(const conf in confs) socket.add(conf);
 
-    app.use((err, req, res, next) => {
-      console.error(err.stack);
-      res.sendStatus(500);
-    });
-
-    app.listen(port, (err) => {
+    server.listen(port, (err) => {
       if(err) {
         backend.shutdown();
         cb(err);
-      } else console.log(`Server up at port ${port}.`);
+      } else {
+        console.log(`Server up at port ${port}.`);
+        cb(null, passkey, shutdown);
+      }
     });
-
-    cb(null, passkey, shutdown);
   });
 }

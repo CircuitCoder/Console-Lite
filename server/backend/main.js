@@ -21,8 +21,8 @@ function init(cb) {
       } else return cb(err);
     } else {
       confMapping = list;
-      for(const conf in list)
-        confs.set(conf, new Conference(conf, levelup(`${__dirname}/storage/${list[conf]}.db`, levelopt)));
+      for(const id in list)
+        confs.set(id, new Conference(list[id], levelup(`${__dirname}/storage/${id}.db`, levelopt)));
       return cb(null);
     }
   });
@@ -31,23 +31,22 @@ function init(cb) {
 function shutdown(cb) {
   main.close((err) => {
     if(err) cb(err);
-    else return Promise.all([...confs.values()].map(e => (resolve, reject) =>
+    else return Promise.all([...confs.keys()].map(e => (resolve, reject) =>
       e.db.close((err) => err ? reject(err) : resolve())
     )).then(() => cb()).catch(cb);
   });
 }
 
 function add(name, cb) {
-  if(confs.has(name)) return cb({ duplicated: true });
-
   const id = crypto.randomBytes(16).toString('hex');
   const instance = new Conference(name, levelup(`${__dirname}/storage/${id}.db`, levelopt));
-  instance.setup();
+  instance.setup((err) => {
+    if(err) return cb(err);
+    confs.set(id, instance);
+    confMapping[id] = name;
 
-  confs.set(name, db);
-  confMapping[name] = id;
-
-  main.set('list', confMapping, cb);
+    main.put('list', confMapping, (err) => err ? cb(err) : cb(null, id));
+  });
 }
 
 function get(name) {
@@ -56,7 +55,10 @@ function get(name) {
 }
 
 function list() {
-  return [...confs.keys()];
+  return [...confs.entries()].reduce((prev, e) => {
+    prev[e[0]] = e[1].name;
+    return prev;
+  }, {});
 }
 
 module.exports = {

@@ -1,6 +1,9 @@
 @import '../fonts/fonts.css';
 
+@import '../shared/style/common.css';
 @import '../shared/style/selector.css';
+@import '../shared/style/input.css';
+@import '../shared/style/dialog.css';
 @import '../shared/style/transitions.css';
 
 @import './startup.css';

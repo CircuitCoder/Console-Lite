@@ -1,0 +1,36 @@
+.dialog-overlap {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+
+  background: rgba(0,0,0,.12);
+  z-index: 5000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 100px;
+}
+
+.dialog {
+  width: 300px;
+  background: white;
+  border-radius: 2px;
+  box-shadow: rgba(0,0,0,.3) 0 3px 4px;
+}
+
+.dialog-title {
+  line-height: 60px;
+  padding: 0 18px;
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.dialog-content {
+  padding: 18px;
+}
+
+.dialog .confirmation-btn {
+  float: right;
+}

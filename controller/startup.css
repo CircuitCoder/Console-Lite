@@ -5,7 +5,7 @@
   right: 0;
   left: 0;
 
-  z-index: 3000;
+  z-index: 10000;
   background: white;
 }
 
@@ -65,5 +65,32 @@
   justify-content: center;
 
   color: rgba(0,0,0,.3);
+
+  z-index: 2001;
 }
 
+.picker {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background: white;
+
+  z-index: 1500;
+
+  overflow-y: auto;
+}
+
+.picker-content {
+  width: 300px;
+  margin: 100px auto;
+}
+
+.picker-title {
+  text-align: center;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 40px;
+  padding-bottom: 40px;
+}
