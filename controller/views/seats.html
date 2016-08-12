@@ -6,6 +6,13 @@
       <i class="material-icons">edit</i>
     </button>
   </div>
+  <div class="seats">
+    <div class="seat" v-for="seat of seats" :class="{ present: seat.present }" @click="toggleStatus(seat)">
+      <div class="seat-indicator"></div>
+      <div class="seat-name">{{ seat.name }}</div>
+    </div>
+    <div class="empty-hint">请点击编辑添加席位</div>
+  </div>
   <div class="dialog-overlap" transition="opacity" v-show="editFlag" @click="discardEditing">
     <div class="dialog wide" @click="blocker">
       <div class="dialog-title">编辑席位列表</div>

@@ -8,11 +8,11 @@
   padding: 10px 20px
 }
 
-.list-item.empty-hint {
+.empty-hint {
   display: none;
   color: rgba(0,0,0,.3);
 }
 
-.list-item.empty-hint:first-child {
+.empty-hint:first-child {
   display: inherit;
 }

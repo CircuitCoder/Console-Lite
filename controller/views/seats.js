@@ -14,12 +14,12 @@ const HomeComponent = Vue.extend({
   methods: {
     edit() {
       this.editFlag = true;
-      this.$els.seatsInput.innerHTML = this.seats ? this.seats.join('<br>') : '';
+      this.$els.seatsInput.innerHTML = this.seats ? this.seats.map(e => e.name).join('<br>') : '';
     },
 
     performEditing() {
       const str = this.$els.seatsInput.innerHTML;
-      this.seats = str.split('<br>').filter(e => e.length > 0);
+      this.seats = str.split('<br>').filter(e => e.length > 0).map(e => ({ name: e, present: false }));
       this.$dispatch('seatsUpdated');
       this.editFlag = false;
       console.log(this.seats);
@@ -27,6 +27,11 @@ const HomeComponent = Vue.extend({
 
     discardEditing() {
       this.editFlag = false;
+    },
+
+    toggleStatus(seat) {
+      seat.present = ! seat.present;
+      this.$dispatch('seatsUpdated');
     },
 
     blocker(event) {
