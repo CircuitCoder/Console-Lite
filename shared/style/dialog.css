@@ -1,5 +1,5 @@
 .dialog-overlap {
-  position: absolute;
+  position: fixed;
   top: 0;
   bottom: 0;
   right: 0;
@@ -12,6 +12,8 @@
   justify-content: center;
   padding: 100px;
 
+  overflow-y: auto;
+
   -webkit-app-region: no-drag;
 }
 
@@ -21,7 +23,13 @@
   border-radius: 2px;
   box-shadow: rgba(0,0,0,.3) 0 3px 4px;
 
+  margin: auto;
+
   -webkit-app-region: drag;
+}
+
+.dialog.wide {
+  width: 450px;
 }
 
 .dialog-title {
@@ -36,6 +44,13 @@
 
 .dialog-content {
   padding: 18px;
+}
+
+.dialog-supporting {
+  font-size: 14px;
+  color: rgba(0,0,0,.54);
+  line-height: 18px;
+  margin-bottom: 8px;
 }
 
 .dialog .confirmation-btn {

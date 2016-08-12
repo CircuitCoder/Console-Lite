@@ -8,7 +8,15 @@
   <body onload="setup()">
 
     <div class="frame">
-      <component :is="activeView" v-bind:timers="timers" :seats="seats" @navigate="navigate" keep-alive></component>
+      <component
+        :is="activeView"
+        transition="opacity"
+
+        :timers="timers"
+        :seats="seats"
+        @navigate="navigate" keep-alive>
+      </component>
+
       <div class="action-bar">
         <div class="title" @click="navigate('home')">{{ title }}</div>
         <div class="actions">

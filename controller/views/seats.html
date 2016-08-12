@@ -1,0 +1,35 @@
+<div class="view">
+  <div class="view-title">
+    席位
+    <button class="embedded" @click="edit">
+      编辑
+      <i class="material-icons">edit</i>
+    </button>
+  </div>
+  <div class="dialog-overlap" transition="opacity" v-show="editFlag" @click="discardEditing">
+    <div class="dialog wide" @click="blocker">
+      <div class="dialog-title">编辑席位列表</div>
+      <div class="dialog-content">
+        <div class="dialog-supporting">
+          请每行填入一个席位名，空行将在提交时被忽略。
+        </div>
+        <div class="dialog-supporting">
+          编辑过后，所有出席状态将被重置。
+        </div>
+        <div class="dialog-supporting">
+          编辑席位列表不会影响已填写的发言列表
+        </div>
+        <div class="input-group">
+          <div class="hint">席位列表</div>
+          <div contenteditable="true" v-el:seats-input></div>
+          <div class="border-line"></div>
+          <button @click="performEditing" class="confirmation-btn">
+            提交
+            <i class="material-icons">keyboard_arrow_right</i>
+          </button>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

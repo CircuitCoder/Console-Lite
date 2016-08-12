@@ -33,6 +33,7 @@ const desc = {
 
   components: {
     home: require('./views/home'),
+    seats: require('./views/seats'),
   },
 
   methods: {
@@ -140,7 +141,7 @@ const desc = {
     },
 
     navigate(dest) {
-      console.log(dest);
+      this.activeView = dest;
     },
 
     startProjector() {
