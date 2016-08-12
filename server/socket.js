@@ -3,9 +3,11 @@ const backend = require('./backend/main');
 
 let io;
 const namespaces = new Map();
+let passkey;
 
-function init(app, passkey) {
+function init(app, psk) {
   io = socketIO(app);
+  passkey = psk;
 
   io.use((socket, next) => {
     socket.consoleAuthorized = socket.request.headers['console-passkey'] === passkey
@@ -14,6 +16,10 @@ function init(app, passkey) {
 
   io.on('connection', (socket) => {
     socket.emit('pong', { authorized: socket.consoleAuthorized, confs: backend.list() });
+
+    socket.on('ping', (data) => {
+      socket.emit('pong', { authorized: socket.consoleAuthorized, confs: backend.list() });
+    });
 
     socket.on('create', (data) => {
       // TODO: check authorized
@@ -30,16 +36,29 @@ function init(app, passkey) {
 };
 
 function add(id) {
+  console.log(`Adding namespace: ${id}`);
   const nsp = io.of(`/${id}`);
   const conf = backend.get(id);
 
   nsp.use((socket, next) => {
-    socket.consoleAuthorized = socket.request.headers['console-passkey'] === passkey
+    socket.consoleAuthorized = socket.request.headers['console-passkey'] === passkey;
     socket.conf = backend.get(id);
+    next();
   });
 
   nsp.on('connection', (socket) => {
-    // TODO: return all datas
+    socket.conf.fetchAll((error, data) => {
+      if(error) socket.emit('pong', { error });
+      socket.emit('pong', { data });
+    });
+
+    socket.on('ping', (data) => {
+      socket.conf.fetchAll((error, data) => {
+        if(error) socket.emit('pong', { error });
+        socket.emit('pong', { data });
+      });
+    });
+
     socket.on('addTimer', (data) => {
       if(!data.name || !data.value) return socket.emit('addTimer', { ok: false, error: 'BadRequest' });
       socket.conf.addTimer(data.name, 'plain', data.value, (err, id) => {

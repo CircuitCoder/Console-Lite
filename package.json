@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "electron": "electron",
     "start": "electron .",
-    "server": "node server/main.js"
+    "server": "node server/main.js",
+    "clean": "rm -rf server/backend/storage/*.db"
   },
   "author": "Liu Xiaoyi",
   "license": "MIT",

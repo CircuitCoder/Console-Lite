@@ -29,7 +29,7 @@ module.exports = (cb, port = 4928) => {
 
     socket.init(server);
     const confs = backend.list();
-    for(const conf in confs) socket.add(conf);
+    for(const conf of confs) socket.add(conf.id);
 
     server.listen(port, (err) => {
       if(err) {

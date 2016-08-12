@@ -9,20 +9,20 @@ const levelopt = {
 
 let main;
 const confs = new Map();
-let confMapping;
+let confList;
 
 function init(cb) {
   main = levelup(__dirname + '/storage/main.db', levelopt);
   main.get('list', (err, list) => {
     if(err) {
       if(err.notFound) {
-        confMapping = {};
-        return main.put('list', {}, cb);
+        confList = [];
+        return main.put('list', [], cb);
       } else return cb(err);
     } else {
-      confMapping = list;
-      for(const id in list)
-        confs.set(id, new Conference(list[id], levelup(`${__dirname}/storage/${id}.db`, levelopt)));
+      confList = list;
+      for(const conf of list)
+        confs.set(conf.id, new Conference(conf.name, levelup(`${__dirname}/storage/${conf.id}.db`, levelopt)));
       return cb(null);
     }
   });
@@ -43,9 +43,9 @@ function add(name, cb) {
   instance.setup((err) => {
     if(err) return cb(err);
     confs.set(id, instance);
-    confMapping[id] = name;
+    confList.push({ id, name });
 
-    main.put('list', confMapping, (err) => err ? cb(err) : cb(null, id));
+    main.put('list', confList, (err) => err ? cb(err) : cb(null, id));
   });
 }
 
@@ -55,10 +55,7 @@ function get(name) {
 }
 
 function list() {
-  return [...confs.entries()].reduce((prev, e) => {
-    prev[e[0]] = e[1].name;
-    return prev;
-  }, {});
+  return confList;
 }
 
 module.exports = {

@@ -34,7 +34,7 @@
       <div class="picker-content">
         <div class="picker-title">请选择委员会</div>
         <div class="selector">
-          <div class="selector-item" v-for="conf of confNames" @click="connectConf(conf.id)">
+          <div class="selector-item" v-for="conf of confs" @click="connectConf(conf.id)">
             {{ conf.name }}
           </div>
           <div class="selector-item" @click="createConf()">

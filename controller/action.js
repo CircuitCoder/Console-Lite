@@ -3,8 +3,10 @@ const io = require('socket.io-client');
 const {ipcRenderer} = require('electron');
 
 const GlobalConnection = require('./connection/global');
+const ConferenceConnection = require('./connection/conference');
 
-let globalConn;
+let globalConn, confConn;
+let serverConfig;
 
 const desc = {
   el: 'body',
@@ -21,14 +23,15 @@ const desc = {
     title: '主页',
 
     authorized: false,
-    confs: {},
-    confNames: [],
+    confs: [],
+    
+    timers: [],
+    seats: [],
   },
 
   methods: {
     init() {
       this.started = true;
-      console.log("INIT");
 
       setTimeout(() => {
         this.ready = true;
@@ -51,6 +54,8 @@ const desc = {
           return;
         }
 
+        serverConfig = data;
+
         socket = io(data.url, {
           extraHeaders: {
             'Console-Passkey': data.passkey
@@ -58,14 +63,7 @@ const desc = {
         });
 
         globalConn = new GlobalConnection(socket, (data) => {
-          console.log(data);
           this.confs = data.confs;
-
-          for(const conf in this.confs) {
-            console.log(conf);
-            this.confNames.push({ id: conf, name: this.confs[conf] });
-          }
-
           this.authorized = data.authorized;
           this.picker = true;
         });
@@ -77,6 +75,23 @@ const desc = {
     },
 
     connectConf(id) {
+      if(confConn && confConn.connected)
+        confConn.disconnect();
+
+      console.log(`Connecting to: ${serverConfig.url}/${id}`);
+
+      socket = io(`${serverConfig.url}/${id}`, {
+        extraHeaders: {
+          'Console-Passkey': serverConfig.passkey
+        }
+      });
+
+      confConn = new ConferenceConnection(socket, (data) => {
+        this.timers = data.timers;
+        this.seats = data.seats;
+
+        this.frame = true;
+      });
     },
 
     createConf(name) {
@@ -92,8 +107,7 @@ const desc = {
           console.error(data.error);
           alert('创建失败');
         } else {
-          this.confs[data.id] = data.name;
-          this.confNames.push({ id: data.id, name: data.name });
+          this.confs.push({ id: data.id, name: data.name });
           this.createConfFlag = false;
         }
       });
