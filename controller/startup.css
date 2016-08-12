@@ -49,6 +49,9 @@
   font-weight: 100;
 
   margin-bottom: 40px;
+
+  -webkit-user-select: none;
+  -webkit-app-region: drag;
 }
 
 .loading-hint {
@@ -67,6 +70,9 @@
   color: rgba(0,0,0,.3);
 
   z-index: 2001;
+
+  -webkit-user-select: none;
+  -webkit-app-region: drag;
 }
 
 .picker {
@@ -93,4 +99,7 @@
   font-size: 24px;
   line-height: 40px;
   padding-bottom: 40px;
+
+  -webkit-user-select: none;
+  -webkit-app-region: drag;
 }

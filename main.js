@@ -6,7 +6,7 @@ const server = require('./server/server');
 let controller, projector;
 
 function initController() {
-  controller = new BrowserWindow({ width: 800, height: 600 });
+  controller = new BrowserWindow({ width: 800, height: 600, frame: false });
   controller.loadURL(`file://${__dirname}/controller/index.html`);
   controller.webContents.openDevTools();
   controller.on('closed', () => {

@@ -22,4 +22,6 @@ body {
   font-family: 'Roboto', 'NotoSansCJK SC';
 
   overflow: hidden;
+
+  -webkit-app-region: drag;
 }

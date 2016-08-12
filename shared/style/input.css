@@ -18,6 +18,8 @@
   line-height: 32px;
   font-size: 18px;
   font-weight: 200;
+
+  -webkit-app-region: no-drag;
 }
 
 .input-group .border-line {
@@ -48,6 +50,8 @@ button {
 
   display: inline-flex;
   justify-content: center;
+
+  -webkit-app-region: no-drag;
 }
 
 button:hover {
