@@ -5,6 +5,7 @@
 @import '../shared/style/input.css';
 @import '../shared/style/dialog.css';
 @import '../shared/style/transitions.css';
+@import '../shared/style/list.css';
 
 @import './startup.css';
 @import './frame.css';

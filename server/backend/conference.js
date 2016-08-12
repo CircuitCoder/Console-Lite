@@ -129,6 +129,10 @@ class Conference {
       (resolve, reject) => this.db.get(`timers`, (err, timers) => {
         if(err) return reject(err);
 
+        for(const timer of timers)
+          if(this.runningTimers.has(timer.id))
+            timer.running = this.timerValues.get(timer.id);
+
         const promises = timers.map(timer => (resolve, reject) => {
           this.db.get(`timer:${timer.id}`, (err, value) => {
             if(err) return reject(err);
@@ -137,7 +141,7 @@ class Conference {
               if(err) return reject(err);
 
               timer.value = value;
-              timer.left = left;
+              if(!timer.left) timer.left = left; // Respect running timers
 
               return resolve(timer);
             });

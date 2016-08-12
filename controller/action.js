@@ -20,13 +20,19 @@ const desc = {
     createConfFlag: false,
     confName: '',
 
-    title: '主页',
+    title: '',
 
     authorized: false,
     confs: [],
+
+    activeView: 'home',
     
     timers: [],
     seats: [],
+  },
+
+  components: {
+    home: require('./views/home'),
   },
 
   methods: {
@@ -74,7 +80,7 @@ const desc = {
       this.loading = true;
     },
 
-    connectConf(id) {
+    connectConf(id, name) {
       if(confConn && confConn.connected)
         confConn.disconnect();
 
@@ -86,10 +92,21 @@ const desc = {
         }
       });
 
-      confConn = new ConferenceConnection(socket, (data) => {
+      confConn = new ConferenceConnection(socket, ({ error, data }) => {
+        if(error) {
+          console.log(resp.error);
+          confConn = null;
+          alert('连接失败!');
+          return;
+        }
+        console.log(this.timers);
+
         this.timers = data.timers;
         this.seats = data.seats;
 
+        this.title = name;
+
+        this.activeView = 'home';
         this.frame = true;
       });
     },
@@ -120,6 +137,10 @@ const desc = {
     selectConf() {
       this.picker = true;
       this.frame = false;
+    },
+
+    navigate(dest) {
+      console.log(dest);
     },
 
     startProjector() {

@@ -8,20 +8,21 @@
   <body onload="setup()">
 
     <div class="frame">
+      <component :is="activeView" v-bind:timers="timers" :seats="seats" @navigate="navigate" keep-alive></component>
       <div class="action-bar">
-        <div class="title">{{ title }}</div>
+        <div class="title" @click="navigate('home')">{{ title }}</div>
         <div class="actions">
-          <div class="action" @click="pauseSession">
-            <i class="material-icons">pause</i>
+          <div class="action" @click="navigate('seats')">
+            <i class="material-icons">event_seat</i>
           </div>
-          <div class="action" @click="sendFile">
-            <i class="material-icons">insert_drive_file</i>
-          </div>
-          <div class="action" @click="startOrganized">
+          <div class="action" @click="navigate('lists')">
             <i class="material-icons">record_voice_over</i>
           </div>
-          <div class="action" @click="startFree">
+          <div class="action" @click="navigate('timers')">
             <i class="material-icons">timer</i>
+          </div>
+          <div class="action" @click="navigate('votes')">
+            <i class="material-icons">thumbs_up_down</i>
           </div>
           <div class="action" @click="startProjector">
             <i class="material-icons">cast</i>
@@ -34,7 +35,7 @@
       <div class="picker-content">
         <div class="picker-title">请选择委员会</div>
         <div class="selector">
-          <div class="selector-item" v-for="conf of confs" @click="connectConf(conf.id)">
+          <div class="selector-item" v-for="conf of confs" @click="connectConf(conf.id, conf.name)">
             {{ conf.name }}
           </div>
           <div class="selector-item" @click="createConf()">

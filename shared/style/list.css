@@ -1,0 +1,18 @@
+.list {
+  display: block;
+  margin-bottom: 24px;
+  border-left: rgba(0,0,0,.06) 4px solid;
+}
+
+.list-item {
+  padding: 10px 20px
+}
+
+.list-item.empty-hint {
+  display: none;
+  color: rgba(0,0,0,.3);
+}
+
+.list-item.empty-hint:first-child {
+  display: inherit;
+}

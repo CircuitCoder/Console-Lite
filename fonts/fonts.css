@@ -109,7 +109,7 @@
   font-family: 'Roboto';
   font-style: normal;
   font-weight: 400;
-  src: url('./Roboto-Normal.ttf') format('truetype');
+  src: url('./Roboto-Regular.ttf') format('truetype');
 }
 
 @font-face {

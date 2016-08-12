@@ -20,7 +20,17 @@
   line-height: 100px;
   display: inline-block;
 
+  cursor: pointer;
+
+  opacity: 0.87;
+  transition: opacity .2s ease;
+
   -webkit-user-select: none;
+  -webkit-app-region: no-drag;
+}
+
+.title:hover {
+  opacity: 1;
 }
 
 .actions {
@@ -49,4 +59,49 @@
 
 .action:last-child {
   margin-right: 0;
+}
+
+.view {
+  padding: 40px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 101px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.view-title {
+  font-size: 24px;
+  line-height: 40px;
+  font-weight: 200;
+  margin-bottom: 24px;
+
+  -webkit-app-region: drag;
+  -webkit-user-select: none;
+}
+
+.view-pagetitle {
+  font-size: 18px;
+  margin-bottom: 12px;
+  line-height: 24px;
+  font-weight: 600;
+  color: rgba(0,0,0,.54);
+
+  -webkit-app-region: drag;
+  -webkit-user-select: none;
+}
+
+.view-pagetitle.clickable {
+  color: black;
+  opacity: .54;
+  transition: opacity .2s ease;
+  cursor: pointer;
+
+  -webkit-app-region: no-drag;
+}
+
+.view-pagetitle.clickable:hover {
+  opacity: .7;
 }
