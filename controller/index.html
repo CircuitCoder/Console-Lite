@@ -12,12 +12,14 @@
         :is="activeView"
         transition="opacity"
 
-        :timers.sync="timers"
-        :seats.sync="seats"
+        :timers="timers"
+        :seats="seats"
         @navigate="navigate"
         @seats-updated="seatsUpdated"
         keep-alive>
       </component>
+      <!-- Events will loop back through server broadcast -->
+      <!-- So we are using one way binding -->
 
       <div class="action-bar">
         <div class="title" @click="navigate('home')">{{ title }}</div>

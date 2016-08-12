@@ -66,7 +66,7 @@ class Conference {
 
     // TODO: if stopTimer is called right after startTimer, this.timerValues[id] may be undefined
 
-    this.db.set(`timer:left:${id}`, this.timerValues.get(id), (err) => {
+    this.db.put(`timer:left:${id}`, this.timerValues.get(id), (err) => {
       if(err) return cb(err);
 
       clearInterval(intId);
@@ -83,8 +83,8 @@ class Conference {
     if(this.runningTimers.had(id)) return cb('TimerRunning');
 
     Promise.all([
-      (resolve, reject) => this.db.set(`timers:left:${id}`, value, err => err ? reject(err) : resolve(err)),
-      (resolve, reject) => this.db.set(`timers:${id}`, value, err => err ? reject(err) : resolve(err)),
+      (resolve, reject) => this.db.put(`timers:left:${id}`, value, err => err ? reject(err) : resolve(err)),
+      (resolve, reject) => this.db.put(`timers:${id}`, value, err => err ? reject(err) : resolve(err)),
     ].map(e => new Promise(e))).then(() => {
       for(const l of this.listeners)
         if(l.timerUpdated) l.timerUpdated(id, value);
@@ -116,8 +116,8 @@ class Conference {
     });
   }
 
-  putSeats(seats, cb) {
-    this.db.set('seats', seats, (err) => {
+  updateSeats(seats, cb) {
+    this.db.put('seats', seats, (err) => {
       if(err) return cb(err);
       for(const l of this.listeners)
         if(l.seatsUpdated) l.seatsUpdated(seats);

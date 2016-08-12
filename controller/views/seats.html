@@ -7,7 +7,7 @@
     </button>
   </div>
   <div class="seats">
-    <div class="seat" v-for="seat of seats" :class="{ present: seat.present }" @click="toggleStatus(seat)">
+    <div class="seat" v-for="seat of seats" track-by="$index" :class="{ present: seat.present }" @click="toggleStatus(seat)">
       <div class="seat-indicator"></div>
       <div class="seat-name">{{ seat.name }}</div>
     </div>

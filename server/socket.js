@@ -86,6 +86,14 @@ function add(id) {
         else return socket.emit('updateTimer', { ok: true });
       });
     });
+
+    socket.on('updateSeats', (data) => {
+      if(!data.seats) return socket.emit('updateSeats', { ok: false, error: 'BadRequest' });
+      socket.conf.updateSeats(data.seats, err => {
+        if(err) return socket.emit('updateSeats', { ok: false, error: err });
+        else return socket.emit('updateSeats', { ok: true });
+      });
+    });
   });
 
 
@@ -104,6 +112,10 @@ function add(id) {
 
     timerStopped(id) {
       nsp.emit('timerStopped', { id });
+    },
+
+    seatsUpdated(seats) {
+      nsp.emit('seatsUpdated', { seats });
     },
   });
 

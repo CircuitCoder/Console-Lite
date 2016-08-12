@@ -115,6 +115,14 @@ const desc = {
         this.activeView = 'home';
         this.frame = true;
       });
+
+      confConn.addListener({
+        seatsUpdated: (seats) => {
+          console.log('receive');
+          this.seats = seats;
+          this.recalcCount();
+        },
+      });
     },
 
     createConf(name) {
@@ -151,8 +159,9 @@ const desc = {
 
     /* Seats */
 
-    seatsUpdated() {
-      this.recalcCount();
+    seatsUpdated(seats) {
+      // Sync up, recalculate will be completed on pingback event
+      confConn.updateSeats(seats);
     },
 
     recalcCount() {
