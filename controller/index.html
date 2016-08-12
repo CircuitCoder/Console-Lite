@@ -103,5 +103,32 @@
         </div>
       </div>
     </div>
+
+    <div class="dialog-overlap" transition="opacity" v-show="connectBackendFlag" @click="discardBackendConnection">
+      <div class="dialog" @click="blocker">
+        <div class="dialog-title">
+          连接到...
+        </div>
+        <div class="dialog-content">
+          <div class="input-group">
+            <div class="hint">服务器URL</div>
+            <input v-model="backendUrl">
+            <div class="border-line"></div>
+          </div>
+
+          <div class="input-group">
+            <div class="hint">密码</div>
+            <input v-model="backendPasskey">
+            <div class="border-line"></div>
+          </div>
+
+          <button @click="performBackendConnection" class="confirmation-btn">
+            连接
+            <i class="material-icons">keyboard_arrow_right</i>
+          </button>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

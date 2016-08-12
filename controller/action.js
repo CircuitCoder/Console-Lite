@@ -20,6 +20,10 @@ const desc = {
     createConfFlag: false,
     confName: '',
 
+    connectBackendFlag: false,
+    backendUrl: '',
+    backendPasskey: '',
+
     title: '',
 
     authorized: false,
@@ -48,11 +52,40 @@ const desc = {
       }, 1000);
     },
 
+    _createGlobalConn() {
+      socket = io(serverConfig.url, {
+        extraHeaders: {
+          'Console-Passkey': serverConfig.passkey
+        }
+      });
+
+      globalConn = new GlobalConnection(socket, ({ confs, authorized }) => {
+        this.confs = confs;
+        this.authorized = authorized;
+        this.picker = true;
+        this.connectBackendFlag = false;
+        // TODO: failure: reconnect
+      });
+    },
+
     connectBackend() {
       this.loading = true;
-      setTimeout(() => {
-        this.frame = true;
-      }, 2000);
+
+      this.connectBackendFlag = true;
+    },
+
+    performBackendConnection() {
+      if(this.backendUrl === '' || this.backendPasskey === '') return;
+      serverConfig = {
+        url: this.backendUrl,
+        passkey: this.backendPasskey,
+      };
+
+      this._createGlobalConn();
+    },
+
+    discardBackendConnection() {
+      this.connectBackendFlag = false;
     },
 
     createBackend() {
@@ -65,18 +98,7 @@ const desc = {
         }
 
         serverConfig = data;
-
-        socket = io(data.url, {
-          extraHeaders: {
-            'Console-Passkey': data.passkey
-          }
-        });
-
-        globalConn = new GlobalConnection(socket, (data) => {
-          this.confs = data.confs;
-          this.authorized = data.authorized;
-          this.picker = true;
-        });
+        this._createGlobalConn();
       });
 
       ipcRenderer.send('startServer');
@@ -118,7 +140,6 @@ const desc = {
 
       confConn.addListener({
         seatsUpdated: (seats) => {
-          console.log('receive');
           this.seats = seats;
           this.recalcCount();
         },

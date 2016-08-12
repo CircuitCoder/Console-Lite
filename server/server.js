@@ -36,7 +36,7 @@ module.exports = (cb, port = 4928) => {
         backend.shutdown();
         cb(err);
       } else {
-        console.log(`Server up at port ${port}.`);
+        console.log(`Server up at port ${port} with passkey ${passkey}.`);
         cb(null, passkey, shutdown);
       }
     });
