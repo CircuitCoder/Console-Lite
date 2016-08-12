@@ -12,13 +12,23 @@
         :is="activeView"
         transition="opacity"
 
-        :timers="timers"
-        :seats="seats"
-        @navigate="navigate" keep-alive>
+        :timers.sync="timers"
+        :seats.sync="seats"
+        @navigate="navigate"
+        @seats-updated="seatsUpdated"
+        keep-alive>
       </component>
 
       <div class="action-bar">
         <div class="title" @click="navigate('home')">{{ title }}</div>
+        <div class="counter-group">
+          <i class="material-icons">person</i>
+          <div class="counter">
+            <div class="present">{{ presentCount }}</div>
+            <div class="separator">/</div>
+            <div class="all">{{ seatCount }}</div>
+          </div>
+        </div>
         <div class="actions">
           <div class="action" @click="navigate('seats')">
             <i class="material-icons">event_seat</i>

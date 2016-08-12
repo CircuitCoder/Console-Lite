@@ -26,6 +26,9 @@ const desc = {
     confs: [],
 
     activeView: 'home',
+
+    presentCount: 0,
+    seatCount: 0,
     
     timers: [],
     seats: [],
@@ -105,6 +108,8 @@ const desc = {
         this.timers = data.timers;
         this.seats = data.seats;
 
+        this.recalcCount();
+
         this.title = name;
 
         this.activeView = 'home';
@@ -143,6 +148,19 @@ const desc = {
     navigate(dest) {
       this.activeView = dest;
     },
+
+    /* Seats */
+
+    seatsUpdated() {
+      this.recalcCount();
+    },
+
+    recalcCount() {
+      this.seatCount = this.seats.length;
+      this.presentCount = this.seats.reduce((prev, e) => e.present ? prev+1 : prev, 0);
+    },
+
+    /* Utitlities */
 
     startProjector() {
     },

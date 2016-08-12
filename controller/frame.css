@@ -112,3 +112,37 @@
 .view-pagetitle.clickable:hover {
   opacity: .7;
 }
+
+.counter-group {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 20px;
+}
+
+.counter-group .material-icons {
+  opacity: 0.54;
+}
+
+.counter {
+  display: inline-block;
+  margin-left: 5px;
+}
+
+.counter > div {
+  display: inline-block;
+}
+
+.counter .present {
+  font-size: 24px;
+  line-height: 24px;
+  font-weight: 400;
+}
+
+.counter .separator {
+  opacity: 0.3;
+}
+
+.counter .all {
+  font-size: 16px;
+  font-weight: 200;
+}
