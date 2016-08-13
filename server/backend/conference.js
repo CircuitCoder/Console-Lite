@@ -59,7 +59,6 @@ class Conference {
   }
 
   restartTimer(id, cb) {
-    console.log(id);
     return this._startTimer(id, `timer:${id}`, cb);
   }
 

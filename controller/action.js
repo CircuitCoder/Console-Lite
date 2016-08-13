@@ -124,12 +124,11 @@ const desc = {
 
       confConn = new ConferenceConnection(socket, ({ error, data }) => {
         if(error) {
-          console.log(resp.error);
+          console.error(resp.error);
           confConn = null;
           alert('连接失败!');
           return;
         }
-        console.log(this.timers);
 
         this.timers = data.timers;
         this.seats = data.seats;
@@ -221,7 +220,7 @@ const desc = {
     addTimer(name, sec) {
       confConn.addTimer(name, 'plain', sec, (err, id) => {
         if(err) {
-          console.log(error);
+          console.error(error);
           alert('添加失败!');
         }
       });
@@ -230,7 +229,7 @@ const desc = {
     manipulateTimer(action, id) {
       confConn.manipulateTimer(action, id, (err, id) => {
         if(err) {
-          console.log(error);
+          console.error(error);
           alert('操作失败!');
         }
       });
@@ -239,7 +238,7 @@ const desc = {
     updateTimer(id, value) {
       confConn.updateTimer(id, value, (err, id) => {
         if(err) {
-          console.log(error);
+          console.error(error);
           alert('修改失败!');
         }
       });
