@@ -5,3 +5,4 @@ npm-debug.log
 .*.sw[a-p]
 
 /server/backend/storage/**/*.db/
+/console-next-*-*/

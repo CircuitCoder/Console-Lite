@@ -8,7 +8,8 @@
     "electron": "electron",
     "start": "electron .",
     "server": "node server/main.js",
-    "clean": "rm -rf server/backend/storage/*.db"
+    "clean": "rm -rf server/backend/storage/*.db",
+    "pack": "node bin/pack.js"
   },
   "author": "Liu Xiaoyi",
   "license": "MIT",
