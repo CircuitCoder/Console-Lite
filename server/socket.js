@@ -69,14 +69,27 @@ function add(id) {
 
     socket.on('startTimer', (data) => {
       if(!data.id) return socket.emit('startTimer', { ok: false, error: 'BadRequest' });
-      socket.conf.startTimer(data.id);
-      return socket.emit('startTimer', { ok: true });
+      socket.conf.startTimer(data.id, (err) => {
+        if(err) return socket.emit('startTimer', { ok: false, error: err });
+        else return socket.emit('startTimer', { ok: true, id });
+      });
     });
+
+    socket.on('restartTimer', (data) => {
+      if(!data.id) return socket.emit('restartTimer', { ok: false, error: 'BadRequest' });
+      socket.conf.restartTimer(data.id, (err) => {
+        if(err) return socket.emit('restartTimer', { ok: false, error: err });
+        else return socket.emit('restartTimer', { ok: true, id });
+      });
+    });
+
 
     socket.on('stopTimer', (data) => {
       if(!data.id) return socket.emit('stopTimer', { ok: false, error: 'BadRequest' });
-      socket.conf.stopTimer(data.id);
-      return socket.emit('stopTimer', { ok: true });
+      socket.conf.stopTimer(data.id, (err) => {
+        if(err) return socket.emit('stopTimer', { ok: false, error: err });
+        else return socket.emit('stopTimer', { ok: true, id });
+      });
     });
 
     socket.on('updateTimer', (data) => {
@@ -106,8 +119,12 @@ function add(id) {
       nsp.emit('timerUpdated', { id, value });
     },
 
-    timerStarted(id) {
-      nsp.emit('timerStarted', { id });
+    timerTick(id, value) {
+      nsp.emit('timerTick', { id, value });
+    },
+
+    timerStarted(id, value) {
+      nsp.emit('timerStarted', { id, value });
     },
 
     timerStopped(id) {

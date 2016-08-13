@@ -22,6 +22,10 @@
   font-weight: 300;
   padding: 1px;
 
+  color: black;
+  opacity: 1;
+  transition: opacity .2s ease;
+
   /* From default input styles */
   text-rendering: auto;
   letter-spacing: normal;
@@ -34,6 +38,10 @@
   margin: 0;
 
   -webkit-app-region: no-drag;
+}
+
+.input-group input[disabled], .input-group textarea[disabled] {
+  opacity: 0.3;
 }
 
 .input-group .border-line {

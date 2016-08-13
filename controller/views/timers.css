@@ -1,6 +1,20 @@
-.timer-value {
+.timer.timer-left {
+  float: right;
+}
+
+.timer-value-wrapper {
+  display: inline-block;
   float: right;
   margin-right: 10px;
+}
+
+.timer.timer-value, .timer-value-separator {
+  display: inline-block;
+  margin-left: 2px;
+  opacity: 0.54;
+  font-weight: 400;
+  font-size: 12px;
+  vertical-align: baseline;
 }
 
 .timer-actions {

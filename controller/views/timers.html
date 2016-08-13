@@ -16,24 +16,27 @@
             <i class="material-icons" v-show="timer.active">pause</i>
             <i class="material-icons" v-else>play_arrow</i>
           </button>
-          <button class="timer-action" @click="editTimer(timer)" :disabled="timer.active">
+          <button class="timer-action" @click="edit(timer)" :disabled="timer.active">
             <i class="material-icons">edit</i>
           </button>
         </div>
-        <timer class="timer-value" :time="timer.value"></timer>
+        <div class="timer-value-wrapper">
+          <span class="timer-value-separator">/</span><timer class="timer-value" :time="timer.value"></timer>
+        </div>
+        <timer class="timer-left" :time="timer.left"></timer>
       </div>
     </div>
   </div>
 
-  <div class="dialog-overlap" transition="opacity" v-show="addFlag" @click="discardAddition">
+  <div class="dialog-overlap" transition="opacity" v-show="editFlag" @click="discardEdit">
     <div class="dialog" @click="blocker">
       <div class="dialog-title">
-        创建计时器
+        {{ additionMode ? '创建' : '修改' }}计时器
       </div>
       <div class="dialog-content">
         <div class="input-group">
           <div class="hint">显示名</div>
-          <input v-model="timerName">
+          <input v-model="timerName" :disabled="!additionMode">
           <div class="border-line"></div>
         </div>
         <div class="timer-input-hint">时间</div>
@@ -53,8 +56,8 @@
             <div class="border-line"></div>
           </div>
         </div>
-        <button @click="performAddition" class="confirmation-btn">
-          创建
+        <button @click="performEdit" class="confirmation-btn">
+          提交
           <i class="material-icons">keyboard_arrow_right</i>
         </button>
         <div class="clearfix"></div>

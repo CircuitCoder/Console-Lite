@@ -32,18 +32,20 @@ class Conference {
       const intId = setInterval(() => {
         const t = this.timerValues.get(id) - 1;
         assert(t >= 0);
-        this.timerValues.set(id);
+        this.timerValues.set(id, t);
 
         for(const l of this.listeners)
-          if(l.timerTick) l.timerTick(id, value);
+          if(l.timerTick) l.timerTick(id, t);
 
         if(t === 0) {
           clearInterval(intId);
-          stopTimer(id, err => {
+          this.stopTimer(id, err => {
             if(err) console.error(err);
           });
         }
       }, 1000);
+
+      this.runningTimers.set(id, intId);
 
       for(const l of this.listeners)
         if(l.timerStarted) l.timerStarted(id, value);
@@ -57,7 +59,8 @@ class Conference {
   }
 
   restartTimer(id, cb) {
-    return this._startTimer(id, `timer:left:${id}`, cb);
+    console.log(id);
+    return this._startTimer(id, `timer:${id}`, cb);
   }
 
   stopTimer(id, cb) {
@@ -80,11 +83,11 @@ class Conference {
   }
 
   updateTimer(id, value, cb) {
-    if(this.runningTimers.had(id)) return cb('TimerRunning');
+    if(this.runningTimers.has(id)) return cb('TimerRunning');
 
     Promise.all([
-      (resolve, reject) => this.db.put(`timers:left:${id}`, value, err => err ? reject(err) : resolve(err)),
-      (resolve, reject) => this.db.put(`timers:${id}`, value, err => err ? reject(err) : resolve(err)),
+      (resolve, reject) => this.db.put(`timer:left:${id}`, value, err => err ? reject(err) : resolve(err)),
+      (resolve, reject) => this.db.put(`timer:${id}`, value, err => err ? reject(err) : resolve(err)),
     ].map(e => new Promise(e))).then(() => {
       for(const l of this.listeners)
         if(l.timerUpdated) l.timerUpdated(id, value);

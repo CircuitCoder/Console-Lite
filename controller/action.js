@@ -147,6 +147,28 @@ const desc = {
           this.seats = seats;
           this.recalcCount();
         },
+
+        timerAdded: (id, name, type, value) => {
+          this.timers.unshift({ id, name, value, type, active: false });
+        },
+        
+        timerStarted: (id, value) => this.executeOnTimer(id, timer => {
+          timer.active = true;
+          timer.left = value;
+        }),
+
+        timerStopped: (id, value) => this.executeOnTimer(id, timer => {
+          timer.active = false;
+        }),
+
+        timerUpdated: (id, value) => this.executeOnTimer(id, timer => {
+          timer.value = value;
+          timer.left = value;
+        }),
+
+        timerTick: (id, value) => this.executeOnTimer(id, timer => {
+          timer.left = value;
+        }),
       });
     },
 
@@ -197,10 +219,38 @@ const desc = {
     /* Timers */
 
     addTimer(name, sec) {
-      console.log(name);
       confConn.addTimer(name, 'plain', sec, (err, id) => {
-        this.timers.unshift({ id, name, value: sec, active: false });
+        if(err) {
+          console.log(error);
+          alert('添加失败!');
+        }
       });
+    },
+
+    manipulateTimer(action, id) {
+      confConn.manipulateTimer(action, id, (err, id) => {
+        if(err) {
+          console.log(error);
+          alert('操作失败!');
+        }
+      });
+    },
+
+    updateTimer(id, value) {
+      confConn.updateTimer(id, value, (err, id) => {
+        if(err) {
+          console.log(error);
+          alert('修改失败!');
+        }
+      });
+    },
+
+    executeOnTimer(id, cb) {
+      for(const timer of this.timers)
+        if(timer.id === id) {
+          cb(timer);
+          break;
+        }
     },
 
     /* Utitlities */
