@@ -6,10 +6,10 @@
       <i class="material-icons">edit</i>
     </button>
   </div>
-  <div class="seats">
-    <div class="seat" v-for="seat of seats" track-by="$index" :class="{ present: seat.present }" @click="toggleStatus(seat)">
-      <div class="seat-indicator"></div>
-      <div class="seat-name">{{ seat.name }}</div>
+  <div class="seats list">
+    <div class="seat list-item clickable" v-for="seat of seats" track-by="$index" :class="{ bold: seat.present }" @click="toggleStatus(seat)">
+      <div class="list-item-indicator"></div>
+      <div class="list-item-content">{{ seat.name }}</div>
     </div>
     <div class="empty-hint">请点击编辑添加席位</div>
   </div>

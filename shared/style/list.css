@@ -1,16 +1,55 @@
 .list {
   display: block;
   margin-bottom: 24px;
-  border-left: rgba(0,0,0,.06) 4px solid;
 }
 
 .list-item {
-  padding: 10px 20px
+  position: relative;
+  padding-left: 5px;
+}
+
+.list-item-indicator {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 5px;
+  display: inline-block;
+
+  background: black;
+  opacity: .06;
+  transition: opacity .2s ease;
+}
+
+.list-item.bold .list-item-indicator {
+  opacity: .24;
+}
+
+.list-item-content {
+  padding: 10px 20px;
+  color: black;
+}
+
+.list-item.clickable .list-item-content {
+  transition: opacity .2s ease;
+  opacity: 0.7;
+}
+
+.list-item.clickable {
+  cursor: pointer;
+
+  -webkit-user-select: none;
+  -webkit-app-region: no-drag;
+}
+
+.list-item.clickable:hover .list-item-content {
+  opacity: 1;
 }
 
 .empty-hint {
   display: none;
   color: rgba(0,0,0,.3);
+  margin-left: -5px;
 }
 
 .empty-hint:first-child {

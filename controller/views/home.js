@@ -1,7 +1,7 @@
 const Vue = require('vue');
 const fs = require('fs');
 
-const HomeComponent = Vue.extend({
+const HomeView = Vue.extend({
   template: fs.readFileSync(`${__dirname}/home.html`).toString('utf-8'),
   props: ['timers'],
 
@@ -16,4 +16,4 @@ const HomeComponent = Vue.extend({
   }
 })
 
-module.exports = HomeComponent;
+module.exports = HomeView;

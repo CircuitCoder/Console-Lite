@@ -1,0 +1,13 @@
+<div class="timer">
+  <span class="timer-hour" v-show="showHour">
+    {{ hour }}
+  </span>
+  <span class="timer-separator" v-show="showHour">:</span>
+  <span class="timer-minute" v-show="showMinute">
+    {{ minuteStr }}
+  </span>
+  <span class="timer-separator" v-show="showMinute">:</span>
+  <span class="timer-second">
+    {{ secondStr }}
+  </span>
+</div>

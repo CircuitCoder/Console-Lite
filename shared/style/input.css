@@ -3,7 +3,7 @@
   margin-bottom: 20px;
 }
 
-.input-group .hint {
+.input-group .hint, .timer-input-hint {
   font-weight: 400;
   color: rgba(0,0,0,.3);
   line-height: 20px;
@@ -47,6 +47,31 @@
   opacity: 1;
 }
 
+.timer-input-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.timer-input-group .input-group {
+  display: inline-block;
+  margin-bottom: 0;
+}
+
+.timer-input-group .timer-separator {
+  color: black;
+  font-weight: 400;
+  opacity: 0.3;
+  display: inline-block;
+}
+
+.timer-input-group input {
+  -webkit-appearance: none;
+  text-align: center;
+  box-sizing: border-box;
+}
+
 button {
   color: rgba(0,0,0,.87);
   opacity: 0.7;
@@ -80,4 +105,14 @@ button.embedded .material-icons {
 
 button:hover {
   opacity: 1;
+}
+
+button[disabled] {
+  opacity: 0.3;
+  cursor: default;
+  -webkit-app-region: drag;
+}
+
+button[disabled]:hover {
+  opacity: 0.3;
 }

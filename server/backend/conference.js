@@ -103,7 +103,7 @@ class Conference {
 
     this.db.get('timers', (err, timers) => {
       if(err) return cb(err);
-      timers.push = { id, name, type };
+      timers.unshift({ id, name, type });
       Promise.all([
         (resolve, reject) => this.db.put('timers', timers, err ? reject(err) : resolve(err)),
         (resolve, reject) => this.db.put(`timer:${id}`, value, err ? reject(err) : resolve(err)),
@@ -130,8 +130,10 @@ class Conference {
         if(err) return reject(err);
 
         for(const timer of timers)
-          if(this.runningTimers.has(timer.id))
-            timer.running = this.timerValues.get(timer.id);
+          if(this.runningTimers.has(timer.id)) {
+            timer.left = this.timerValues.get(timer.id);
+            timer.active = true;
+          }
 
         const promises = timers.map(timer => (resolve, reject) => {
           this.db.get(`timer:${timer.id}`, (err, value) => {
@@ -142,6 +144,7 @@ class Conference {
 
               timer.value = value;
               if(!timer.left) timer.left = left; // Respect running timers
+              if(!timer.active) timer.active = false;
 
               return resolve(timer);
             });

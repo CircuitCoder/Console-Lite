@@ -5,6 +5,8 @@ const {ipcRenderer} = require('electron');
 const GlobalConnection = require('./connection/global');
 const ConferenceConnection = require('./connection/conference');
 
+require('./components/timer');
+
 let globalConn, confConn;
 let serverConfig;
 
@@ -41,6 +43,7 @@ const desc = {
   components: {
     home: require('./views/home'),
     seats: require('./views/seats'),
+    timers: require('./views/timers'),
   },
 
   methods: {
@@ -86,6 +89,7 @@ const desc = {
 
     discardBackendConnection() {
       this.connectBackendFlag = false;
+      this.loading = false;
     },
 
     createBackend() {
@@ -180,7 +184,7 @@ const desc = {
 
     /* Seats */
 
-    seatsUpdated(seats) {
+    updateSeats(seats) {
       // Sync up, recalculate will be completed on pingback event
       confConn.updateSeats(seats);
     },
@@ -188,6 +192,15 @@ const desc = {
     recalcCount() {
       this.seatCount = this.seats.length;
       this.presentCount = this.seats.reduce((prev, e) => e.present ? prev+1 : prev, 0);
+    },
+
+    /* Timers */
+
+    addTimer(name, sec) {
+      console.log(name);
+      confConn.addTimer(name, 'plain', sec, (err, id) => {
+        this.timers.unshift({ id, name, value: sec, active: false });
+      });
     },
 
     /* Utitlities */

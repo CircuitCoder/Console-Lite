@@ -1,7 +1,7 @@
 const Vue = require('vue');
 const fs = require('fs');
 
-const HomeComponent = Vue.extend({
+const SeatsView = Vue.extend({
   template: fs.readFileSync(`${__dirname}/seats.html`).toString('utf-8'),
   props: ['seats'],
 
@@ -20,7 +20,7 @@ const HomeComponent = Vue.extend({
     performEditing() {
       const str = this.$els.seatsInput.innerHTML;
       const seats = str.split('<br>').filter(e => e.length > 0).map(e => ({ name: e, present: false }));
-      this.$dispatch('seats-updated', seats);
+      this.$dispatch('update-seats', seats);
       this.editFlag = false;
     },
 
@@ -31,7 +31,7 @@ const HomeComponent = Vue.extend({
     toggleStatus(seat) {
       // TODO: immutables
       seat.present = ! seat.present;
-      this.$dispatch('seats-updated', this.seats);
+      this.$dispatch('update-seats', this.seats);
     },
 
     blocker(event) {
@@ -41,4 +41,4 @@ const HomeComponent = Vue.extend({
   }
 })
 
-module.exports = HomeComponent;
+module.exports = SeatsView;

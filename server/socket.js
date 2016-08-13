@@ -60,10 +60,10 @@ function add(id) {
     });
 
     socket.on('addTimer', (data) => {
-      if(!data.name || !data.value) return socket.emit('addTimer', { ok: false, error: 'BadRequest' });
-      socket.conf.addTimer(data.name, 'plain', data.value, (err, id) => {
+      if(!data.name || !data.value || !data.type) return socket.emit('addTimer', { ok: false, error: 'BadRequest' });
+      socket.conf.addTimer(data.name, data.type, data.value, (err, id) => {
         if(err) return socket.emit('addTimer', { ok: false, error: err });
-        else return socket.emit('addTimer', { ok: true, error: err });
+        else return socket.emit('addTimer', { ok: true, id });
       });
     });
 

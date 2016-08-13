@@ -28,6 +28,15 @@ class ConferenceConnection {
     });
     socket.emit('updateSeats', { seats });
   }
+
+  addTimer(name, type, value, cb) {
+    socket.once('addTimer', (data) => {
+      if(data.ok) cb(null, data.id);
+      else cb(data.error);
+    });
+
+    socket.emit('addTimer', { name, value, type });
+  }
 }
 
 module.exports = ConferenceConnection;

@@ -9,49 +9,17 @@
   bottom: 0px;
   right: 0px;
   left: 0px;
+  margin-bottom: 0;
+
+  overflow-x: auto;
 
   -webkit-app-region: no-drag;
 }
 
 .seat {
-  position: relative;
   width: 200px;
-  cursor: pointer;
-  padding-left: 5px;
-
-  -webkit-user-select: none;
-  -webkit-app-region: no-drag;
-}
-
-.seat-indicator {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 5px;
-  display: inline-block;
-
-  background: black;
-  opacity: .06;
-  transition: opacity .2s ease;
-}
-
-.seat.present .seat-indicator {
-  opacity: .24;
-}
-
-.seat-name {
-  padding: 10px 20px;
-  color: black;
-  transition: opacity .2s ease;
-  opacity: 0.7;
-}
-
-.seat:hover .seat-name {
-  opacity: 1;
 }
 
 .seats .empty-hint {
-  padding: 10px 20px;
-  border-left: 5px solid rgba(0,0,0,.06);
+  margin-left: 0;
 }

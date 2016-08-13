@@ -1,0 +1,15 @@
+.timer-value {
+  float: right;
+  margin-right: 10px;
+}
+
+.timer-actions {
+  float: right;
+  display: flex;
+  opacity: .5;
+  height: 21px; /* Measured */
+  align-items: center;
+}
+
+.timer-action {
+}

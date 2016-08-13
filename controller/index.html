@@ -15,7 +15,8 @@
         :timers="timers"
         :seats="seats"
         @navigate="navigate"
-        @seats-updated="seatsUpdated"
+        @update-seats="updateSeats"
+        @add-timer="addTimer"
         keep-alive>
       </component>
       <!-- Events will loop back through server broadcast -->
@@ -96,7 +97,7 @@
             <div class="border-line"></div>
           </div>
           <button @click="performConfCreation" class="confirmation-btn">
-            继续
+            创建
             <i class="material-icons">keyboard_arrow_right</i>
           </button>
           <div class="clearfix"></div>

@@ -1,0 +1,64 @@
+<div class="view">
+  <div class="view-title">
+    计时器
+    <button class="embedded" @click="add">
+      添加
+      <i class="material-icons">add</i>
+    </button>
+  </div>
+  <div class="list">
+    <div class="list-item" v-for="timer of timers" track-by="$index" :class="{ bold: timer.active }">
+      <div class="list-item-indicator"></div>
+      <div class="list-item-content">
+        {{ timer.name }}
+        <div class="timer-actions">
+          <button class="timer-action" @click="toggleTimer(timer)">
+            <i class="material-icons" v-show="timer.active">pause</i>
+            <i class="material-icons" v-else>play_arrow</i>
+          </button>
+          <button class="timer-action" @click="editTimer(timer)" :disabled="timer.active">
+            <i class="material-icons">edit</i>
+          </button>
+        </div>
+        <timer class="timer-value" :time="timer.value"></timer>
+      </div>
+    </div>
+  </div>
+
+  <div class="dialog-overlap" transition="opacity" v-show="addFlag" @click="discardAddition">
+    <div class="dialog" @click="blocker">
+      <div class="dialog-title">
+        创建计时器
+      </div>
+      <div class="dialog-content">
+        <div class="input-group">
+          <div class="hint">显示名</div>
+          <input v-model="timerName">
+          <div class="border-line"></div>
+        </div>
+        <div class="timer-input-hint">时间</div>
+        <div class="timer-input-group">
+          <div class="input-group">
+            <input v-model="timerHour" number @input="validate('hour')">
+            <div class="border-line"></div>
+          </div>
+          <div class="timer-separator">:</div>
+          <div class="input-group">
+            <input v-model="timerMinute" number @input="validate('minute')">
+            <div class="border-line"></div>
+          </div>
+          <div class="timer-separator">:</div>
+          <div class="input-group">
+            <input v-model="timerSecond" number @input="validate('second')">
+            <div class="border-line"></div>
+          </div>
+        </div>
+        <button @click="performAddition" class="confirmation-btn">
+          创建
+          <i class="material-icons">keyboard_arrow_right</i>
+        </button>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+</div>

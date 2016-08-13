@@ -1,4 +1,7 @@
 @import './views/seats.css';
+@import './views/timers.css';
+
+@import './components/timer.css';
 
 .frame {
   z-index: 1000;
@@ -36,7 +39,7 @@
 }
 
 .actions {
-  margin-right: 20px;
+  margin-right: 40px;
   float: right;
   
   height: 100%;
