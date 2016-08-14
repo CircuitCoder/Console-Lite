@@ -1,5 +1,5 @@
 const boot = require('./server');
-const process = require('process');
+if(!process) process = require('process');
 
 let shutdownHook;
 

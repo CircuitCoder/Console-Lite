@@ -9,21 +9,26 @@
   <div class="list">
     <div class="list-item" v-for="timer of timers" track-by="$index" :class="{ bold: timer.active }">
       <div class="list-item-indicator"></div>
-      <div class="list-item-content">
-        {{ timer.name }}
+      <div class="list-item-content timer-row">
+        <div class="timer-name">
+          {{ timer.name }}
+        </div>
+        <timer class="timer-left" :time="timer.left"></timer>
+        <div class="timer-value-wrapper">
+          <span class="timer-value-separator">/</span><timer class="timer-value" :time="timer.value"></timer>
+        </div>
         <div class="timer-actions">
-          <button class="timer-action" @click="toggleTimer(timer)">
+          <button class="timer-action" @click="toggle(timer)">
             <i class="material-icons" v-show="timer.active">pause</i>
             <i class="material-icons" v-else>play_arrow</i>
           </button>
           <button class="timer-action" @click="edit(timer)" :disabled="timer.active">
             <i class="material-icons">edit</i>
           </button>
+          <button class="timer-action" @click="project(timer)">
+            <i class="material-icons">cast</i>
+          </button>
         </div>
-        <div class="timer-value-wrapper">
-          <span class="timer-value-separator">/</span><timer class="timer-value" :time="timer.value"></timer>
-        </div>
-        <timer class="timer-left" :time="timer.left"></timer>
       </div>
     </div>
   </div>

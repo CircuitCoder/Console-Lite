@@ -1,11 +1,15 @@
-.timer.timer-left {
-  float: right;
+.timer-row {
+  display: flex;
+  align-items: center;
 }
 
-.timer-value-wrapper {
-  display: inline-block;
+.timer-name {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.timer.timer-left {
   float: right;
-  margin-right: 10px;
 }
 
 .timer.timer-value, .timer-value-separator {
@@ -14,14 +18,18 @@
   opacity: 0.54;
   font-weight: 400;
   font-size: 12px;
-  vertical-align: baseline;
+}
+
+.timer-value-wrapper {
+  height: 21px;
+  display: inline-flex;
+  align-items: flex-end;
 }
 
 .timer-actions {
   float: right;
   display: flex;
   opacity: .5;
-  height: 21px; /* Measured */
   align-items: center;
 }
 

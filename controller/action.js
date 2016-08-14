@@ -5,10 +5,15 @@ const {ipcRenderer} = require('electron');
 const GlobalConnection = require('./connection/global');
 const ConferenceConnection = require('./connection/conference');
 
-require('./components/timer');
+require('../shared/components/timer');
 
 let globalConn, confConn;
 let serverConfig;
+
+/* Data for projector */
+let proj = {
+  mode: 'none',
+};
 
 const desc = {
   el: 'body',
@@ -18,6 +23,8 @@ const desc = {
     loading: false,
     picker: false,
     frame: false,
+
+    projOn: false,
 
     createConfFlag: false,
     confName: '',
@@ -49,6 +56,9 @@ const desc = {
   methods: {
     init() {
       this.started = true;
+
+      this.projOn = ipcRenderer.sendSync('getProjector') !== null;
+      this.sendToProjector({ type: 'reset' });
 
       setTimeout(() => {
         this.ready = true;
@@ -145,29 +155,50 @@ const desc = {
         seatsUpdated: (seats) => {
           this.seats = seats;
           this.recalcCount();
+          this.sendSeatCount();
         },
 
         timerAdded: (id, name, type, value) => {
-          this.timers.unshift({ id, name, value, type, active: false });
+          this.timers.unshift({ id, name, value, left: value, type, active: false });
         },
         
-        timerStarted: (id, value) => this.executeOnTimer(id, timer => {
-          timer.active = true;
-          timer.left = value;
-        }),
+        timerStarted: (id, value) => {
+          this.executeOnTimer(id, timer => {
+            timer.active = true;
+            timer.left = value;
+          });
 
-        timerStopped: (id, value) => this.executeOnTimer(id, timer => {
-          timer.active = false;
-        }),
+          if(this.projOn && proj.mode === 'timer' && proj.timer === id)
+            this.sendToProjector({ type: 'update', target: 'timer', data: { left: value, active: true } });
+        },
 
-        timerUpdated: (id, value) => this.executeOnTimer(id, timer => {
-          timer.value = value;
-          timer.left = value;
-        }),
+        timerStopped: (id, value) => {
+          this.executeOnTimer(id, timer => {
+            timer.active = false;
+          });
 
-        timerTick: (id, value) => this.executeOnTimer(id, timer => {
-          timer.left = value;
-        }),
+          if(this.projOn && proj.mode === 'timer' && proj.timer === id)
+            this.sendToProjector({ type: 'update', target: 'timer', data: { active: false } });
+        },
+
+        timerUpdated: (id, value) => {
+          this.executeOnTimer(id, timer => {
+            timer.value = value;
+            timer.left = value;
+          });
+
+          if(this.projOn && proj.mode === 'timer' && proj.timer === id)
+            this.sendToProjector({ type: 'update', target: 'timer', data: { left: value, value } });
+        },
+
+        timerTick: (id, value) => {
+          this.executeOnTimer(id, timer => {
+            timer.left = value;
+          });
+
+          if(this.projOn && proj.mode === 'timer' && proj.timer === id)
+            this.sendToProjector({ type: 'update', target: 'timer', data: { left: value } });
+        },
       });
     },
 
@@ -215,6 +246,10 @@ const desc = {
       this.presentCount = this.seats.reduce((prev, e) => e.present ? prev+1 : prev, 0);
     },
 
+    sendSeatCount() {
+      this.sendToProjector({ type: 'update', target: 'seats', data: { seat: this.seatCount, present: this.presentCount } });
+    },
+
     /* Timers */
 
     addTimer(name, sec) {
@@ -244,6 +279,12 @@ const desc = {
       });
     },
 
+    projectTimer(timer) {
+      this.sendToProjector({ type: 'layer', target: 'timer', data: timer });
+      proj.mode = 'timer';
+      proj.timer = timer.id;
+    },
+
     executeOnTimer(id, cb) {
       for(const timer of this.timers)
         if(timer.id === id) {
@@ -254,9 +295,27 @@ const desc = {
 
     /* Utitlities */
 
-    startProjector() {
+    toggleProjector() {
+      if(this.projOn) ipcRenderer.send('closeProjector');
+      else {
+        ipcRenderer.once('projectorReady', (data) => {
+          this.setupProjector();
+        });
+
+        ipcRenderer.send('openProjector');
+      }
+
+      this.projOn = !this.projOn;
     },
-    
+
+    setupProjector() {
+      this.sendSeatCount();
+    },
+
+    sendToProjector(data) {
+      ipcRenderer.send('toProjector', data);
+    },
+
     blocker(event) {
       event.stopPropagation();
       event.preventDefault();

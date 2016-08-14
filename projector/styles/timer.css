@@ -1,0 +1,47 @@
+.layer.timer-layer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.timer-name {
+  font-size: 4vw;
+  font-weight: 400;
+  max-width: 75vw;
+  color: rgba(0,0,0,.54);
+  text-align: center;
+}
+
+.timer.timer-left {
+  font-size: 10vw;
+  font-weight: 200;
+  margin-top: 20px;
+}
+
+.timer.timer-left .timer-separator {
+  font-weight: 200;
+}
+
+.timer-progress {
+  width: 50vw;
+  height: 0.25vw;
+  margin-top: 10px;
+
+  background: rgba(0,0,0,.1);
+
+  transition: opacity .2s ease;
+  opacity: 0.3;
+  overflow: hidden;
+}
+
+.timer-progress.active {
+  opacity: 1;
+}
+
+.timer-progress-inner {
+  width: 100%;
+  height: 100%;
+  transition: transform .2s ease;
+  background: rgba(0,0,0,.3);
+}

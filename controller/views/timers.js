@@ -63,10 +63,14 @@ const TimersView = Vue.extend({
       }
     },
     
-    toggleTimer(timer) {
+    toggle(timer) {
       if(timer.active) this.$dispatch('manipulate-timer', 'stop', timer.id);
       else if(timer.left === 0) this.$dispatch('manipulate-timer', 'restart', timer.id);
       else this.$dispatch('manipulate-timer', 'start', timer.id);
+    },
+
+    project(timer) {
+      this.$dispatch('project-timer', timer)
     },
 
     blocker(event) {

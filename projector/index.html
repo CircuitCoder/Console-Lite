@@ -1,10 +1,29 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta chatset="utf-8">
+    <meta charset="utf-8">
     <title>映射器</title>
+    <link rel="stylesheet" href="./style.css">
     <script src="./action.js"></script>
   </head>
-  <body>
+  <body onload="setup()">
+    <div class="layer background">
+      <div class="brand">
+        Console Next
+      </div>
+    </div>
+
+    <div class="layer timer-layer" v-show="mode === 'timer'" transition="opacity">
+      <div class="timer-name">{{ timerName }}</div>
+      <timer class="timer-left" :time="timerLeft" :fix-minute="true"></timer>
+      <div class="timer-progress" :class="{ active: timerActive }">
+        <div class="timer-progress-inner"
+          :style="{ transform: timerProgressOffset }">
+          {{ timerProgressOffset }}
+        </div>
+      </div>
+    </div>
+
+    <div class="layer mask" v-show="switching || !ready" transition="opacity"></div>
   </body>
 </html>

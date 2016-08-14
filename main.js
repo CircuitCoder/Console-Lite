@@ -6,14 +6,20 @@ const server = require('./server/server');
 let controller, projector;
 
 function initController() {
-  controller = new BrowserWindow({ width: 800, height: 600, frame: false });
+  controller = new BrowserWindow({ width: 800, height: 600, frame: false, backgroundColor: '#FFF' });
   controller.loadURL(`file://${__dirname}/controller/index.html`);
   controller.on('closed', () => {
     controller = null;
+
+    /* Close projector as well */
+    if(projector) projector.close();
   });
 }
 
-function initDisplay() {
+function initProjector() {
+  // Ensures that previous windows are closed
+  if(projector) projector.close();
+
   projector = new BrowserWindow({ width: 800, height: 600 });
   projector.loadURL(`file://${__dirname}/projector/index.html`);
   projector.on('closed', () => {
@@ -54,6 +60,24 @@ ipcMain.on('startServer', (event, data) => {
     shutdown = sd;
     event.sender.send('serverCallback', { url: 'http://localhost:4928', passkey: passkey });
   });
+});
+
+ipcMain.on('openProjector', (event, data) => {
+  initProjector();
+  event.sender.send('projectorReady');
+});
+
+ipcMain.on('closeProjector', (event, data) => {
+  if(projector) projector.close();
+});
+
+ipcMain.on('toProjector', (event, data) => {
+  if(projector) projector.webContents.send('fromController', data);
+});
+
+ipcMain.on('getProjector', (event, data) => {
+  if(!projector) event.returnValue = null;
+  else event.returnValue = projector.id;
 });
 
 app.on('quit', () => {

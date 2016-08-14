@@ -1,7 +1,7 @@
 @import './views/seats.css';
 @import './views/timers.css';
 
-@import './components/timer.css';
+@import '../shared/components/timer.css';
 
 .frame {
   z-index: 1000;

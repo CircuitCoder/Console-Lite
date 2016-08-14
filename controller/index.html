@@ -19,6 +19,7 @@
         @add-timer="addTimer"
         @manipulate-timer="manipulateTimer"
         @update-timer="updateTimer"
+        @project-timer="projectTimer"
         keep-alive>
       </component>
       <!-- Events will loop back through server broadcast -->
@@ -47,8 +48,9 @@
           <div class="action" @click="navigate('votes')">
             <i class="material-icons">thumbs_up_down</i>
           </div>
-          <div class="action" @click="startProjector">
-            <i class="material-icons">cast</i>
+          <div class="action" @click="toggleProjector">
+            <i class="material-icons" v-show="projOn">cast_connected</i>
+            <i class="material-icons" v-else>cast</i>
           </div>
         </div>
       </div>

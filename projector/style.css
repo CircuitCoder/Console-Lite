@@ -1,0 +1,50 @@
+@import '../fonts/fonts.css';
+
+@import '../shared/style/common.css';
+@import '../shared/style/transitions.css';
+
+@import '../shared/components/timer.css';
+
+@import './styles/timer.css';
+
+body {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+
+  padding: 0;
+  margin: 0;
+
+  font-family: 'Roboto', 'NotoSansCJK SC';
+
+  overflow: hidden;
+
+  -webkit-user-select: none;
+  cursor: default;
+}
+
+.layer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+
+  background: white;
+}
+
+.background {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brand {
+  font-size: 48px;
+  font-weight: 100;
+  color: black;
+
+  opacity: 0.3;
+}
