@@ -6,8 +6,18 @@
       <i class="material-icons">add</i>
     </button>
   </div>
+  <div class="view-search">
+    <i class="material-icons">search</i>
+    <div class="input-group">
+      <input v-model="searchInput" @keydown.esc="searchInput = ''">
+      <div class="border-line"></div>
+    </div>
+    <div class="clear-btn" @click="searchInput = ''" v-show="searchInput" transition="opacity">
+      <i class="material-icons">close</i>
+    </div>
+  </div>
   <div class="list">
-    <div class="list-item" v-for="timer of timers" track-by="$index" :class="{ bold: timer.active }">
+    <div class="list-item" v-for="timer of timers | filterBy searchInput in 'name'" track-by="$index" :class="{ bold: timer.active }">
       <div class="list-item-indicator"></div>
       <div class="list-item-content timer-row">
         <div class="timer-name">

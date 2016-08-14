@@ -12,6 +12,8 @@ const TimersView = Vue.extend({
     timerSecond: 0,
     timerId: 0,
     additionMode: false,
+
+    searchInput: '',
   }),
   methods: {
     add() {

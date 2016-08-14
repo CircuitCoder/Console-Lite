@@ -94,6 +94,29 @@
   -webkit-user-select: none;
 }
 
+.view-search {
+  position: absolute;
+  top: 40px;
+  right: 40px;
+  display: flex;
+  align-items: center;
+}
+
+.view-search .material-icons {
+  opacity: 0.54;
+}
+
+.view-search .input-group {
+  display: inline-block;
+  margin-bottom: 0;
+  margin-left: 5px;
+}
+
+.view-search .clear-btn {
+  position: absolute;
+  right: 0;
+}
+
 .view-pagetitle {
   font-size: 18px;
   margin-bottom: 12px;

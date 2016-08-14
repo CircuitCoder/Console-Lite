@@ -97,7 +97,7 @@
         <div class="dialog-content">
           <div class="input-group">
             <div class="hint">委员会名</div>
-            <input v-model="confName" @keyup.enter="performConfCreation" @keyup.esc="discardConfCreation" v-el:conf-name-input>
+            <input v-model="confName" @keydown.enter="performConfCreation" @keydown.esc="discardConfCreation" v-el:conf-name-input>
             <div class="border-line"></div>
           </div>
           <button @click="performConfCreation" class="confirmation-btn">
