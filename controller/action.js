@@ -60,6 +60,15 @@ const desc = {
       this.projOn = ipcRenderer.sendSync('getProjector') !== null;
       this.sendToProjector({ type: 'reset' });
 
+      ipcRenderer.on('projectorReady', (data) => {
+        this.projOn = true;
+        this.setupProjector();
+      });
+
+      ipcRenderer.on('projectorClosed', (data) => {
+        this.projOn = false;
+      });
+
       setTimeout(() => {
         this.ready = true;
       }, 1000);
@@ -298,14 +307,9 @@ const desc = {
     toggleProjector() {
       if(this.projOn) ipcRenderer.send('closeProjector');
       else {
-        ipcRenderer.once('projectorReady', (data) => {
-          this.setupProjector();
-        });
 
         ipcRenderer.send('openProjector');
       }
-
-      this.projOn = !this.projOn;
     },
 
     setupProjector() {

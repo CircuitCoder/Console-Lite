@@ -22,6 +22,7 @@ body {
   overflow: hidden;
 
   -webkit-user-select: none;
+  -webkit-app-region: drag;
   cursor: default;
 }
 

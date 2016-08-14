@@ -13,9 +13,15 @@ const controllerOpt = {
   background: '#FFF',
 };
 
+const projectorOpt = {
+  width: 800,
+  height: 600,
+}
+
 if(util.supportsTitlebarStyle()) {
   controllerOpt.frame = true;
   controllerOpt.titleBarStyle = 'hidden';
+  projectorOpt.titleBarStyle = 'hidden';
 }
 
 function initController() {
@@ -33,10 +39,11 @@ function initProjector() {
   // Ensures that previous windows are closed
   if(projector) projector.close();
 
-  projector = new BrowserWindow({ width: 800, height: 600 });
+  projector = new BrowserWindow(projectorOpt);
   projector.loadURL(`file://${__dirname}/projector/index.html`);
   projector.on('closed', () => {
     projector = null;
+    if(controller) controller.webContents.send('projectorClosed');
   });
 }
 
