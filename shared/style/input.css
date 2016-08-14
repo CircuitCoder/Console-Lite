@@ -124,3 +124,19 @@ button[disabled] {
 button[disabled]:hover {
   opacity: 0.3;
 }
+
+button.light {
+  opacity: 0.35;
+}
+
+button.light:hover {
+  opacity: 0.5;
+}
+
+button.light[disabled] {
+  opacity: 0.15;
+}
+
+button.light[disabled]:hover {
+  opacity: 0.15;
+}

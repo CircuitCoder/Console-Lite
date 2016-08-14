@@ -28,14 +28,14 @@
           <span class="timer-value-separator">/</span><timer class="timer-value" :time="timer.value"></timer>
         </div>
         <div class="timer-actions">
-          <button class="timer-action" @click="toggle(timer)">
+          <button class="timer-action light" @click="toggle(timer)">
             <i class="material-icons" v-show="timer.active">pause</i>
             <i class="material-icons" v-else>play_arrow</i>
           </button>
-          <button class="timer-action" @click="edit(timer)" :disabled="timer.active">
+          <button class="timer-action light" @click="edit(timer)" :disabled="timer.active">
             <i class="material-icons">edit</i>
           </button>
-          <button class="timer-action" @click="project(timer)">
+          <button class="timer-action light" @click="project(timer)">
             <i class="material-icons">cast</i>
           </button>
         </div>

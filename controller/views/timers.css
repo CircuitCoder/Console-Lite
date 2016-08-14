@@ -29,7 +29,6 @@
 .timer-actions {
   float: right;
   display: flex;
-  opacity: .5;
   align-items: center;
 }
 
