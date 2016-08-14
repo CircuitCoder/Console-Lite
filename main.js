@@ -1,12 +1,25 @@
 const electron = require('electron');
 const {ipcMain, app, BrowserWindow} = electron;
 const server = require('./server/server');
+const util = require('./util');
 
 // Windows, not the OS, but windows
 let controller, projector;
 
+const controllerOpt = {
+  width: 800,
+  height: 600,
+  frame: false,
+  background: '#FFF',
+};
+
+if(util.supportsTitlebarStyle()) {
+  controllerOpt.frame = true;
+  controllerOpt.titleBarStyle = 'hidden';
+}
+
 function initController() {
-  controller = new BrowserWindow({ width: 800, height: 600, frame: false, backgroundColor: '#FFF' });
+  controller = new BrowserWindow(controllerOpt);
   controller.loadURL(`file://${__dirname}/controller/index.html`);
   controller.on('closed', () => {
     controller = null;

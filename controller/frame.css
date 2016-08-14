@@ -15,6 +15,8 @@
   height: 100px;
   border-top: 1px solid rgba(0,0,0,.12);
 
+  background: white;
+
   -webkit-user-select: none;
 }
 
