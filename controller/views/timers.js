@@ -3,7 +3,13 @@ const fs = require('fs');
 
 const TimersView = Vue.extend({
   template: fs.readFileSync(`${__dirname}/timers.html`).toString('utf-8'),
-  props: ['timers'],
+  props: [
+    'timers',
+    {
+      name: 'searchInput',
+      default: '',
+    },
+  ],
   data: () => ({
     editFlag: false,
     timerName: '',
@@ -12,8 +18,6 @@ const TimersView = Vue.extend({
     timerSecond: 0,
     timerId: 0,
     additionMode: false,
-
-    searchInput: '',
   }),
   methods: {
     add() {

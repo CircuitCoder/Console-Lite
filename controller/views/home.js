@@ -12,7 +12,11 @@ const HomeView = Vue.extend({
 
     activeEntry(entry) {
       return entry.active;
-    }
+    },
+
+    gotoTimer(name) {
+      this.$dispatch('navigate', 'timers', { search: name });
+    },
   }
 })
 

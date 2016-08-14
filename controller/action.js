@@ -45,6 +45,8 @@ const desc = {
     
     timers: [],
     seats: [],
+
+    searchInput: '',
   },
 
   components: {
@@ -239,8 +241,13 @@ const desc = {
       this.frame = false;
     },
 
-    navigate(dest) {
+    navigate(dest, data) {
       this.activeView = dest;
+      this.searchInput = '';
+      if(data) {
+        if(data.search)
+          this.searchInput = data.search;
+      }
     },
 
     /* Seats */
@@ -318,6 +325,7 @@ const desc = {
 
     sendToProjector(data) {
       ipcRenderer.send('toProjector', data);
+      this.initData = data;
     },
 
     blocker(event) {
