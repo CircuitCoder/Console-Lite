@@ -19,8 +19,6 @@ class Conference {
     this.db = db;
     this.fileRoot = fileRoot;
 
-    console.log(fileRoot);
-
     _createDir(fileRoot);
 
     this.listeners = [];

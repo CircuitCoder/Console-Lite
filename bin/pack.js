@@ -12,6 +12,7 @@ const opt = {
   dir: path.normalize(__dirname + '/..'),
   ignore: [/^\/server\/.*\.db($|\/)/, [/^\/server\/.*\.files($|\/)/]], // Ignores databases and files
   tmpdir: false,
+  icon: path.normalize(__dirname + '/../images/icon'),
 };
 
 if(process.env.ELECTRON_MIRROR) {

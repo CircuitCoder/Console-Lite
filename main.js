@@ -11,11 +11,13 @@ const controllerOpt = {
   height: 600,
   frame: false,
   background: '#FFF',
+  icon: __dirname + '/images/icon_256x256.png',
 };
 
 const projectorOpt = {
   width: 800,
   height: 600,
+  icon: __dirname + '/images/icon_256x256.png',
 }
 
 if(util.supportsTitlebarStyle()) {
