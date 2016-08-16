@@ -22,7 +22,7 @@ function init(cb) {
     } else {
       confList = list;
       for(const conf of list)
-        confs.set(conf.id, new Conference(conf.name, levelup(`${__dirname}/storage/${conf.id}.db`, levelopt)));
+        confs.set(conf.id, new Conference(conf.name, levelup(`${__dirname}/storage/${conf.id}.db`, levelopt), `${__dirname}/storage/${conf.id}.files`));
       return cb(null);
     }
   });
@@ -39,7 +39,7 @@ function shutdown(cb) {
 
 function add(name, cb) {
   const id = crypto.randomBytes(16).toString('hex');
-  const instance = new Conference(name, levelup(`${__dirname}/storage/${id}.db`, levelopt));
+  const instance = new Conference(name, levelup(`${__dirname}/storage/${id}.db`, levelopt), `${__dirname}/storage/${id}.files`);
   instance.setup((err) => {
     if(err) return cb(err);
     confs.set(id, instance);

@@ -1,10 +1,27 @@
 const crypto = require('crypto');
 const assert = require('assert');
+const fs = require('fs');
+const path = require('path');
+
+function _createDir(dir) {
+  try {
+    if(fs.statSync(dir).isDirectory()) return;
+  } catch(e) { }
+
+  const parentDir = path.dirname(dir);
+  _createDir(parentDir);
+  fs.mkdir(dir);
+}
 
 class Conference {
-  constructor(name, db) {
+  constructor(name, db, fileRoot) {
     this.name = name;
     this.db = db;
+    this.fileRoot = fileRoot;
+
+    console.log(fileRoot);
+
+    _createDir(fileRoot);
 
     this.listeners = [];
     this.runningTimers = new Map();
@@ -15,8 +32,11 @@ class Conference {
     Promise.all([
       (resolve, reject) => this.db.put('timers', [], err => err ? reject(err) : resolve()),
       (resolve, reject) => this.db.put('seats', [], err => err ? reject(err) : resolve()),
+      (resolve, reject) => this.db.put('files', [], err => err ? reject(err) : resolve()),
     ].map(e => new Promise(e))).then(() => cb(null)).catch(cb);
   }
+
+  /* Timers */
 
   _startTimer(id, refkey, cb) {
     if(this.runningTimers.has(id)) return cb('AlreadyStarted');
@@ -118,12 +138,53 @@ class Conference {
     });
   }
 
+  /* Seats */
+
   updateSeats(seats, cb) {
     this.db.put('seats', seats, (err) => {
       if(err) return cb(err);
       for(const l of this.listeners)
         if(l.seatsUpdated) l.seatsUpdated(seats);
+      return cb();
     });
+  }
+
+  /* Files */
+  // TODO: add cache
+  
+  addFile(name, type, content, cb) {
+    const id = crypto.randomBytes(16).toString('hex');
+    
+    Promise.all([
+      (resolve, reject) => {
+        this.db.get('files', (err, files) => {
+          if(err) return reject(err);
+          files.unshift({ id, name, type });
+          this.db.put('files', files, err ? reject(err) : resolve(err));
+        });
+      },
+      (resolve, reject) => fs.writeFile(`${this.fileRoot}/${id}`, content, 'utf8', err => err ? reject(err) : resolve()),
+    ].map(e => new Promise(e))).then(() => {
+      for(const l of this.listeners)
+        if(l.fileAdded) l.fileAdded(id, name, type);
+      return cb(null, id)
+    }).catch((err) => {
+      console.log(err);
+      cb(err);
+    });
+  }
+
+  editFile(id, content, cb) {
+    return fs.writeFile(`${this.fileRoot}/${id}`, content, 'utf8', (err) => {
+      if(err) return cb(err);
+      for(const l of this.listeners)
+        if(l.fileEdited) l.fileEdited(id);
+      return cb();
+    });
+  }
+
+  getFile(id, cb) {
+    return fs.readFile(`${this.fileRoot}/${id}`, 'utf8', cb);
   }
 
   fetchAll(cb) {
@@ -160,8 +221,13 @@ class Conference {
         if(err) return reject(err);
         else return resolve(seats);
       }),
-    ].map(e => new Promise(e))).then(([timers, seats]) => {
-      cb(null, { timers, seats })
+
+      (resolve, reject) => this.db.get('files', (err, files) => {
+        if(err) return reject(err);
+        else return resolve(files);
+      }),
+    ].map(e => new Promise(e))).then(([timers, seats, files]) => {
+      cb(null, { timers, seats, files })
     }).catch(cb);
   }
 

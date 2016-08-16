@@ -1,0 +1,30 @@
+<div class="view" @dragstart="dragstart" @dragenter="dragenter" @dragover="dragover" @dragleave="dragleave" @dragend="dragend" @drop="drop">
+  <div class="view-title">
+    文件
+  </div>
+
+  <div class="view-search">
+    <i class="material-icons">search</i>
+    <div class="input-group">
+      <input v-model="searchInput" @keydown.esc="searchInput = ''">
+      <div class="border-line"></div>
+    </div>
+    <div class="clear-btn" @click="searchInput = ''" v-show="searchInput" transition="opacity">
+      <i class="material-icons">close</i>
+    </div>
+  </div>
+
+  <div class="files list">
+    <div class="list-item" v-for="file of files">
+      <div class="list-item-indicator"></div>
+      <div class="list-item-content">
+        {{ file.name }}
+      </div>
+    </div>
+  </div>
+
+  <div class="dnd-mask" transition="opacity" v-show="dragging">
+    <i class="dnd-icon material-icons">file_upload</i>
+    <div class="dnd-hint">拖放以上传</div>
+  </div>
+</div>

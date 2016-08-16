@@ -10,7 +10,7 @@ const opt = {
   arch: process.arch,
   platform: process.platform,
   dir: path.normalize(__dirname + '/..'),
-  ignore: [/^\/server\/.*\.db($|\/)/], // Ignores databases
+  ignore: [/^\/server\/.*\.db($|\/)/, [/^\/server\/.*\.files($|\/)/]], // Ignores databases and files
   tmpdir: false,
 };
 

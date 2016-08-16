@@ -14,14 +14,22 @@
 
         :timers="timers"
         :seats="seats"
+        :files="files"
 
         :search-input="searchInput"
+
         @navigate="navigate"
+
         @update-seats="updateSeats"
+
         @add-timer="addTimer"
         @manipulate-timer="manipulateTimer"
         @update-timer="updateTimer"
         @project-timer="projectTimer"
+
+        @add-file="addFile"
+        @edit-file="editFile"
+
         keep-alive>
       </component>
       <!-- Events will loop back through server broadcast -->
@@ -46,6 +54,9 @@
           </div>
           <div class="action" @click="navigate('timers')">
             <i class="material-icons">timer</i>
+          </div>
+          <div class="action" @click="navigate('files')">
+            <i class="material-icons">folder</i>
           </div>
           <div class="action" @click="navigate('votes')">
             <i class="material-icons">thumbs_up_down</i>

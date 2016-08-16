@@ -8,7 +8,7 @@
     "electron": "electron",
     "start": "electron .",
     "server": "electron server/main.js",
-    "clean": "rm -rf server/backend/storage/*.db",
+    "clean": "rm -rf server/backend/storage/*.db server/backend/storage/*.files",
     "pack": "node bin/pack.js",
     "rebuildNative": "node bin/rebuild.js"
   },

@@ -45,6 +45,9 @@ const desc = {
     
     timers: [],
     seats: [],
+    files: [],
+
+    fileCache: {},
 
     searchInput: '',
   },
@@ -53,6 +56,7 @@ const desc = {
     home: require('./views/home'),
     seats: require('./views/seats'),
     timers: require('./views/timers'),
+    files: require('./views/files'),
   },
 
   methods: {
@@ -145,14 +149,16 @@ const desc = {
 
       confConn = new ConferenceConnection(socket, ({ error, data }) => {
         if(error) {
-          console.error(resp.error);
+          console.error(error);
           confConn = null;
           alert('连接失败!');
           return;
         }
 
+        console.log(data);
         this.timers = data.timers;
         this.seats = data.seats;
+        this.files = data.files;
 
         this.recalcCount();
 
@@ -163,11 +169,15 @@ const desc = {
       });
 
       confConn.addListener({
+        /* Seats */
+
         seatsUpdated: (seats) => {
           this.seats = seats;
           this.recalcCount();
           this.sendSeatCount();
         },
+
+        /* Timers */
 
         timerAdded: (id, name, type, value) => {
           this.timers.unshift({ id, name, value, left: value, type, active: false });
@@ -210,6 +220,17 @@ const desc = {
           if(this.projOn && proj.mode === 'timer' && proj.timer === id)
             this.sendToProjector({ type: 'update', target: 'timer', data: { left: value } });
         },
+
+        /* Files */
+        fileAdded: (id, name, type) => {
+          this.files.unshift({ id, name, type });
+        },
+
+        fileEdited: (id, name, type) => {
+          this.fileCached[id] = null;
+
+          //TODO: refetch if on projector
+        }
       });
     },
 
@@ -309,6 +330,31 @@ const desc = {
         }
     },
 
+    /* Files */
+
+    addFile(name, type, content) {
+      confConn.addFile(name, type, content, err => {
+        if(err) {
+          console.error(err);
+          alert('添加失败!');
+        }
+      });
+    },
+
+    editFile(id, content) {
+      confConn.editFile(id, content, err => {
+        if(err) {
+          console.error(err);
+          alert('更新失败!');
+        }
+      });
+    },
+
+    getFile(id, cb) {
+      if(this.fileCache[id]) return cb(null, this.fileCache[id]);
+      confConn.getFile(id, cb);
+    },
+
     /* Utitlities */
 
     toggleProjector() {
@@ -338,4 +384,14 @@ const desc = {
 function setup() {
   const instance = new vue(desc);
   instance.init();
+
+  document.addEventListener('drop', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  });
+
+  document.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  });
 }
