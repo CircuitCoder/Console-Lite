@@ -1,5 +1,6 @@
 const vue = require('vue');
 const io = require('socket.io-client');
+const Push = require('push.js');
 const {ipcRenderer} = require('electron');
 
 const GlobalConnection = require('./connection/global');
@@ -215,6 +216,11 @@ const desc = {
         timerTick: (id, value) => {
           this.executeOnTimer(id, timer => {
             timer.left = value;
+            if(value === 0) Push.create(timer.name, {
+              body: '计时结束',
+              timeout: 4000,
+              icon: __dirname + '/../images/timer.png'
+            });
           });
 
           if(this.projOn && proj.mode === 'timer' && proj.timer === id)
@@ -224,6 +230,11 @@ const desc = {
         /* Files */
         fileAdded: (id, name, type) => {
           this.files.unshift({ id, name, type });
+          Push.create(name, {
+            body: '新文件',
+            timeout: 4000,
+            icon: __dirname + '/../images/folder.png'
+          });
         },
 
         fileEdited: (id, name, type) => {
