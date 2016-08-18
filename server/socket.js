@@ -134,7 +134,7 @@ function add(id) {
       const respToken = `getFile:${id}`; // Maybe there are multiple calls
       socket.conf.getFile(id, (err, content) => {
         if(err) return socket.emit(respToken, { ok: false, error: err });
-        else return socket.emit(respToken, { ok: true, content });
+        return socket.emit(respToken, { ok: true, content });
       });
     });
   });

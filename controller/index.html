@@ -15,6 +15,7 @@
         :timers="timers"
         :seats="seats"
         :files="files"
+        :file="file"
 
         :search-input="searchInput"
 
@@ -29,6 +30,8 @@
 
         @add-file="addFile"
         @edit-file="editFile"
+        @get-file="getFile"
+        @view-file="viewFile"
 
         keep-alive>
       </component>

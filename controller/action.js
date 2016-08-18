@@ -1,5 +1,5 @@
 const vue = require('vue');
-const io = require('socket.io-client');
+const io = require('socket.io-client/socket.io.js');
 const Push = require('push.js');
 const {ipcRenderer} = require('electron');
 
@@ -50,6 +50,7 @@ const desc = {
 
     fileCache: {},
 
+    file: null,
     searchInput: '',
   },
 
@@ -58,6 +59,8 @@ const desc = {
     seats: require('./views/seats'),
     timers: require('./views/timers'),
     files: require('./views/files'),
+
+    file: require('./views/file'),
   },
 
   methods: {
@@ -156,7 +159,6 @@ const desc = {
           return;
         }
 
-        console.log(data);
         this.timers = data.timers;
         this.seats = data.seats;
         this.files = data.files;
@@ -237,8 +239,12 @@ const desc = {
           });
         },
 
-        fileEdited: (id, name, type) => {
-          this.fileCached[id] = null;
+        fileEdited: (id) => {
+          this.fileCache[id] = null;
+
+          if(this.activeView === 'file' && this.file && this.file.id === id) {
+            this.activeView = 'files';
+          }
 
           //TODO: refetch if on projector
         }
@@ -303,7 +309,7 @@ const desc = {
     addTimer(name, sec) {
       confConn.addTimer(name, 'plain', sec, (err, id) => {
         if(err) {
-          console.error(error);
+          console.error(err);
           alert('添加失败!');
         }
       });
@@ -312,7 +318,7 @@ const desc = {
     manipulateTimer(action, id) {
       confConn.manipulateTimer(action, id, (err, id) => {
         if(err) {
-          console.error(error);
+          console.error(err);
           alert('操作失败!');
         }
       });
@@ -321,7 +327,7 @@ const desc = {
     updateTimer(id, value) {
       confConn.updateTimer(id, value, (err, id) => {
         if(err) {
-          console.error(error);
+          console.error(err);
           alert('修改失败!');
         }
       });
@@ -364,6 +370,11 @@ const desc = {
     getFile(id, cb) {
       if(this.fileCache[id]) return cb(null, this.fileCache[id]);
       confConn.getFile(id, cb);
+    },
+
+    viewFile(file) {
+      this.file = file;
+      this.activeView = 'file';
     },
 
     /* Utitlities */

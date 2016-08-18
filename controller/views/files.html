@@ -1,4 +1,10 @@
-<div class="view" @dragstart="dragstart" @dragenter="dragenter" @dragover="dragover" @dragleave="dragleave" @dragend="dragend" @drop="drop">
+<div class="view"
+  @dragenter.stop.prevent
+  @dragover.stop.prevent="dragover"
+  @dragleave.stop.prevent="dragleave"
+  @dragend="dragend"
+  @drop.stop.prevent="drop">
+
   <div class="view-title">
     文件
   </div>
@@ -15,7 +21,7 @@
   </div>
 
   <div class="files list">
-    <div class="list-item" v-for="file of files | filterBy searchInput in 'name'">
+    <div class="list-item clickable" v-for="file of files | filterBy searchInput in 'name'" @click="viewFile(file)">
       <div class="list-item-indicator"></div>
       <div class="list-item-content">
         {{ file.name }}

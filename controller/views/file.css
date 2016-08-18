@@ -1,0 +1,49 @@
+.pdf-pages-container {
+  display: flex;
+  padding: 100px 0;
+  align-items: center;
+  justify-content: center;
+
+  position: absolute;
+  top: 104px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  background: rgba(0,0,0,.06);
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.pdf-pages {
+  width: min-content;
+  margin: auto;
+}
+
+.pdf-pages canvas {
+  margin: auto auto 20px auto;
+  box-shadow: rgba(0,0,0,.12) 0 2px 3px;
+}
+
+.pdf-pages canvas:last-child {
+  margin-bottom: auto;
+}
+
+.dnd-mask.dnd-edit {
+  position: absolute;
+  top: 104px;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.inset-shadow {
+  position: absolute;
+  top: 104px;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  box-shadow: rgba(0,0,0,.12) 0 4px 6px inset;
+  pointer-events: none;
+}

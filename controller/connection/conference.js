@@ -1,9 +1,16 @@
-class ConferenceConnection {
+function hexToUint8A(hex) {
+  const buf = new ArrayBuffer(hex.length / 2);
+  const view = new Uint8Array(buf);
+  for(let i = 0; i < hex.length / 2; ++i)
+    view[i] = parseInt(hex.charAt(i * 2), 16) * 16 + parseInt(hex.charAt(i * 2 + 1), 16);
+  return view;
+}
 
+class ConferenceConnection {
   constructor(socket, cb) {
     this.listeners = [];
 
-    socket.once('pong', cb);
+    socket.once('pong', cb)
 
     /* Seats */
 
@@ -126,8 +133,9 @@ class ConferenceConnection {
 
   getFile(id, cb) {
     const respToken = `getFile:${id}`;
+
     socket.once(respToken, (data) => {
-      if(data.ok) cb(null, data.content);
+      if(data.ok) cb(null, data.content)
       else cb(data.error);
     });
 

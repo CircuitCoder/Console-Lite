@@ -161,7 +161,7 @@ class Conference {
           this.db.put('files', files, err ? reject(err) : resolve(err));
         });
       },
-      (resolve, reject) => fs.writeFile(`${this.fileRoot}/${id}`, content, 'utf8', err => err ? reject(err) : resolve()),
+      (resolve, reject) => fs.writeFile(`${this.fileRoot}/${id}`, content, err => err ? reject(err) : resolve()),
     ].map(e => new Promise(e))).then(() => {
       for(const l of this.listeners)
         if(l.fileAdded) l.fileAdded(id, name, type);
@@ -173,7 +173,7 @@ class Conference {
   }
 
   editFile(id, content, cb) {
-    return fs.writeFile(`${this.fileRoot}/${id}`, content, 'utf8', (err) => {
+    return fs.writeFile(`${this.fileRoot}/${id}`, content, (err) => {
       if(err) return cb(err);
       for(const l of this.listeners)
         if(l.fileEdited) l.fileEdited(id);
@@ -182,7 +182,7 @@ class Conference {
   }
 
   getFile(id, cb) {
-    return fs.readFile(`${this.fileRoot}/${id}`, 'utf8', cb);
+    return fs.readFile(`${this.fileRoot}/${id}`, cb);
   }
 
   fetchAll(cb) {

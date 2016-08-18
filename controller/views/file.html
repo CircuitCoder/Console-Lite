@@ -1,0 +1,21 @@
+<div class="view">
+  <div class="view-title">
+    {{ file.name }}
+  </div>
+  <div class="pdf-pages-container"
+    @dragenter.stop.prevent
+    @dragover.stop.prevent="dragover"
+    @dragleave.stop.prevent="dragleave"
+    @dragend="dragend"
+    @drop.stop.prevent="drop">
+    <div class="pdf-pages" v-el:pages>
+    </div>
+  </div>
+
+  <div class="dnd-mask dnd-edit" transition="opacity" v-show="dragging">
+    <i class="dnd-icon material-icons">edit</i>
+    <div class="dnd-hint">拖放以更新</div>
+  </div>
+
+  <div class="inset-shadow"></div>
+</div>
