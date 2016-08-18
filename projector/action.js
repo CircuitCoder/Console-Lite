@@ -51,27 +51,19 @@ const desc = {
       }
     },
 
-    setupLayer({ target, data }, immediate = false) {
-      if(!immediate) {
-        if(this.switching !== null) {
-          clearInterval(this.switching);
-          this.switching = null;
-        }
-
-        if(this.mode !== null) {
-          return new Promise((resolve, reject) => {
-            // Wait for fade out
-            // TODO: racing condition?
-            this.switching = setTimeout(() => {
-              this.setupLayer({ target, data }, true).then(() => {
-                this.switching = null;
-                resolve();
-              });
-            }, 200);
-          });
-        }
+    setupLayer({ target, data }) {
+      if(this.switching) {
+        clearInterval(this.switching);
       }
 
+      this.switching = setTimeout(() => {
+        this._setupLayer(target, data).then(() => {
+          this.switching = null;
+        });
+      }, 200);
+    },
+
+    _setupLayer(target, data) {
       this.mode = target;
 
       if(target === 'timer') {

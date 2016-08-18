@@ -13,7 +13,7 @@
       </div>
     </div>
 
-    <div class="layer timer-layer" v-show="mode === 'timer'" transition="opacity">
+    <div class="layer timer-layer" v-show="mode === 'timer'">
       <div class="timer-name">{{ timerName }}</div>
       <timer class="timer-left" :time="timerLeft" :fix-minute="true"></timer>
       <div class="timer-progress" :class="{ active: timerActive }">
@@ -24,7 +24,7 @@
       </div>
     </div>
 
-    <div class="layer file-layer" v-show="mode === 'file'" transition="opacity">
+    <div class="layer file-layer" v-show="mode === 'file'">
       <div class="file-name">
         {{ fileName }}
       </div>
