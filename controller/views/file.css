@@ -1,4 +1,4 @@
-.pdf-pages-container {
+.file-container {
   display: flex;
   padding: 100px 0;
   align-items: center;
@@ -17,19 +17,30 @@
   -webkit-app-region: no-drag;
 }
 
-.pdf-pages {
+.file-pdf {
   width: min-content;
   margin: auto;
   text-align: center;
 }
 
-.pdf-pages canvas {
+.file-pdf canvas {
   margin: auto auto 20px auto;
   box-shadow: rgba(0,0,0,.12) 0 2px 3px;
 }
 
-.pdf-pages canvas:last-child {
+.file-pdf canvas:last-child {
   margin-bottom: auto;
+}
+
+.file-image {
+  margin: auto;
+  max-width: 100%;
+  padding: 40px;
+}
+
+.file-image img {
+  box-shadow: rgba(0,0,0,.12) 0 2px 3px;
+  max-width: 100%;
 }
 
 .dnd-mask.dnd-edit {

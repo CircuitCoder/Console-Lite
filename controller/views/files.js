@@ -33,8 +33,11 @@ const FilesView = Vue.extend({
       const dt = e.dataTransfer;
       if(dt.files.length !== 1) return console.error("Invalid number of files");
 
+      const name = dt.files[0].name;
+      const type = dt.files[0].type;
+
       fs.readFile(dt.files[0].path, (err, data) => {
-        this.$dispatch('add-file', dt.files[0].name.split('.')[0], 'pdf', data);
+        this.$dispatch('add-file', name, type, data);
       });
 
       this.dragging = false;

@@ -11,6 +11,7 @@ const FileView = Vue.extend({
 
   data: () => ({
     dragging: false,
+    type: 'download',
   }),
   
   activate(done) {
@@ -18,8 +19,8 @@ const FileView = Vue.extend({
     this.$dispatch('get-file', this.file.id, (err, cont) => {
       if(err) alert('加载失败!');
       else {
-        if(this.file.type === 'pdf') {
-          //const buf = fs.readFileSync('/Users/CircuitCoder/Downloads/main.pdf');
+        if(this.file.type === 'application/pdf') {
+          this.type = 'pdf';
           this.fileCont = cont;
           for(var i = 0; i<cont.length; ++i) {
             this.fileCont[i] = cont[i];
@@ -27,6 +28,11 @@ const FileView = Vue.extend({
 
           this.clearPDF();
           return this.renderPDF(1).then(done);
+        } else if(this.file.type.split('/')[0] === 'image') {
+          this.type = 'image';
+          const b64str = btoa(String.fromCharCode(...new Uint8Array(cont)));
+          this.fileCont = `data:${this.file.type};base64,${b64str}`;
+          return done();
         } else {
           // Display download link
           this.fileCont = cont;
@@ -38,9 +44,8 @@ const FileView = Vue.extend({
 
   methods: {
     clearPDF() {
-      while(this.$els.pages.firstChild) {
+      while(this.$els.pages.firstChild)
         this.$els.pages.removeChild(this.$els.pages.firstChild);
-      }
     },
 
     renderPDF(scale) {
@@ -72,10 +77,10 @@ const FileView = Vue.extend({
       }
 
       const nameSegs = dt.files[0].name.split('.');
-      const type = nameSegs.length === 0 ? 'unknown' : nameSegs[nameSegs.length - 1];
+      const type = dt.files[0].type;
       if(type !== this.file.type) {
         this.dragging = false;
-        return alert(`请上传同样类型的文件: ${this.file.type === 'unknown' ? '无后缀' : type.toUpperCase()}`);
+        return alert(`请上传同样类型的文件: ${type}`);
       }
 
       fs.readFile(dt.files[0].path, (err, data) => {
@@ -87,6 +92,12 @@ const FileView = Vue.extend({
 
     scroll(e) {
     },
+  },
+
+  computed: {
+    shortName() {
+      return this.file.name.split('.')[0];
+    }
   },
 });
 

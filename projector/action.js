@@ -98,6 +98,10 @@ const desc = {
     timerProgressOffset() {
       if(this.timerValue === 0) return 'translateX(-0)';
       else return `translateX(-${100 - 100 * this.timerLeft/this.timerValue}%)`;
+    },
+
+    shortName() {
+      return this.fileName.split('.')[0];
     }
   }
 };

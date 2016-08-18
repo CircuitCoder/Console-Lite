@@ -1,6 +1,6 @@
 <div class="view">
   <div class="view-title">
-    {{ file.name }}
+    {{ shortName }}
   </div>
 
   <div class="view-title-action">
@@ -9,7 +9,7 @@
     </button>
   </div>
 
-  <div class="pdf-pages-container"
+  <div class="file-container"
     @dragenter.stop.prevent
     @dragover.stop.prevent="dragover"
     @dragleave.stop.prevent="dragleave"
@@ -17,7 +17,11 @@
     @drop.stop.prevent="drop"
     
     @scroll="scroll">
-    <div class="pdf-pages" v-el:pages>
+    <div class="file-pdf" v-el:pages v-if="type === 'pdf'">
+    </div>
+
+    <div class="file-image" v-el:pages v-if="type === 'image'">
+      <img :src="fileCont">
     </div>
   </div>
 
