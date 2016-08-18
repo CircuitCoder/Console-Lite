@@ -92,6 +92,9 @@
   font-weight: 200;
   margin-bottom: 24px;
 
+  overflow: hidden;
+  text-overflow: ellipsis;
+
   -webkit-app-region: drag;
   -webkit-user-select: none;
 }

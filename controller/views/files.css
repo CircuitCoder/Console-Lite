@@ -18,7 +18,25 @@
   font-size: 48px;
   opacity: .7;
 }
+
 .dnd-hint {
   font-size: 12px;
   opacity: .7;
+}
+
+.file .list-item-content {
+  display: flex;
+  align-items: center;
+}
+
+.file-name {
+  margin-right: 20px;
+  font-weight: 400;
+  flex: 1;
+  max-width: max-content;
+  word-break: break-word;
+}
+
+.file-type {
+  opacity: 0.54;
 }

@@ -21,10 +21,15 @@
   </div>
 
   <div class="files list">
-    <div class="list-item clickable" v-for="file of files | filterBy searchInput in 'name'" @click="viewFile(file)" :class="{ bold: file.highlight }">
+    <div class="list-item file clickable" v-for="file of files | filterBy searchInput in 'name'" @click="viewFile(file)" :class="{ bold: file.highlight }">
       <div class="list-item-indicator"></div>
       <div class="list-item-content">
-        {{ file.name }}
+        <div class="file-name">
+          {{ file.name }}
+        </div>
+        <div class="file-type">
+          {{ file.type }}
+        </div>
       </div>
     </div>
   </div>
