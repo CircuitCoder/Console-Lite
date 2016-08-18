@@ -159,6 +159,8 @@ const desc = {
           return;
         }
 
+        for(let f of data.files) f.highlight = false;
+
         this.timers = data.timers;
         this.seats = data.seats;
         this.files = data.files;
@@ -231,7 +233,7 @@ const desc = {
 
         /* Files */
         fileAdded: (id, name, type) => {
-          this.files.unshift({ id, name, type });
+          this.files.unshift({ id, name, type, highlight: true });
           Push.create(name, {
             body: '新文件',
             timeout: 4000,
@@ -242,9 +244,19 @@ const desc = {
         fileEdited: (id) => {
           this.fileCache[id] = null;
 
+          for(let f of this.files)
+            if(f.id === id)
+              f.highlight = true;
+
           if(this.activeView === 'file' && this.file && this.file.id === id) {
             this.activeView = 'files';
           }
+
+          Push.create(name, {
+            body: '文件更新',
+            timeout: 4000,
+            icon: __dirname + '/../images/folder.png'
+          });
 
           //TODO: refetch if on projector
         }
@@ -368,11 +380,14 @@ const desc = {
     },
 
     getFile(id, cb) {
+      console.log(this.fileCache[id]);
       if(this.fileCache[id]) return cb(null, this.fileCache[id]);
       confConn.getFile(id, cb);
     },
 
     viewFile(file) {
+      file.highlight = false;
+
       this.file = file;
       this.activeView = 'file';
     },

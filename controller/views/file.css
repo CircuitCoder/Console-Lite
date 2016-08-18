@@ -18,6 +18,7 @@
 .pdf-pages {
   width: min-content;
   margin: auto;
+  text-align: center;
 }
 
 .pdf-pages canvas {
