@@ -6,6 +6,7 @@
 @import '../shared/components/timer.css';
 
 @import './styles/timer.css';
+@import './styles/file.css';
 
 body {
   position: absolute;

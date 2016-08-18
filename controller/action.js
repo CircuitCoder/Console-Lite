@@ -380,9 +380,13 @@ const desc = {
     },
 
     getFile(id, cb) {
-      console.log(this.fileCache[id]);
       if(this.fileCache[id]) return cb(null, this.fileCache[id]);
-      confConn.getFile(id, cb);
+      confConn.getFile(id, (err, doc) => {
+        if(err) return cb(err);
+
+        this.fileCache[id] = doc;
+        return cb(null, doc);
+      });
     },
 
     viewFile(file) {
@@ -392,14 +396,23 @@ const desc = {
       this.activeView = 'file';
     },
 
+    projectFile(file) {
+      this.getFile(file.id, (err, content) => {
+        console.log(content);
+        if(err) {
+          console.error(err);
+          return alert('获取文件失败');
+        }
+
+        this.sendToProjector({ type: 'layer', target: 'file', data: { meta: file, content: new Uint8Array(content) }});
+      });
+    },
+
     /* Utitlities */
 
     toggleProjector() {
       if(this.projOn) ipcRenderer.send('closeProjector');
-      else {
-
-        ipcRenderer.send('openProjector');
-      }
+      else ipcRenderer.send('openProjector');
     },
 
     setupProjector() {

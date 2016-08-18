@@ -24,6 +24,14 @@
       </div>
     </div>
 
+    <div class="layer file-layer" v-show="mode === 'file'" transition="opacity">
+      <div class="file-name">
+        {{ fileName }}
+      </div>
+      <div class="file-pages" v-el:pages></div>
+      <div class="file-shadow"></div>
+    </div>
+
     <div class="layer mask" v-show="switching || !ready" transition="opacity"></div>
   </body>
 </html>

@@ -1,17 +1,7 @@
 const Vue = require('vue');
 const fs = require('fs');
 
-const pdfjs = require('pdfjs-dist/build/pdf.combined');
-
-function toUint16A(str) {
-  const buf = new ArrayBuffer(str.length * 2);
-  const array = new Uint16Array(buf);
-
-  for(var i=0; i<str.length; ++i)
-    array[i] = str.charCodeAt(i);
-
-  return array;
-}
+const util = require('../../shared/util.js');
 
 const FileView = Vue.extend({
   template: fs.readFileSync(`${__dirname}/file.html`).toString('utf-8'),
@@ -54,27 +44,11 @@ const FileView = Vue.extend({
     },
 
     renderPDF(scale) {
-      return pdfjs.getDocument(this.fileCont).then(pdf => {
-        const promises = [];
-        for(let i = 1; i<=pdf.numPages; ++i) {
-          promises.push(pdf.getPage(i).then(page => {
-            const vp = page.getViewport(scale);
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            canvas.height = vp.height;
-            canvas.width = vp.width;
+      return util.renderPDF(this.fileCont, scale, this.$els.pages);
+    },
 
-            page.render({
-              canvasContext: context,
-              viewport: vp,
-            });
-
-            this.$els.pages.appendChild(canvas);
-          }));
-        }
-
-        return Promise.all(promises);
-      });
+    project() {
+      this.$dispatch('project-file', this.file);
     },
 
     dragover(e) {
@@ -109,6 +83,9 @@ const FileView = Vue.extend({
       });
 
       this.dragging = false;
+    },
+
+    scroll(e) {
     },
   },
 });

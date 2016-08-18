@@ -99,6 +99,15 @@
   -webkit-user-select: none;
 }
 
+.view-title-action {
+  position: absolute;
+  top: 40px;
+  right: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+}
+
 .view-search {
   position: absolute;
   top: 40px;

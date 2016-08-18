@@ -2,12 +2,21 @@
   <div class="view-title">
     {{ file.name }}
   </div>
+
+  <div class="view-title-action">
+    <button class="light" @click="project()">
+      <i class="material-icons">cast</i>
+    </button>
+  </div>
+
   <div class="pdf-pages-container"
     @dragenter.stop.prevent
     @dragover.stop.prevent="dragover"
     @dragleave.stop.prevent="dragleave"
     @dragend="dragend"
-    @drop.stop.prevent="drop">
+    @drop.stop.prevent="drop"
+    
+    @scroll="scroll">
     <div class="pdf-pages" v-el:pages>
     </div>
   </div>

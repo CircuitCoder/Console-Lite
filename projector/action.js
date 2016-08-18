@@ -1,6 +1,8 @@
 const Vue = require('vue');
 const {ipcRenderer} = require('electron');
 
+const util = require('../shared/util.js');
+
 require('../shared/components/timer.js');
 
 const desc = {
@@ -17,6 +19,9 @@ const desc = {
     timerLeft: 0,
     timerValue: 0,
     timerActive: false,
+
+    fileName: '',
+    fileCont: null,
   },
   methods: {
     init() {
@@ -39,6 +44,10 @@ const desc = {
         if('left' in data) this.timerLeft = data.left;
         if('value' in data) this.timerValue = data.value;
         if('active' in data) this.timerActive = data.active;
+      } else if(target === 'file') {
+        // Update scrolltop
+        if('scrollPos' in data) {
+        }
       }
     },
 
@@ -50,31 +59,47 @@ const desc = {
         }
 
         if(this.mode !== null) {
-          // Wait for fade out
-          // TODO: racing condition?
-          this.switching = true;
-
-          this.switching = setTimeout(() => {
-            this.setupLayer({ target, data }, true);
-            this.switching = null;
-          }, 200);
-
-          return;
+          return new Promise((resolve, reject) => {
+            // Wait for fade out
+            // TODO: racing condition?
+            this.switching = setTimeout(() => {
+              this.setupLayer({ target, data }, true).then(() => {
+                this.switching = null;
+                resolve();
+              });
+            }, 200);
+          });
         }
       }
 
       this.mode = target;
+
       if(target === 'timer') {
         if('name' in data) this.timerName = data.name;
         if('left' in data) this.timerLeft = data.left;
         if('value' in data) this.timerValue = data.value;
         if('active' in data) this.timerActive = data.active;
+      } else if(target === 'file') {
+        this.fileName = data.meta.name;
+        this.fileCont = data.content;
+
+        this.clearPages();
+
+        return util.renderPDF(this.fileCont, -1, this.$els.pages, window.innerWidth * 0.8);
       }
+
+      return Promise.resolve();
     },
 
     resetLayer() {
       this.mode = null;
-    }
+    },
+
+    clearPages() {
+      while(this.$els.pages.firstChild)
+        this.$els.pages.removeChild(this.$els.pages.firstChild);
+      this.$els.pages.scrollTop = 0;
+    },
   },
 
   computed: {
