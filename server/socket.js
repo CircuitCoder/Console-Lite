@@ -137,6 +137,33 @@ function add(id) {
         return socket.emit(respToken, { ok: true, content });
       });
     });
+
+    socket.on('addVote', ({ name, rounds, target, seats }) => {
+      if(!name || !rounds || !target || !seats)
+        return socket.emit('addVote', { ok: false, error: 'BadRequest' });
+      socket.conf.addVote(name, rounds, target, seats, (err, id) => {
+        if(err) return socket.emit('addVote', { ok: false, error: err });
+        return socket.emit('addVote', { ok: true, id });
+      });
+    });
+
+    socket.on('updateVote', ({ id, index, vote }) => {
+      if(!id || !index || !vote)
+        return socket.emit('updateVote', { ok: false, error: 'BadRequest' });
+      socket.conf.updateVote(id, index, vote, err => {
+        if(err) return socket.emit('updateVote', { ok: false, error: err });
+        return socket.emit('updateVote', { ok: true });
+      });
+    });
+
+    socket.on('iterateVote', ({ id, status }) => {
+      if(!id || !status )
+        return socket.emit('iterateVote', { ok: false, error: 'BadRequest' });
+      socket.conf.updateVote(id, status, err => {
+        if(err) return socket.emit('iterateVote', { ok: false, error: err });
+        return socket.emit('iterateVote', { ok: true });
+      });
+    });
   });
 
   conf.addListener({
@@ -170,6 +197,18 @@ function add(id) {
 
     fileEdited(id) {
       nsp.emit('fileEdited', { id });
+    },
+
+    voteAdded(id, name, rounds, target, seats) {
+      nsp.emit('voteAdded', { id, name, rounds, target, seats });
+    },
+    
+    voteUpdated(id, index, vote) {
+      nsp.emit('voteAdded', { id, index, vote });
+    },
+    
+    voteIterated(id, status) {
+      nsp.emit('voteIterated', { id, status });
     },
   });
 

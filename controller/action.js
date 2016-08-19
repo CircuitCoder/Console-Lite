@@ -47,6 +47,7 @@ const desc = {
     timers: [],
     seats: [],
     files: [],
+    votes: [],
 
     fileCache: {},
 
@@ -59,6 +60,7 @@ const desc = {
     seats: require('./views/seats'),
     timers: require('./views/timers'),
     files: require('./views/files'),
+    votes: require('./views/votes'),
 
     file: require('./views/file'),
   },
@@ -164,6 +166,7 @@ const desc = {
         this.timers = data.timers;
         this.seats = data.seats;
         this.files = data.files;
+        this.votes = data.votes;
 
         this.recalcCount();
 

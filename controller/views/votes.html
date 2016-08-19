@@ -1,0 +1,19 @@
+<div class="view">
+  <div class="view-title">
+    投票
+    <button class="embedded" @click="add">
+      添加
+      <i class="material-icons">add</i>
+    </button>
+  </div>
+  <div class="view-search">
+    <i class="material-icons">search</i>
+    <div class="input-group">
+      <input v-model="searchInput" @keydown.esc="searchInput = ''">
+      <div class="border-line"></div>
+    </div>
+    <div class="clear-btn" @click="searchInput = ''" v-show="searchInput" transition="opacity">
+      <i class="material-icons">close</i>
+    </div>
+  </div>
+</div>
