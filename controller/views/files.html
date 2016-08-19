@@ -21,7 +21,7 @@
   </div>
 
   <div class="files list">
-    <div class="list-item file clickable" v-for="file of files | filterBy searchInput in 'name'" @click="viewFile(file)" :class="{ bold: file.highlight }">
+    <div class="list-item file clickable" v-for="file of files | filterBy searchInput in 'name' 'type'" @click="viewFile(file)" :class="{ bold: file.highlight }">
       <div class="list-item-indicator"></div>
       <div class="list-item-content">
         <div class="file-name">
