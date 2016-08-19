@@ -1,5 +1,7 @@
 const Vue = require('vue');
 const fs = require('fs');
+const { dialog } = require('electron').remote;
+const open = require('open');
 
 const util = require('../../shared/util.js');
 
@@ -15,7 +17,6 @@ const FileView = Vue.extend({
   }),
   
   activate(done) {
-    console.log('ACTIVATE');
     this.$dispatch('get-file', this.file.id, (err, cont) => {
       if(err) alert('加载失败!');
       else {
@@ -56,6 +57,35 @@ const FileView = Vue.extend({
       this.$dispatch('project-file', this.file);
     },
 
+    save() {
+      dialog.showSaveDialog({
+        title: '保存文件',
+        defaultPath: this.file.name,
+      }, (filename) => {
+        if(!filename) return;
+        const buf = new Buffer(this.fileCont.byteLength);
+        const view = new Uint8Array(this.fileCont);
+
+        for(let i = 0; i < buf.length; ++i)
+          buf[i] = view[i];
+
+        fs.writeFile(filename, buf, (err) => {
+          if(err) dialog.showErrorBox('保存失败', err.stack);
+          else dialog.showMessageBox({
+            type: 'info',
+            buttons: ['打开文件', '好的'],
+            defaultId: 1,
+            cancelId: 1,
+            message: '保存成功!',
+            detail: `保存到 ${filename}`
+          }, (btn) => {
+            if(btn === 0)
+              open(filename);
+          });
+        });
+      });
+    },
+
     dragover(e) {
       //TODO: check file name
       this.dragging = true;
@@ -76,7 +106,6 @@ const FileView = Vue.extend({
         return alert('请每次只上传一个文件');
       }
 
-      const nameSegs = dt.files[0].name.split('.');
       const type = dt.files[0].type;
       if(type !== this.file.type) {
         this.dragging = false;

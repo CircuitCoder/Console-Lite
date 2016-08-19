@@ -3,9 +3,12 @@
     {{ shortName }}
   </div>
 
-  <div class="view-title-action">
+  <div class="view-title-action" v-if="type !== 'download'">
     <button class="light" @click="project()">
       <i class="material-icons">cast</i>
+    </button>
+    <button class="light" @click="save()">
+      <i class="material-icons">save</i>
     </button>
   </div>
 
@@ -17,11 +20,15 @@
     @drop.stop.prevent="drop"
     
     @scroll="scroll">
-    <div class="file-pdf" v-el:pages v-if="type === 'pdf'">
+    <div class="file-pdf" v-el:pages v-show="type === 'pdf'">
     </div>
 
-    <div class="file-image" v-el:pages v-if="type === 'image'">
+    <div class="file-image" v-if="type === 'image'">
       <img :src="fileCont">
+    </div>
+
+    <div class="file-download" v-if="type === 'download'">
+      <button @click="save"><i class="material-icons">save</i> 保存</button>
     </div>
   </div>
 

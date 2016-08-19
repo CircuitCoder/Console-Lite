@@ -5,7 +5,7 @@ const crypto = require('crypto');
 const http = require('http');
 
 function shutdown(cb) {
-  console.log('Shuting down backend...')
+  console.log('Shuting down backend...');
   return backend.shutdown(cb);
 }
 
