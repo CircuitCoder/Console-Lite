@@ -1,7 +1,4 @@
-@import './views/seats.css';
-@import './views/timers.css';
-@import './views/files.css';
-@import './views/file.css';
+@import './views/styles.css';
 
 @import '../shared/components/timer.css';
 

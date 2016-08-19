@@ -56,13 +56,13 @@ const desc = {
   },
 
   components: {
-    home: require('./views/home'),
-    seats: require('./views/seats'),
-    timers: require('./views/timers'),
-    files: require('./views/files'),
-    votes: require('./views/votes'),
+    home: require('./views/home/home'),
+    seats: require('./views/seats/seats'),
+    timers: require('./views/timers/timers'),
+    files: require('./views/files/files'),
+    votes: require('./views/votes/votes'),
 
-    file: require('./views/file'),
+    file: require('./views/file/file'),
   },
 
   methods: {

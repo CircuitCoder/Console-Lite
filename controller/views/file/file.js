@@ -3,7 +3,7 @@ const fs = require('fs');
 const { dialog } = require('electron').remote;
 const open = require('open');
 
-const util = require('../../shared/util.js');
+const util = require('../../../shared/util.js');
 
 const FileView = Vue.extend({
   template: fs.readFileSync(`${__dirname}/file.html`).toString('utf-8'),
