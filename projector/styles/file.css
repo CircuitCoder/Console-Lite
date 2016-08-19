@@ -8,7 +8,7 @@
   overflow: hidden;
 }
 
-.file-pages {
+.file-pdf {
   text-align: center;
   overflow-y: scroll;
   background: rgba(0,0,0,.06);
@@ -19,17 +19,39 @@
   right: 0;
   left: 0;
 
-  padding: 5vw 0;
+  padding: 10vw 0;
 }
 
-.file-pages canvas {
+.file-pdf canvas {
   margin: auto auto 20px auto;
   box-shadow: rgba(0,0,0,.12) 0 .25vw .375vw;
   display: block;
 }
 
-.file-pages canvas:last-child {
+.file-pdf canvas:last-child {
   margin-bottom: auto;
+}
+
+.file-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  position: absolute;
+  top: 13vw;
+  bottom: 0;
+  right: 0;
+  left: 0;
+
+  padding: 10vw 0;
+  overflow: auto;
+}
+
+.file-image img {
+  max-width: 80%;
+  margin: auto;
+
+  box-shadow: rgba(0,0,0,.12) 0 .25vw .375vw;
 }
 
 .file-shadow {

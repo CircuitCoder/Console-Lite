@@ -21,6 +21,8 @@ const desc = {
     timerActive: false,
 
     fileName: '',
+    fileType: 'download',
+    fileMIME: '',
     fileCont: null,
   },
   methods: {
@@ -74,17 +76,21 @@ const desc = {
       } else if(target === 'file') {
         this.fileName = data.meta.name;
         this.fileCont = data.content;
+        this.fileMIME = data.meta.type;
+        this.fileType = util.getFileType(data.meta.type);
 
-        this.clearPages();
-
-        return util.renderPDF(this.fileCont, -1, this.$els.pages, window.innerWidth * 0.8);
+        if(this.fileType === 'pdf') {
+          this.clearPages();
+          return util.renderPDF(this.fileCont, -1, this.$els.pages, window.innerWidth * 0.8);
+        } else if(this.fileType === 'image') {
+        }
       }
 
       return Promise.resolve();
     },
 
     resetLayer() {
-      this.mode = null;
+      this.setupLayer({ target: null });
     },
 
     clearPages() {
@@ -102,7 +108,12 @@ const desc = {
 
     shortName() {
       return this.fileName.split('.')[0];
-    }
+    },
+
+    imgRendered() {
+      const b64str = btoa(String.fromCharCode(...new Uint8Array(this.fileCont)));
+      return `data:${this.fileMIME};base64,${b64str}`;
+    },
   }
 };
 

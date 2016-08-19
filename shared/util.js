@@ -33,6 +33,13 @@ function renderPDF(content, scale, elem, targetWidth) {
   });
 }
 
+function getFileType(mime) {
+  if(mime === 'application/pdf') return 'pdf';
+  else if(mime.split('/')[0] === 'image') return 'image';
+  else return 'download'
+}
+
 module.exports = {
-  renderPDF
+  renderPDF,
+  getFileType,
 }

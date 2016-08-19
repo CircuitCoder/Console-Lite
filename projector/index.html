@@ -26,9 +26,12 @@
 
     <div class="layer file-layer" v-show="mode === 'file'">
       <div class="file-name">
-        {{ fileName }}
+        {{ shortName }}
       </div>
-      <div class="file-pages" v-el:pages></div>
+      <div class="file-pdf" v-el:pages v-show="fileType === 'pdf'"></div>
+      <div class="file-image" v-if="fileType === 'image'">
+        <img :src="imgRendered"></img>
+      </div>
       <div class="file-shadow"></div>
     </div>
 

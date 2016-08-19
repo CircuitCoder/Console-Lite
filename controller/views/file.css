@@ -35,7 +35,7 @@
 .file-image {
   margin: auto;
   max-width: 100%;
-  padding: 40px;
+  padding: 0 40px;
 }
 
 .file-image img {
