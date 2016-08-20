@@ -38,6 +38,10 @@ const VoteView = Vue.extend({
       this.addFlag = false;
     },
 
+    viewVote(vote) {
+      this.$dispatch('view-vote', vote);
+    },
+
     setToHalf() {
       this.inputTarget = Math.ceil((this.presentCount + 1) / 2);
     },

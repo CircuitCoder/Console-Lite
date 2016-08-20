@@ -14,7 +14,7 @@
     <div class="empty-hint">请点击编辑添加席位</div>
   </div>
   <div class="dialog-overlap" transition="opacity" v-show="editFlag" @click="discardEditing">
-    <div class="dialog wide" @click="blocker">
+    <div class="dialog wide" @click.stop.prevent>
       <div class="dialog-title">编辑席位列表</div>
       <div class="dialog-content">
         <div class="dialog-supporting">

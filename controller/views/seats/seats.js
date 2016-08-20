@@ -33,11 +33,6 @@ const SeatsView = Vue.extend({
       seat.present = ! seat.present;
       this.$dispatch('update-seats', this.seats);
     },
-
-    blocker(event) {
-      event.stopPropagation();
-      event.preventDefault();
-    },
   }
 })
 

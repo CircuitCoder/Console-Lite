@@ -16,6 +16,8 @@
         :seats="seats"
         :files="files"
         :votes="votes"
+
+        :vote="vote"
         :file="file"
 
         :search-input="searchInput"
@@ -35,7 +37,11 @@
         @view-file="viewFile"
         @project-file="projectFile"
         
-        @add-vote="addVote">
+        @add-vote="addVote"
+        @view-vote="viewVote"
+        @update-vote="updateVote"
+        @iterate-vote="iterateVote">
+
       </component>
       <!-- Events will loop back through server broadcast -->
       <!-- So we are using one way binding -->
@@ -108,7 +114,7 @@
     <div class="mask" transition="opacity" v-show="!started"></div>
 
     <div class="dialog-overlap" transition="opacity" v-show="createConfFlag" @click="discardConfCreation">
-      <div class="dialog" @click="blocker">
+      <div class="dialog" @click.stop.prevent>
         <div class="dialog-title">
           创建委员会
         </div>
@@ -128,7 +134,7 @@
     </div>
 
     <div class="dialog-overlap" transition="opacity" v-show="connectBackendFlag" @click="discardBackendConnection">
-      <div class="dialog" @click="blocker">
+      <div class="dialog" @click.stop.prevent>
         <div class="dialog-title">
           连接到...
         </div>

@@ -52,6 +52,7 @@ const desc = {
     fileCache: {},
 
     file: null,
+    vote: null,
     searchInput: '',
   },
 
@@ -63,6 +64,7 @@ const desc = {
     votes: require('./views/votes/votes'),
 
     file: require('./views/file/file'),
+    vote: require('./views/vote/vote'),
   },
 
   methods: {
@@ -288,8 +290,7 @@ const desc = {
 
         voteIterated: (id, status) => {
           for(let v of this.votes) if(v.id === id) {
-            v.matrix[index].iteration = status.iteration;
-            v.matrix[index].running = status.running;
+            v.matrix[index].status = status;
             break;
           }
         },
@@ -456,6 +457,35 @@ const desc = {
       });
     },
 
+    viewVote(vote) {
+      /*
+       * votes array is never replaced entirely
+       * So it's save to keep a reference of a specific vote
+       */
+
+      console.log(vote);
+      this.vote = vote;
+      this.activeView = 'vote';
+    },
+
+    updateVote(id, index, vote) {
+      confConn.updateVote(id, index, vote, (err, id) => {
+        if(err) {
+          console.error(err);
+          alert('更新失败!');
+        }
+      });
+    },
+
+    iterateVote(id, status) {
+      confConn.updateVote(id, status, (err, id) => {
+        if(err) {
+          console.error(err);
+          alert('更新失败!');
+        }
+      });
+    },
+
     /* Utitlities */
 
     toggleProjector() {
@@ -471,11 +501,6 @@ const desc = {
       ipcRenderer.send('toProjector', data);
       this.initData = data;
     },
-
-    blocker(event) {
-      event.stopPropagation();
-      event.preventDefault();
-    }
   }
 }
 

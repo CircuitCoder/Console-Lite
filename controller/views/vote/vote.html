@@ -1,0 +1,19 @@
+<div class="view">
+  <div class="view-title">
+    {{ vote.name }}
+  </div>
+
+  <div class="view-title-action" v-if="type !== 'download'">
+    <button class="light" @click="stop()" v-if="vote.status.running">
+      <i class="material-icons">done</i>
+      结束第{{ vote.status.iteration }}轮
+    </button>
+    <button class="light" @click="start()" v-else>
+      <i class="material-icons">play_arrow</i>
+      开始第{{ vote.status.iteration + 1 }}轮
+    </button>
+    <button class="light" @click="project()">
+      <i class="material-icons">cast</i>
+    </button>
+  </div>
+</div>

@@ -44,7 +44,7 @@
   </div>
 
   <div class="dialog-overlap" transition="opacity" v-show="editFlag" @click="discardEdit">
-    <div class="dialog" @click="blocker">
+    <div class="dialog" @click.stop.prevent>
       <div class="dialog-title">
         {{ additionMode ? '创建' : '修改' }}计时器
       </div>

@@ -18,11 +18,22 @@
   </div>
 
   <div class="list">
-    <div class="list-item clickable" v-for="vote of votes | filterBy searchInput in 'name'" track-by="$index" :class="{ bold: vote.running }">
+    <div class="list-item clickable"
+      v-for="vote of votes | filterBy searchInput in 'name'"
+      track-by="$index"
+      :class="{ bold: vote.running }"
+      @click="viewVote(vote)">
+
       <div class="list-item-indicator"></div>
       <div class="list-item-content vote-row">
         <div class="vote-name">
           {{ vote.name }}
+        </div>
+        <div class="vote-iteration" v-show="vote.status.iteration > 0">
+          第{{ vote.status.iteration }}轮
+        </div>
+        <div class="vote-iteration" v-else>
+          未启动
         </div>
         <div class="vote-actions">
           <button class="vote-action light" @click="project(vote)">

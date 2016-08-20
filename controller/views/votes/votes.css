@@ -4,12 +4,20 @@
 }
 
 .vote-name {
-  flex: 1;
   margin-right: 20px;
+  font-weight: 400;
+  margin-right: 20px;
+  word-break: break-word;
 }
 
-.timer-actions {
+.vote-iteration {
+  opacity: 0.54;
+  flex: 1;
+  min-width: max-content;
+}
+
+.vote-actions {
   display: flex;
   align-items: center;
+  margin-left: 20px;
 }
-

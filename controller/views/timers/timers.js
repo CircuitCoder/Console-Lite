@@ -78,11 +78,6 @@ const TimersView = Vue.extend({
     project(timer) {
       this.$dispatch('project-timer', timer)
     },
-
-    blocker(event) {
-      event.stopPropagation();
-      event.preventDefault();
-    },
   }
 });
 
