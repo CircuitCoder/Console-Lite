@@ -1,7 +1,6 @@
 const Vue = require('vue');
 const fs = require('fs');
-const { dialog } = require('electron').remote;
-const open = require('open');
+const { dialog, shell } = require('electron').remote;
 
 const util = require('../../../shared/util.js');
 
@@ -76,7 +75,7 @@ const FileView = Vue.extend({
             detail: `保存到 ${filename}`
           }, (btn) => {
             if(btn === 0)
-              open(filename);
+              shell.openItem(filename);
           });
         });
       });
