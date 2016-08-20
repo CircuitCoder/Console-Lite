@@ -1,5 +1,5 @@
 const electron = require('electron');
-const {ipcMain, app, BrowserWindow} = electron;
+const {ipcMain, app, globalShortcut, BrowserWindow} = electron;
 const server = require('./server/server');
 const util = require('./util');
 
@@ -63,6 +63,15 @@ function initProjector() {
 
 app.on('ready', () => {
   initController();
+  globalShortcut.register('CommandOrControl+\\', () => {
+    if(controller) controller.focus();
+    else initController();
+  });
+
+  globalShortcut.register('CommandOrControl+Shift+|', () => {
+    if(projector) projector.focus();
+    else initProjector();
+  });
 });
 
 app.on('window-all-closed', () => {
