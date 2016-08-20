@@ -3,6 +3,10 @@ const {ipcMain, app, BrowserWindow} = electron;
 const server = require('./server/server');
 const util = require('./util');
 
+const name = 'Console Next';
+
+app.setName(name);
+
 // Windows, not the OS, but windows
 let controller, projector;
 
@@ -17,17 +21,24 @@ const controllerOpt = {
 const projectorOpt = {
   width: 800,
   height: 600,
+  frame: false,
+  autoHideMenuBar: true,
   icon: __dirname + '/images/icon_256x256.png',
 }
 
 if(util.supportsTitlebarStyle()) {
   controllerOpt.frame = true;
+  projectorOpt.frame = true;
   controllerOpt.titleBarStyle = 'hidden';
   projectorOpt.titleBarStyle = 'hidden';
+} else if(util.isWindows()) {
+  controllerOpt.frame = true;
+  projectorOpt.frame = true;
 }
 
 function initController() {
   controller = new BrowserWindow(controllerOpt);
+  util.applyControllerMenu(controller);
   controller.loadURL(`file://${__dirname}/controller/index.html`);
   controller.on('closed', () => {
     controller = null;
@@ -43,6 +54,7 @@ function initProjector() {
 
   projector = new BrowserWindow(projectorOpt);
   projector.loadURL(`file://${__dirname}/projector/index.html`);
+  util.applyProjectorMenu(controller);
   projector.on('closed', () => {
     projector = null;
     if(controller) controller.webContents.send('projectorClosed');
