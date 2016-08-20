@@ -55,6 +55,8 @@ function initProjector() {
   projector = new BrowserWindow(projectorOpt);
   projector.loadURL(`file://${__dirname}/projector/index.html`);
   util.applyProjectorMenu(controller);
+
+  if(controller) controller.webContents.send('projectorReady');
   projector.on('closed', () => {
     projector = null;
     if(controller) controller.webContents.send('projectorClosed');
@@ -107,7 +109,6 @@ ipcMain.on('startServer', (event, data) => {
 
 ipcMain.on('openProjector', (event, data) => {
   initProjector();
-  event.sender.send('projectorReady');
 });
 
 ipcMain.on('closeProjector', (event, data) => {

@@ -1,0 +1,15 @@
+.vote-row {
+  display: flex;
+  align-items: center;
+}
+
+.vote-name {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.timer-actions {
+  display: flex;
+  align-items: center;
+}
+

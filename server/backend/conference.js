@@ -236,6 +236,7 @@ class Conference {
    * vote:${id}:matrix -> vote can have the following values:
    * 0: pass / didn't vote
    * -1: negative
+   * -2: abstaining
    * 1: positive
    */
 
@@ -246,7 +247,7 @@ class Conference {
     Promise.all([
       (resolve, reject) => this.db.get('votes', (err, votes) => {
         if(err) return reject(err);
-        this.votes.unshift({ id, name, target, rounds });
+        votes.unshift({ id, name, target, rounds });
         this.db.put(`votes`, votes, err => err ? reject(err) : resolve());
       }),
       (resolve, reject) => this.db.put(`vote:${id}:status`, { iteration: 0, running: false }, err => err ? reject(err) : resolve()),

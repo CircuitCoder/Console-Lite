@@ -139,7 +139,7 @@ function add(id) {
     });
 
     socket.on('addVote', ({ name, rounds, target, seats }) => {
-      if(!name || !rounds || !target || !seats)
+      if(!name || !Number.isInteger(rounds) || !Number.isInteger(target) || !seats)
         return socket.emit('addVote', { ok: false, error: 'BadRequest' });
       socket.conf.addVote(name, rounds, target, seats, (err, id) => {
         if(err) return socket.emit('addVote', { ok: false, error: err });

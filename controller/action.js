@@ -235,6 +235,7 @@ const desc = {
         },
 
         /* Files */
+
         fileAdded: (id, name, type) => {
           this.files.unshift({ id, name, type, highlight: true });
           Push.create(name, {
@@ -262,7 +263,36 @@ const desc = {
           });
 
           //TODO: refetch if on projector
-        }
+        },
+
+        /* Votes */
+        voteAdded: (id, name, target, round, seats) => {
+          this.votes.unshift({
+            id,
+            name,
+            target,
+            round,
+
+            iteration: 0,
+            running: false,
+            matrix: seats.map(s => ({ name: s, vote: 0 })),
+          });
+        },
+
+        voteUpdated: (id, index, vote) => {
+          for(let v of this.votes) if(v.id === id) {
+            v.matrix[index].vote = vote;
+            break;
+          }
+        },
+
+        voteIterated: (id, status) => {
+          for(let v of this.votes) if(v.id === id) {
+            v.matrix[index].iteration = status.iteration;
+            v.matrix[index].running = status.running;
+            break;
+          }
+        },
       });
     },
 
@@ -307,7 +337,12 @@ const desc = {
 
     updateSeats(seats) {
       // Sync up, recalculate will be completed on pingback event
-      confConn.updateSeats(seats);
+      confConn.updateSeats(seats, err => {
+        if(err) {
+          console.error(err);
+          alert('修改失败!');
+        }
+      });
     },
 
     recalcCount() {
@@ -408,6 +443,16 @@ const desc = {
         }
 
         this.sendToProjector({ type: 'layer', target: 'file', data: { meta: file, content: new Uint8Array(content) }});
+      });
+    },
+
+    /* Vote */
+    addVote(name, target, rounds, seats) {
+      confConn.addVote(name, target, rounds, seats, (err, id) => {
+        if(err) {
+          console.error(err);
+          alert('添加失败!');
+        }
       });
     },
 

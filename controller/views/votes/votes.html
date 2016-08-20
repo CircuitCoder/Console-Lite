@@ -16,4 +16,55 @@
       <i class="material-icons">close</i>
     </div>
   </div>
+
+  <div class="list">
+    <div class="list-item clickable" v-for="vote of votes | filterBy searchInput in 'name'" track-by="$index" :class="{ bold: vote.running }">
+      <div class="list-item-indicator"></div>
+      <div class="list-item-content vote-row">
+        <div class="vote-name">
+          {{ vote.name }}
+        </div>
+        <div class="vote-actions">
+          <button class="vote-action light" @click="project(vote)">
+            <i class="material-icons">cast</i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dialog-overlap" transition="opacity" v-show="addFlag" @click="discardAddition">
+    <div class="dialog" @click.stop.prevent>
+      <div class="dialog-title">
+        添加投票
+      </div>
+      <div class="dialog-content">
+        <div class="dialog-supporting">
+          注: 参与投票的席位为提交时出席的席位，在添加投票后无法更改。
+        </div>
+        <div class="input-group">
+          <div class="hint">显示名</div>
+          <input v-model="inputName">
+          <div class="border-line"></div>
+        </div>
+        <div class="input-group">
+          <div class="hint">轮数 ( 0 = 不限 )</div>
+          <input v-model="inputRounds" type='number' min='0' number>
+          <div class="border-line"></div>
+        </div>
+        <div class="input-group">
+          <div class="hint">目标 ( 0 = 未定 )</div>
+          <input v-model="inputTarget" type='number' min='0' number>
+          <div class="border-line"></div>
+        </div>
+        <button @click="setToHalf" class="embedded">设为简单半数</button>
+        <button @click="setToTwoThird" class="embedded">设为三分之二</button>
+        <button @click="performAddition" class="confirmation-btn">
+          提交
+          <i class="material-icons">keyboard_arrow_right</i>
+        </button>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
 </div>

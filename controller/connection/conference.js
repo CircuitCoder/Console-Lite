@@ -63,6 +63,21 @@ class ConferenceConnection {
       for(const l of this.listeners)
         if(l.fileEdited) l.fileEdited(id);
     });
+
+    socket.on('voteAdded', ({ id, name, target, rounds, seats }) => {
+      for(const l of this.listeners)
+        if(l.voteAdded) l.voteAdded(id, name, target, rounds, seats);
+    });
+
+    socket.on('voteUpdated', ({ id, index, vote }) => {
+      for(const l of this.listeners)
+        if(l.voteUpdated) l.voteUpdated(id, index, vote);
+    });
+
+    socket.on('voteIterated', ({ id, status }) => {
+      for(const l of this.listeners)
+        if(l.voteIterated) l.voteIterated(id, status);
+    });
   }
 
   addListener(listener) {
@@ -113,6 +128,7 @@ class ConferenceConnection {
   }
 
   /* Files */
+
   addFile(name, type, content, cb) {
     socket.once('addFile', (data) => {
       if(data.ok) cb(null, data.id);
@@ -140,6 +156,34 @@ class ConferenceConnection {
     });
 
     socket.emit('getFile', { id });
+  }
+
+  /* Votes */
+  addVote(name, target, rounds, seats, cb) {
+    socket.once('addVote', (data) => {
+      if(data.ok) cb(null, data.id);
+      else cb(data.error);
+    });
+
+    socket.emit('addVote', { name, target, rounds ,seats });
+  }
+
+  updateVote(id, index, vote, cb) {
+    socket.once('updateVote', (data) => {
+      if(data.ok) cb(null);
+      else cb(data.error);
+    });
+    
+    socket.emit('updateVote', { id, index, vote });
+  }
+
+  iterateVote(id, status) {
+    socket.once('iterateVote', (data) => {
+      if(data.ok) cb(null);
+      else cb(data.error);
+    });
+
+    socket.emit('iterateVote', { id, index });
   }
 }
 
