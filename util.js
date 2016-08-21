@@ -51,7 +51,7 @@ function getControllerMenu() {
     },
 
     {
-      label: '窗口',
+      role: 'window',
       submenu: [
         {
           role: 'minimize'
@@ -109,24 +109,20 @@ function getControllerMenu() {
 
     tmpl[3].submenu = [
       {
-        label: '关闭',
         accelerator: 'CmdOrCtrl+W',
         role: 'close'
       },
       {
-        label: '最小化',
         accelerator: 'CmdOrCtrl+M',
         role: 'minimize'
       },
       {
-        label: '最大化',
         role: 'zoom'
       },
       {
         type: 'separator'
       },
       {
-        label: '置于前方',
         role: 'front'
       }
     ]
@@ -175,7 +171,7 @@ function getProjectorMenu() {
     },
 
     {
-      label: '窗口',
+      role: 'window',
       submenu: [
         {
           role: 'minimize'
