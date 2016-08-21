@@ -271,12 +271,12 @@ const desc = {
         },
 
         /* Votes */
-        voteAdded: (id, name, target, round, seats) => {
+        voteAdded: (id, name, target, rounds, seats) => {
           this.votes.unshift({
             id,
             name,
             target,
-            round,
+            rounds,
 
             status: {
               iteration: 0,

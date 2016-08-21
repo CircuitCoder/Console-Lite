@@ -1,6 +1,50 @@
 <div class="view">
   <div class="view-title">
     {{ vote.name }}
+
+    <div class="rounds-indicator">
+      <span class="rounds-current" v-if="vote.iteration > 0">第{{ vote.iteration }}轮</span>
+      <span class="rounds-current" v-else>未启动</span>
+      <span class="rounds-total-wrapper" v-if="vote.rounds > 0">
+        <span class="rounds-separator">/</span>
+        <span class="rounds-total">共{{ vote.rounds }}轮</span>
+      </span>
+    </div>
+
+    <div class="vote-indicator">
+      <span class="positive-count">
+        <span class="vote-indicator-hint">
+          赞成
+        </span>
+        <span class="vote-indicator-value">
+          {{ positiveCount }}
+        </span>
+      </span>
+      <span class="abstained-count">
+        <span class="vote-indicator-hint">
+          弃权
+        </span>
+        <span class="vote-indicator-value">
+          {{ abstainedCount }}
+        </span>
+      </span>
+      <span class="negative-count">
+        <span class="vote-indicator-hint">
+          反对
+        </span>
+        <span class="vote-indicator-value">
+          {{ negativeCount }}
+        </span>
+      </span>
+      <span class="target-count" v-if="vote.target > 0">
+        <span class="vote-indicator-hint">
+          目标
+        </span>
+        <span class="vote-indicator-value">
+          {{ vote.target }}
+        </span>
+      </span>
+    </div>
   </div>
 
   <div class="view-title-action" v-if="type !== 'download'">

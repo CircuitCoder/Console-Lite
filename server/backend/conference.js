@@ -295,6 +295,8 @@ class Conference {
         ]).then(([ status, matrix ]) => ({
           id: vote.id,
           name: vote.name,
+          rounds: vote.rounds,
+          target: vote.target,
           status,
           matrix,
         })));

@@ -12,12 +12,63 @@
 
 .vote-iteration {
   opacity: 0.54;
-  flex: 1;
   min-width: max-content;
+}
+
+.vote-rounds-wrapper {
+  height: 24px;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: flex-end;
+  opacity: 0.54;
+}
+
+.vote-rounds-separator {
+  margin-left: 2px;
+}
+
+.vote-rounds {
+  margin-left: 2px;
+}
+
+.vote-values {
+  margin-right: 20px;
+  margin-left: 20px;
+  font-size: 0;
+}
+
+.vote-value-separator {
+  height: 24px;
+  align-items: flex-end;
+  opacity: 0.54;
+  margin: 0 2px;
+  font-size: 12px;
+}
+
+.vote-value {
+  font-size: 18px;
+}
+
+.vote-value.positive {
+  color: #4CAF50;
+}
+
+.vote-value.negative {
+  color: #F44336;
+}
+
+.vote-value.abstained {
+  color: black;
+}
+
+.vote-value.target {
+  color: #2196F3;
 }
 
 .vote-actions {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   margin-left: 20px;
+  flex: 1;
 }

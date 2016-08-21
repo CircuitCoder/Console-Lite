@@ -111,6 +111,20 @@ const VoteView = Vue.extend({
       this.$dispatch('project-vote', this.vote);
     }
   },
+
+  computed: {
+    positiveCount() {
+      return this.vote.matrix.reduce((prev, e) => e.vote === 1 ? prev + 1 : prev, 0);
+    },
+
+    negativeCount() {
+      return this.vote.matrix.reduce((prev, e) => e.vote === -2 ? prev + 1 : prev, 0);
+    },
+
+    abstainedCount() {
+      return this.vote.matrix.reduce((prev, e) => e.vote === -1 ? prev + 1 : prev, 0);
+    }
+  }
 });
 
 module.exports = VoteView;

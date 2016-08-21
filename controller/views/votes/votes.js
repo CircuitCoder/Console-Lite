@@ -49,6 +49,10 @@ const VoteView = Vue.extend({
     setToTwoThird() {
       this.inputTarget = Math.ceil(this.presentCount * 2 / 3);
     },
+
+    countVotes(vote, target) {
+      return vote.matrix.reduce((prev, e) => e.vote === target ? prev + 1 : prev, 0);
+    }
   },
 
   computed: {

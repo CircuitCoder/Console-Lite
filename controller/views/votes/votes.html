@@ -30,10 +30,23 @@
           {{ vote.name }}
         </div>
         <div class="vote-iteration" v-show="vote.status.iteration > 0">
-          第{{ vote.status.iteration }}轮
+          {{ vote.status.iteration }}
         </div>
         <div class="vote-iteration" v-else>
           未启动
+        </div>
+        <div class="vote-rounds-wrapper" v-if="vote.rounds > 0">
+          <span class="vote-rounds-separator">/</span>
+          <span class="vote-rounds">{{ vote.rounds }}</span>
+        </div>
+        <div class="vote-values">
+          <span class="vote-value positive">{{ countVotes(vote, 1) }}</span>
+          <span class="vote-value-separator">/</span>
+          <span class="vote-value abstained">{{ countVotes(vote, -1) }}</span>
+          <span class="vote-value-separator">/</span>
+          <span class="vote-value negative">{{ countVotes(vote, -2) }}</span>
+          <span class="vote-value-separator" v-if="vote.target > 0">/</span>
+          <span class="vote-value target" v-if="vote.target > 0">{{ vote.target }}</span>
         </div>
         <div class="vote-actions">
           <button class="vote-action light" @click="project(vote)">

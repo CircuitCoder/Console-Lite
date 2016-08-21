@@ -35,3 +35,65 @@
   background-color: #F44336;
   opacity: .24;
 }
+
+.rounds-indicator {
+  display: inline-block;
+  font-size: 0; /* For removing whitespaces */
+  margin-left: 20px;
+}
+
+.rounds-current {
+  font-weight: 400;
+  font-size: 18px;
+}
+
+.rounds-total-wrapper {
+  display: inline-flex;
+  font-size: 12px;
+  font-weight: 200;
+}
+
+.rounds-separator {
+  margin-left: 2px;
+}
+
+.rounds-total {
+  margin-left: 2px;
+}
+
+.vote-indicator {
+  margin-left: 20px;
+  display: inline-block;
+  font-weight: 300;
+}
+
+.vote-indicator > span {
+  margin-left: 5px;
+}
+
+.vote-indicator > span:first-child {
+  margin-left: 0;
+}
+
+.vote-indicator-hint {
+  font-size: 12px;
+}
+
+.vote-indicator-value {
+}
+
+.positive-count {
+  color: #4CAF50;
+}
+
+.negative-count {
+  color: #F44336;
+}
+
+.abstained-count {
+  color: black;
+}
+
+.target-count {
+  color: #2196F3;
+}
