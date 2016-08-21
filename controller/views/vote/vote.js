@@ -64,14 +64,11 @@ const VoteView = Vue.extend({
       this.mat.sort((a, b) => {
         for(const v of [0, 1, -1, -2]) {
           const res = this._cateCmp(a, b, v);
-          console.log(res);
           if(res !== 0) return res;
         }
 
         return 0;
       });
-
-      console.log(this.mat.map(e => e.vote));
     },
 
     start() {
