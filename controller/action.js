@@ -529,7 +529,16 @@ const desc = {
       ipcRenderer.send('toProjector', data);
       this.initData = data;
     },
-  }
+  },
+  computed: {
+    simpleHalfCount() {
+      return Math.floor(this.presentCount / 2) + 1;
+    },
+
+    twoThirdCount() {
+      return Math.ceil(this.presentCount * 2 / 3);
+    },
+  },
 }
 
 function setup() {

@@ -80,12 +80,14 @@ body {
 }
 
 .counter-group .material-icons {
+  font-size: 3vw;
   opacity: 0.54;
 }
 
 .counter {
   display: inline-block;
   margin-left: .625vw;
+  font-size: 0;
 }
 
 .counter > div {
@@ -99,10 +101,30 @@ body {
 }
 
 .counter .separator {
+  font-size: 2vw;
   opacity: 0.3;
+  margin: 0 .5vw;
 }
 
 .counter .all {
   font-size: 2vw;
   font-weight: 200;
+}
+
+.counter-indicator {
+  display: inline-block;
+  margin-left: 1.25vw;
+  font-size: 0;
+}
+
+.counter-indicator-hint {
+  display: inline-block;
+  font-size: 1.5vw;
+  font-weight: 300;
+}
+
+.counter-indicator-value {
+  display: inline-block;
+  font-size: 3vw;
+  margin-left: .5vw;
 }

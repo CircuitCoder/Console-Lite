@@ -111,6 +111,14 @@ const desc = {
   },
 
   computed: {
+    simpleHalfCount() {
+      return Math.floor(this.present / 2) + 1;
+    },
+
+    twoThirdCount() {
+      return Math.ceil(this.present * 2 / 3);
+    },
+
     timerProgressOffset() {
       if(this.timerValue === 0) return 'translateX(-0)';
       else return `translateX(-${100 - 100 * this.timerLeft/this.timerValue}%)`;
