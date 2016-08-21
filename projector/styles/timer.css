@@ -16,7 +16,7 @@
 .timer.timer-left {
   font-size: 10vw;
   font-weight: 200;
-  margin-top: 20px;
+  margin-top: 2.5vw;
 }
 
 .timer.timer-left .timer-separator {
@@ -25,8 +25,8 @@
 
 .timer-progress {
   width: 50vw;
-  height: 0.25vw;
-  margin-top: 10px;
+  height: 0.5vw;
+  margin-top: 1.25vw;
 
   background: rgba(0,0,0,.1);
 
