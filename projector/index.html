@@ -7,9 +7,23 @@
     <script src="./action.js"></script>
   </head>
   <body onload="setup()">
-    <div class="layer background">
+    <div class="layer full background">
       <div class="brand">
         Console Next
+      </div>
+    </div>
+
+    <div class="bottom-bar" v-show="connected" transition="opacity">
+      <div class="conf-name">
+        {{ conf }}
+      </div>
+      <div class="counter-group">
+        <i class="material-icons">person</i>
+        <div class="counter">
+          <div class="present">{{ present }}</div>
+          <div class="separator">/</div>
+          <div class="all">{{ seat }}</div>
+        </div>
       </div>
     </div>
 
@@ -35,6 +49,6 @@
       <div class="file-shadow"></div>
     </div>
 
-    <div class="layer mask" v-show="switching || !ready" transition="opacity"></div>
+    <div class="layer full mask" v-show="switching || !ready" transition="opacity"></div>
   </body>
 </html>

@@ -56,7 +56,6 @@ function initProjector() {
   projector.loadURL(`file://${__dirname}/projector/index.html`);
   util.applyProjectorMenu(controller);
 
-  if(controller) controller.webContents.send('projectorReady');
   projector.on('closed', () => {
     projector = null;
     if(controller) controller.webContents.send('projectorClosed');
@@ -122,6 +121,10 @@ ipcMain.on('toProjector', (event, data) => {
 ipcMain.on('getProjector', (event, data) => {
   if(!projector) event.returnValue = null;
   else event.returnValue = projector.id;
+});
+
+ipcMain.on('projectorInitialized', (event, data) => {
+  if(controller) controller.webContents.send('projectorReady');
 });
 
 app.on('quit', () => {

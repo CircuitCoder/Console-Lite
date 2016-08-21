@@ -12,6 +12,9 @@ const desc = {
     switching: false,
     mode: null,
 
+    connected: false,
+    conf: '',
+
     seat: 0,
     present: 0,
 
@@ -35,12 +38,18 @@ const desc = {
         else if(data.type === 'reset') this.resetLayer();
         else this.setupLayer(data);
       });
+
+      ipcRenderer.send('projectorInitialized');
     },
 
     performUpdate({ target, data }) {
-      if(target === 'seats') {
+      if(target === 'status') {
+        this.connected = data.connected;
+      } else if(target === 'seats') {
         this.seat = data.seat;
         this.present = data.present;
+      } else if(target === 'title') {
+        this.conf = data.conf;
       } else if(target === 'timer') {
         if('name' in data) this.timerName = data.name;
         if('left' in data) this.timerLeft = data.left;
@@ -90,6 +99,7 @@ const desc = {
     },
 
     resetLayer() {
+      this.connected = false;
       this.setupLayer({ target: null });
     },
 

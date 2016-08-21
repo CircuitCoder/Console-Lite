@@ -30,11 +30,33 @@ body {
 .layer {
   position: absolute;
   top: 0;
-  bottom: 0;
+  bottom: 15vh;
   right: 0;
   left: 0;
 
   background: white;
+}
+
+.layer.full {
+  bottom: 0;
+}
+
+.bottom-bar {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  height: 15vh;
+  box-sizing: border-box;
+  border-top: rgba(0,0,0,.12) .125vw solid;
+
+  display: flex;
+  align-items: center;
+  padding: 0 5vw;
+}
+
+.conf-name {
+  font-size: 4vw;
 }
 
 .background {
@@ -49,4 +71,38 @@ body {
   color: black;
 
   opacity: 0.3;
+}
+
+.counter-group {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 2.5vw;
+}
+
+.counter-group .material-icons {
+  opacity: 0.54;
+}
+
+.counter {
+  display: inline-block;
+  margin-left: .625vw;
+}
+
+.counter > div {
+  display: inline-block;
+}
+
+.counter .present {
+  font-size: 3vw;
+  line-height: 3vw;
+  font-weight: 400;
+}
+
+.counter .separator {
+  opacity: 0.3;
+}
+
+.counter .all {
+  font-size: 2vw;
+  font-weight: 200;
 }

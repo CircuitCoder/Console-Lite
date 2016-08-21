@@ -14,6 +14,8 @@ require('../shared/components/timer');
 let globalConn, confConn;
 let serverConfig;
 
+let connectedConf;
+
 /* Data for projector */
 let proj = {
   mode: 'none',
@@ -166,6 +168,8 @@ const desc = {
           return;
         }
 
+        connectedConf = name;
+
         for(let f of data.files) f.highlight = false;
 
         this.timers = data.timers;
@@ -179,6 +183,8 @@ const desc = {
 
         this.activeView = 'home';
         this.frame = true;
+
+        if(this.projOn) this.setupProjector();
       });
 
       confConn.addListener({
@@ -505,8 +511,18 @@ const desc = {
       else ipcRenderer.send('openProjector');
     },
 
+    sendConfName() {
+      this.sendToProjector({ type: 'update', target: 'title', data: { conf: connectedConf } });
+    },
+
     setupProjector() {
-      this.sendSeatCount();
+      if(confConn) {
+        this.sendToProjector({ type: 'update', target: 'status', data: { connected: true }});
+        this.sendConfName();
+        this.sendSeatCount();
+      } else {
+        this.sendToProjector({ type: 'reset' });
+      }
     },
 
     sendToProjector(data) {
