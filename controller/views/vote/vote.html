@@ -17,7 +17,7 @@
     </button>
   </div>
   <div class="voters list">
-    <div class="voter list-item clickable" v-for="voter of mat" :class="{ positive: voter.vote === 1, abstained: voter.vote === -1, negative: voter.vote === -2 }" @click="manipulate(voter)">
+    <div class="voter list-item clickable" v-for="voter of mat" transition="item" :class="{ positive: voter.vote === 1, abstained: voter.vote === -1, negative: voter.vote === -2 }" @click="manipulate(voter)">
       <div class="list-item-indicator"></div>
       <div class="list-item-content">{{ voter.name }}</div>
     </div>

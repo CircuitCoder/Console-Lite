@@ -1,4 +1,7 @@
-const vue = require('vue');
+const Vue = require('vue');
+const VueAnimatedList = require('vue-animated-list');
+Vue.use(VueAnimatedList);
+
 const io = require('socket.io-client/socket.io.js');
 const Push = require('push.js');
 const {ipcRenderer} = require('electron');
@@ -514,7 +517,7 @@ const desc = {
 }
 
 function setup() {
-  const instance = new vue(desc);
+  const instance = new Vue(desc);
   instance.init();
 
   document.addEventListener('drop', (e) => {

@@ -11,3 +11,7 @@
   transition: opacity 0.2s ease-in;
   opacity: 0;
 }
+
+.item-move {
+  transition: transform .5s ease;
+}

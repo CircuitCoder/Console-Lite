@@ -1,3 +1,23 @@
+.voters {
+  display: flex;
+  flex-direction: column;
+
+  position: absolute;
+  flex-flow: column wrap;
+  padding: 0 40px;
+  top: 104px;
+  bottom: 0px;
+  right: 0px;
+  left: 0px;
+  margin-bottom: 0;
+
+  overflow-x: auto;
+}
+
+.voter {
+  width: 200px;
+}
+
 .voter .list-item-indicator {
   transition: opacity .2s ease, background-color .2s ease;
 }
