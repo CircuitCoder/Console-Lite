@@ -6,6 +6,7 @@ const VoteView = Vue.extend({
   template: fs.readFileSync(`${__dirname}/vote.html`).toString('utf-8'),
   props: [
     'vote',
+    'altHold',
   ],
 
   data: () => ({
@@ -13,6 +14,9 @@ const VoteView = Vue.extend({
     manipulateFlag: false,
     targetVoter: { },
     targetVote: 0,
+
+    autoMode: false,
+    autoIndex: 0,
 
     _overrideSetVote: false,
 
@@ -72,28 +76,63 @@ const VoteView = Vue.extend({
     },
 
     start() {
-      if(this.vote.status.running) return;
+      if(this.vote.status.running) return false;
 
       if(this.vote.rounds > 0 && this.vote.status.iteration === this.vote.rounds)
-        if(!confirm('按照预定轮数，投票已经结束，是否开始下一轮?')) return;
+        if(!confirm('按照预定轮数，投票已经结束，是否开始下一轮?')) return false;
+
+      if(this.emptyCount === 0)
+        if(!confirm('现在所有席位都已经完成投票，是否开始下一轮?')) return false;
 
       this.$dispatch('iterate-vote', this.vote.id, {
         iteration: this.vote.status.iteration + 1,
         running: true
       });
+
+      return true;
     },
 
-    stop() {
-      if(!this.vote.status.running) return;
+    autoStart() {
+      if(!this.start()) return false;
+      this.autoIndex = -1;
+      this.autoMode = true;
+      this.autoManipulate(0);
+    },
 
-      if(this.vote.status.iteration === this.vote.rounds)
+    autoManipulate(i) {
+      if(i === this.mat.length) {
+        /*
+         * Because in the auto mode
+         * The user must have be warned about a empty value at these round
+         * Additionally, we have to wait for the broadcast event from the server
+         * which is hard to implement,
+         * So we use a force stop here
+         */
+
+        this.stop(true);
+        this.manipulateFlag = false;
+        this.autoMode = false;
+      } else if(this.mat[i].vote !== 0) {
+        return this.autoManipulate(i+1);
+      } else {
+        this.autoIndex = i;
+        this.manipulate(this.mat[i]);
+      }
+    },
+
+    stop(force = false) {
+      if(!this.vote.status.running) return false;
+
+      if(!force && this.vote.status.iteration === this.vote.rounds)
         if(this.vote.matrix.some(e => e.vote === 0))
-          if(!confirm('这是最后一轮投票了，还有投票为过的席位，是否结束这轮投票?')) return;
+          if(!confirm('这是最后一轮投票了，还有投票为过的席位，是否结束这轮投票?')) return false;
 
       this.$dispatch('iterate-vote', this.vote.id, {
         iteration: this.vote.status.iteration,
         running: false,
       });
+
+      return true;
     },
 
     manipulate(voter) {
@@ -103,6 +142,11 @@ const VoteView = Vue.extend({
     },
 
     discardManipulation() {
+      if(this.autoMode) {
+        if(!confirm('确认退出自动模式?')) return;
+        this.autoMode = false;
+      }
+
       this.manipulateFlag = false;
     },
 
@@ -118,7 +162,11 @@ const VoteView = Vue.extend({
       if(this.targetVote !== this.targetVoter.vote) // Changed
         this.$dispatch('update-vote', this.vote.id, this.targetVoter.originalId, this.targetVote);
 
-      this.manipulateFlag = false;
+      if(this.autoMode) {
+        this.autoManipulate(this.autoIndex + 1);
+      } else {
+        this.manipulateFlag = false;
+      }
     },
 
     cast() {
@@ -137,6 +185,10 @@ const VoteView = Vue.extend({
 
     abstainedCount() {
       return this.vote.matrix.reduce((prev, e) => e.vote === -1 ? prev + 1 : prev, 0);
+    },
+
+    emptyCount() {
+      return this.vote.matrix.reduce((prev, e) => e.vote === 0 ? prev + 1 : prev, 0);
     }
   }
 });

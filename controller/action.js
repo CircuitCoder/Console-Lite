@@ -59,6 +59,8 @@ const desc = {
     file: null,
     vote: null,
     searchInput: '',
+
+    altHold: false,
   },
 
   components: {
@@ -305,10 +307,10 @@ const desc = {
 
         voteIterated: (id, status) => {
           for(let v of this.votes) if(v.id === id) {
-            v.status = status;
-
             if(v === this.vote && v.status.running !== status.running)
               this.$broadcast('vote-rearrange');
+
+            v.status = status;
             break;
           }
         },
@@ -505,6 +507,14 @@ const desc = {
     },
 
     /* Utitlities */
+
+    checkAltHold(e) {
+      if(e.key === 'Alt') this.altHold = true;
+    },
+
+    checkAltRelease(e) {
+      if(e.key === 'Alt') this.altHold = false;
+    },
 
     toggleProjector() {
       if(this.projOn) ipcRenderer.send('closeProjector');

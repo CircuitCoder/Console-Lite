@@ -52,10 +52,16 @@
       <i class="material-icons">done</i>
       结束第{{ vote.status.iteration }}轮
     </button>
-    <button class="light" @click="start()" v-else>
-      <i class="material-icons">play_arrow</i>
-      开始第{{ vote.status.iteration + 1 }}轮
-    </button>
+    <template v-else>
+      <button class="light" @click="start()" v-if="emptyCount === 0 || altHold">
+        <i class="material-icons">play_arrow</i>
+        手动进行第{{ vote.status.iteration + 1 }}轮
+      </button>
+      <button class="light" @click="autoStart()" v-else>
+        <i class="material-icons">play_arrow</i>
+        开始第{{ vote.status.iteration + 1 }}轮
+      </button>
+    </template>
     <button class="light" @click="project()">
       <i class="material-icons">cast</i>
     </button>
@@ -69,7 +75,7 @@
 
   <div class="dialog-overlap" transition="opacity" v-show="manipulateFlag" @click="discardManipulation">
     <div class="dialog wide" @click.stop.prevent>
-      <div class="dialog-title">编辑投票: {{ targetVoter.name }}</div>
+      <div class="dialog-title">{{ targetVoter.name }}</div>
       <div class="dialog-content">
         <div class="list">
           <div class="list-item clickable" v-for="row in VOTE_ROWS" @click="targetVote = row.code" :class="{ bold: targetVote === row.code }">

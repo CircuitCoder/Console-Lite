@@ -5,7 +5,7 @@
     <link href="style.css" rel="stylesheet">
     <script src="action.js"></script>
   </head>
-  <body onload="setup()">
+  <body onload="setup()" tabindex="0" @keydown="checkAltHold" @keyup="checkAltRelease">
 
     <div class="frame">
       <component
@@ -21,6 +21,7 @@
         :file="file"
 
         :search-input="searchInput"
+        :alt-hold="altHold"
 
         @navigate="navigate"
 
