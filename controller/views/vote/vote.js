@@ -77,7 +77,7 @@ const VoteView = Vue.extend({
     start() {
       if(this.vote.status.running) return;
 
-      if(this.vote.status.iteration === this.vote.rounds)
+      if(this.vote.rounds > 0 && this.vote.status.iteration === this.vote.rounds)
         if(!confirm('按照预定轮数，投票已经结束，是否开始下一轮?')) return;
 
       this.$dispatch('iterate-vote', this.vote.id, {

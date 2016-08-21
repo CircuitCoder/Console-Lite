@@ -21,7 +21,7 @@
     <div class="list-item clickable"
       v-for="vote of votes | filterBy searchInput in 'name'"
       track-by="$index"
-      :class="{ bold: vote.running }"
+      :class="{ bold: vote.status.running }"
       @click="viewVote(vote)">
 
       <div class="list-item-indicator"></div>
