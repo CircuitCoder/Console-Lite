@@ -8,8 +8,14 @@
   margin-right: 20px;
 }
 
+.timer-value-wrapper {
+  display: inline-block;
+  font-size: 0;
+}
+
 .timer.timer-left {
-  float: right;
+  display: inline-block;
+  font-size: 18px;
 }
 
 .timer.timer-value, .timer-value-separator {
@@ -18,12 +24,6 @@
   opacity: 0.54;
   font-weight: 400;
   font-size: 12px;
-}
-
-.timer-value-wrapper {
-  height: 21px;
-  display: inline-flex;
-  align-items: flex-end;
 }
 
 .timer-actions {

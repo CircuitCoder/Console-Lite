@@ -29,15 +29,13 @@
         <div class="vote-name">
           {{ vote.name }}
         </div>
-        <div class="vote-iteration" v-show="vote.status.iteration > 0">
-          {{ vote.status.iteration }}
-        </div>
-        <div class="vote-iteration" v-else>
-          未启动
-        </div>
-        <div class="vote-rounds-wrapper" v-if="vote.rounds > 0">
-          <span class="vote-rounds-separator">/</span>
-          <span class="vote-rounds">{{ vote.rounds }}</span>
+        <div class="vote-rounds-wrapper">
+          <span class="vote-iteration" v-show="vote.status.iteration > 0">{{ vote.status.iteration }}</span>
+          <span class="vote-iteration" v-else>未启动</span>
+          <template v-if="vote.rounds > 0">
+            <span class="vote-rounds-separator">/</span>
+            <span class="vote-rounds">{{ vote.rounds }}</span>
+          </template>
         </div>
         <div class="vote-values">
           <span class="vote-value positive">{{ countVotes(vote, 1) }}</span>

@@ -10,36 +10,36 @@
   word-break: break-word;
 }
 
-.vote-iteration {
+.vote-rounds-wrapper {
+  display: inline-block;
+  height: 24px;
   opacity: 0.54;
-  min-width: max-content;
+  font-size: 0;
 }
 
-.vote-rounds-wrapper {
-  height: 24px;
-  font-size: 12px;
-  display: inline-flex;
-  align-items: flex-end;
+.vote-iteration {
   opacity: 0.54;
+  font-size: 18px;
 }
 
 .vote-rounds-separator {
   margin-left: 2px;
+  font-size: 12px;
 }
 
 .vote-rounds {
   margin-left: 2px;
+  font-size: 12px;
 }
 
 .vote-values {
+  display: inline-block;
   margin-right: 20px;
   margin-left: 20px;
   font-size: 0;
 }
 
 .vote-value-separator {
-  height: 24px;
-  align-items: flex-end;
   opacity: 0.54;
   margin: 0 2px;
   font-size: 12px;

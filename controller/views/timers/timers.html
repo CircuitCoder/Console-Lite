@@ -23,9 +23,10 @@
         <div class="timer-name">
           {{ timer.name }}
         </div>
-        <timer class="timer-left" :time="timer.left"></timer>
         <div class="timer-value-wrapper">
-          <span class="timer-value-separator">/</span><timer class="timer-value" :time="timer.value"></timer>
+          <timer class="timer-left" :time="timer.left"></timer>
+          <span class="timer-value-separator">/</span>
+          <timer class="timer-value" :time="timer.value"></timer>
         </div>
         <div class="timer-actions">
           <button class="timer-action light" @click="toggle(timer)">
