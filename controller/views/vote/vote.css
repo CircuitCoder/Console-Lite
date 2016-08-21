@@ -1,0 +1,17 @@
+.voter .list-item-indicator {
+  transition: opacity .2s ease, background-color .2s ease;
+}
+
+.voter.abstained .list-item-indicator {
+  opacity: .24;
+}
+
+.voter.positive .list-item-indicator {
+  background-color: #4CAF50;
+  opacity: .24;
+}
+
+.voter.negative .list-item-indicator {
+  background-color: #F44336;
+  opacity: .24;
+}

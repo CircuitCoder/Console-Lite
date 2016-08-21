@@ -235,8 +235,8 @@ class Conference {
   /**
    * vote:${id}:matrix -> vote can have the following values:
    * 0: pass / didn't vote
-   * -1: negative
-   * -2: abstaining
+   * -1: abstained
+   * -2: negative
    * 1: positive
    */
 
@@ -264,8 +264,8 @@ class Conference {
       if(err) return cb(err);
 
       matrix[index].vote = vote;
-      this.db.set(`vote:${id}:matrix`, matrix, (err) => {
-        if(err); return cb(err);
+      this.db.put(`vote:${id}:matrix`, matrix, (err) => {
+        if(err) return cb(err);
 
         for(const l of this.listeners)
           if(l.voteUpdated) l.voteUpdated(id, index, vote);

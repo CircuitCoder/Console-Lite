@@ -275,8 +275,11 @@ const desc = {
             target,
             round,
 
-            iteration: 0,
-            running: false,
+            status: {
+              iteration: 0,
+              running: false,
+            },
+
             matrix: seats.map(s => ({ name: s, vote: 0 })),
           });
         },
@@ -284,6 +287,9 @@ const desc = {
         voteUpdated: (id, index, vote) => {
           for(let v of this.votes) if(v.id === id) {
             v.matrix[index].vote = vote;
+
+            if(v === this.vote && !v.status.running)
+              this.$broadcast('vote-rearrange');
             break;
           }
         },
@@ -291,6 +297,9 @@ const desc = {
         voteIterated: (id, status) => {
           for(let v of this.votes) if(v.id === id) {
             v.matrix[index].status = status;
+
+            if(v === this.vote && v.status.running !== status.running)
+              this.$broadcast('vote-rearrange');
             break;
           }
         },

@@ -16,4 +16,29 @@
       <i class="material-icons">cast</i>
     </button>
   </div>
+  <div class="voters list">
+    <div class="voter list-item clickable" v-for="voter of mat" :class="{ positive: voter.vote === 1, abstained: voter.vote === -1, negative: voter.vote === -2 }" @click="manipulate(voter)">
+      <div class="list-item-indicator"></div>
+      <div class="list-item-content">{{ voter.name }}</div>
+    </div>
+  </div>
+
+  <div class="dialog-overlap" transition="opacity" v-show="manipulateFlag" @click="discardManipulation">
+    <div class="dialog wide" @click.stop.prevent>
+      <div class="dialog-title">编辑投票: {{ targetVoter.name }}</div>
+      <div class="dialog-content">
+        <div class="list">
+          <div class="list-item clickable" v-for="row in VOTE_ROWS" @click="targetVote = row.code" :class="{ bold: targetVote === row.code }">
+            <div class="list-item-indicator"></div>
+            <div class="list-item-content">{{ row.text }}</div>
+          </div>
+        </div>
+        <button @click="performManipulation" class="confirmation-btn">
+          确定
+          <i class="material-icons">keyboard_arrow_right</i>
+        </button>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
 </div>

@@ -148,7 +148,7 @@ function add(id) {
     });
 
     socket.on('updateVote', ({ id, index, vote }) => {
-      if(!id || !index || !vote)
+      if(!id || !Number.isInteger(index) || !Number.isInteger(vote))
         return socket.emit('updateVote', { ok: false, error: 'BadRequest' });
       socket.conf.updateVote(id, index, vote, err => {
         if(err) return socket.emit('updateVote', { ok: false, error: err });
@@ -204,7 +204,7 @@ function add(id) {
     },
     
     voteUpdated(id, index, vote) {
-      nsp.emit('voteAdded', { id, index, vote });
+      nsp.emit('voteUpdated', { id, index, vote });
     },
     
     voteIterated(id, status) {
