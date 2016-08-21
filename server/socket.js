@@ -159,7 +159,7 @@ function add(id) {
     socket.on('iterateVote', ({ id, status }) => {
       if(!id || !status )
         return socket.emit('iterateVote', { ok: false, error: 'BadRequest' });
-      socket.conf.updateVote(id, status, err => {
+      socket.conf.iterateVote(id, status, err => {
         if(err) return socket.emit('iterateVote', { ok: false, error: err });
         return socket.emit('iterateVote', { ok: true });
       });

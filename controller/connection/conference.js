@@ -177,13 +177,13 @@ class ConferenceConnection {
     socket.emit('updateVote', { id, index, vote });
   }
 
-  iterateVote(id, status) {
+  iterateVote(id, status, cb) {
     socket.once('iterateVote', (data) => {
       if(data.ok) cb(null);
       else cb(data.error);
     });
 
-    socket.emit('iterateVote', { id, index });
+    socket.emit('iterateVote', { id, status });
   }
 }
 

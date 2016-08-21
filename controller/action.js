@@ -299,7 +299,7 @@ const desc = {
 
         voteIterated: (id, status) => {
           for(let v of this.votes) if(v.id === id) {
-            v.matrix[index].status = status;
+            v.status = status;
 
             if(v === this.vote && v.status.running !== status.running)
               this.$broadcast('vote-rearrange');
@@ -490,7 +490,7 @@ const desc = {
     },
 
     iterateVote(id, status) {
-      confConn.updateVote(id, status, (err, id) => {
+      confConn.iterateVote(id, status, (err, id) => {
         if(err) {
           console.error(err);
           alert('更新失败!');
