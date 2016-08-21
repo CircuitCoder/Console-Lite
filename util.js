@@ -132,7 +132,7 @@ function getControllerMenu() {
     ]
 
   } else {
-    tmpl[0].push({ role: 'quit' });
+    tmpl[0].submenu.push({ role: 'quit' });
   }
 
   return Menu.buildFromTemplate(tmpl);
@@ -196,6 +196,7 @@ function applyProjectorMenu(win) {
 
 module.exports = {
   supportsTitlebarStyle,
+  isWindows,
   getControllerMenu,
   applyControllerMenu,
   getProjectorMenu,
