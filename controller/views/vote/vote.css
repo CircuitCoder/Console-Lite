@@ -1,3 +1,17 @@
+.vote-view .view-title {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: flex;
+  align-items: baseline;
+  white-space: nowrap;
+}
+
+.vote-name-title {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  min-width: 2em;
+}
+
 .voters {
   display: flex;
   flex-direction: column;
@@ -65,6 +79,7 @@
   margin-left: 20px;
   display: inline-block;
   font-weight: 300;
+  flex: 1;
 }
 
 .vote-indicator > span {
@@ -96,4 +111,10 @@
 
 .target-count {
   color: #2196F3;
+}
+
+.vote-actions {
+  display: flex;
+  align-items: center;
+  min-width: max-content;
 }

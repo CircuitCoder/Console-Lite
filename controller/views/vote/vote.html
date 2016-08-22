@@ -1,6 +1,8 @@
-<div class="view">
+<div class="view vote-view">
   <div class="view-title">
-    {{ vote.name }}
+    <div class="vote-name-title">
+      {{ vote.name }}
+    </div>
 
     <div class="rounds-indicator">
       <span class="rounds-current" v-if="vote.status.iteration > 0">第{{ vote.status.iteration }}轮</span>
@@ -53,27 +55,28 @@
         </span>
       </span>
     </div>
+
+    <div class="vote-actions" v-if="type !== 'download'">
+      <button class="light" @click="stop()" v-if="vote.status.running">
+        <i class="material-icons">done</i>
+        结束第{{ vote.status.iteration }}轮
+      </button>
+      <template v-else>
+        <button class="light" @click="start()" v-if="emptyCount === 0 || altHold">
+          <i class="material-icons">play_arrow</i>
+          手动进行第{{ vote.status.iteration + 1 }}轮
+        </button>
+        <button class="light" @click="autoStart()" v-else>
+          <i class="material-icons">play_arrow</i>
+          开始第{{ vote.status.iteration + 1 }}轮
+        </button>
+      </template>
+      <button class="light" @click="project()">
+        <i class="material-icons">cast</i>
+      </button>
+    </div>
   </div>
 
-  <div class="view-title-action" v-if="type !== 'download'">
-    <button class="light" @click="stop()" v-if="vote.status.running">
-      <i class="material-icons">done</i>
-      结束第{{ vote.status.iteration }}轮
-    </button>
-    <template v-else>
-      <button class="light" @click="start()" v-if="emptyCount === 0 || altHold">
-        <i class="material-icons">play_arrow</i>
-        手动进行第{{ vote.status.iteration + 1 }}轮
-      </button>
-      <button class="light" @click="autoStart()" v-else>
-        <i class="material-icons">play_arrow</i>
-        开始第{{ vote.status.iteration + 1 }}轮
-      </button>
-    </template>
-    <button class="light" @click="project()">
-      <i class="material-icons">cast</i>
-    </button>
-  </div>
   <div class="voters list">
     <div class="voter list-item clickable" v-for="voter of mat" transition="item" :class="{ positive: voter.vote === 1, abstained: voter.vote === -1, negative: voter.vote === -2 }" @click="manipulate(voter)">
       <div class="list-item-indicator"></div>
