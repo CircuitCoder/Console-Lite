@@ -60,6 +60,8 @@ const desc = {
     vote: null,
     searchInput: '',
 
+    projectedVote: null,
+
     altHold: false,
   },
 
@@ -504,6 +506,11 @@ const desc = {
           alert('更新失败!');
         }
       });
+    },
+
+    projectVote(vote) {
+      this.projectedVote = vote;
+      this.sendToProjector({ type: 'layer', target: 'vote', data: { vote } });
     },
 
     /* Utitlities */

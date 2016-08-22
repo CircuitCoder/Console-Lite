@@ -27,6 +27,8 @@ const desc = {
     fileType: 'download',
     fileMIME: '',
     fileCont: null,
+
+    vote: null,
   },
   methods: {
     init() {
@@ -58,6 +60,12 @@ const desc = {
       } else if(target === 'file') {
         // Update scrolltop
         if('scrollPos' in data) {
+        }
+      } else if(target === 'vote') {
+        if(data.event === 'iterate') {
+        } else if(data.event === 'scroll') {
+        } else if(data.event === 'rearrange') {
+        } else { // update
         }
       }
     },
@@ -91,8 +99,9 @@ const desc = {
         if(this.fileType === 'pdf') {
           this.clearPages();
           return util.renderPDF(this.fileCont, -1, this.$els.pages, window.innerWidth * 0.8);
-        } else if(this.fileType === 'image') {
-        }
+        } else if(this.fileType === 'image') { }
+      } else if(target === 'vote') {
+        this.vote = data.vote;
       }
 
       return Promise.resolve();
@@ -108,6 +117,10 @@ const desc = {
         this.$els.pages.removeChild(this.$els.pages.firstChild);
       this.$els.pages.scrollTop = 0;
     },
+
+    voteCount(status) {
+      return this.vote ? this.vote.matrix.reduce((prev, e) => e.vote === status ? prev + 1 : prev, 0) : 0;
+    }
   },
 
   computed: {
@@ -135,6 +148,11 @@ const desc = {
     imgRendered() {
       const b64str = btoa(String.fromCharCode(...new Uint8Array(this.fileCont)));
       return `data:${this.fileMIME};base64,${b64str}`;
+    },
+
+    fileTwoThird() {
+      if(!this.vote) return 0;
+      else return Math.ceil((this.vote.matrix.length - this.voteCount(-1)) * 2 / 3);
     },
   }
 };

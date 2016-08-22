@@ -169,7 +169,7 @@ const VoteView = Vue.extend({
       }
     },
 
-    cast() {
+    project() {
       this.$dispatch('project-vote', this.vote);
     },
   },

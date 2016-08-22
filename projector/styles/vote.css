@@ -1,0 +1,51 @@
+.vote-seats {
+  margin-left: 2.5vw;
+  display: flex;
+  align-items: center;
+  font-size: 3vw;
+}
+
+.vote-seats .material-icons {
+  opacity: 0.54;
+  margin-right: .25vw;
+  font-size: 3vw;
+}
+
+.vote-counters {
+  margin-left: 2.5vw;
+}
+
+.vote-counter {
+  display: inline-block;
+  font-weight: 300;
+  margin-left: 1.25vw;
+}
+
+.vote-counter:first-child {
+  margin-left: 0;
+}
+
+.vote-counter-hint {
+  font-size: 1.5vw;
+  font-weight: 300;
+}
+
+.vote-counter-value {
+  font-size: 3vw;
+}
+
+.vote-counter-positive {
+  color: #4caf50;
+}
+
+.vote-counter-negative {
+  color: #f44336;
+}
+
+.vote-counter-abstained {
+  color: black;
+}
+
+.vote-counter-target {
+  color: #2196f3;
+}

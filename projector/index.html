@@ -14,7 +14,7 @@
     </div>
 
     <div class="bottom-bar" v-show="connected" transition="opacity">
-      <div class="conf-name">
+      <div class="bottom-title">
         {{ conf }}
       </div>
       <div class="counter-group">
@@ -58,6 +58,61 @@
         <img :src="imgRendered"></img>
       </div>
       <div class="file-shadow"></div>
+    </div>
+
+    <div class="layer full vote-layer" v-if="mode === 'vote' && vote">
+      <div class="bottom-bar">
+        <div class="bottom-title">
+          {{ vote.name }}
+        </div>
+        <div class="vote-seats">
+          <i class="material-icons">person</i>
+          {{ vote.matrix.length }}
+        </div>
+
+        <div class="vote-counters">
+          <div class="vote-counter vote-counter-positive">
+            <span class="vote-counter-hint">
+              赞成
+            </span>
+            <span class="vote-counter-value">
+              {{ voteCount(1) }}
+            </span>
+          </div>
+          <div class="vote-counter vote-counter-negative">
+            <span class="vote-counter-hint">
+              反对
+            </span>
+            <span class="vote-counter-value">
+              {{ voteCount(-2) }}
+            </span>
+          </div>
+          <div class="vote-counter vote-counter-abstained">
+            <span class="vote-counter-hint">
+              弃权
+            </span>
+            <span class="vote-counter-value">
+              {{ voteCount(-1) }}
+            </span>
+          </div>
+          <div class="vote-counter vote-counter-target" v-if="vote.target > 0">
+            <span class="vote-counter-hint">
+              目标
+            </span>
+            <span class="vote-counter-value">
+              {{ voteCount(1) }}
+            </span>
+          </div>
+          <div class="vote-counter vote-counter-target" v-if="vote.target === -1">
+            <span class="vote-counter-hint">
+              目标
+            </span>
+            <span class="vote-counter-value">
+              {{ fileTwoThird }}
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="layer full mask" v-show="switching || !ready" transition="opacity"></div>
