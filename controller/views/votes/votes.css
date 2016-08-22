@@ -65,10 +65,17 @@
   color: #2196F3;
 }
 
+.vote-spanner {
+  flex: 1;
+}
+
+.vote-type {
+  opacity: 0.3;
+}
+
 .vote-actions {
   display: flex;
   align-items: center;
   justify-content: flex-end;
   margin-left: 20px;
-  flex: 1;
 }

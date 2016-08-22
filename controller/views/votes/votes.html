@@ -37,14 +37,19 @@
             <span class="vote-rounds">{{ vote.rounds }}</span>
           </template>
         </div>
+        <div class="vote-spanner"></div>
+        <div class="vote-type" v-if="vote.target === -1">
+          文件二分之三
+        </div>
         <div class="vote-values">
           <span class="vote-value positive">{{ countVotes(vote, 1) }}</span>
           <span class="vote-value-separator">/</span>
           <span class="vote-value abstained">{{ countVotes(vote, -1) }}</span>
           <span class="vote-value-separator">/</span>
           <span class="vote-value negative">{{ countVotes(vote, -2) }}</span>
-          <span class="vote-value-separator" v-if="vote.target > 0">/</span>
+          <span class="vote-value-separator" v-if="vote.target !== 0">/</span>
           <span class="vote-value target" v-if="vote.target > 0">{{ vote.target }}</span>
+          <span class="vote-value target" v-if="vote.target === -1">{{ getFileTwoThird(vote) }}</span>
         </div>
       </div>
     </div>
@@ -69,13 +74,21 @@
           <input v-model="inputRounds" type='number' min='0' number>
           <div class="border-line"></div>
         </div>
-        <div class="input-group">
-          <div class="hint">目标 ( 0 = 未定 )</div>
-          <input v-model="inputTarget" type='number' min='0' number>
-          <div class="border-line"></div>
+        <div class="list">
+          <div class="list-item clickable" :class="{ bold: isSubstantive }" @click="isSubstantive = !isSubstantive">
+            <div class="list-item-indicator"></div>
+            <div class="list-item-content">使用文件三分之二多数</div>
+          </div>
         </div>
-        <button @click="setToHalf" class="embedded">设为简单半数</button>
-        <button @click="setToTwoThird" class="embedded">设为三分之二</button>
+        <template v-if="!isSubstantive">
+          <div class="input-group">
+            <div class="hint">目标 ( 0 = 未定 )</div>
+            <input v-model="inputTarget" type='number' min='0' number>
+            <div class="border-line"></div>
+          </div>
+          <button @click="setToHalf" class="embedded">设为简单半数</button>
+          <button @click="setToTwoThird" class="embedded">设为三分之二</button>
+        </template>
         <button @click="performAddition" class="confirmation-btn">
           提交
           <i class="material-icons">keyboard_arrow_right</i>

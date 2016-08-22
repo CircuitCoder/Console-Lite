@@ -187,6 +187,10 @@ const VoteView = Vue.extend({
       return this.vote.matrix.reduce((prev, e) => e.vote === -1 ? prev + 1 : prev, 0);
     },
 
+    fileTwoThird() {
+      return Math.ceil((this.vote.matrix.length - this.abstainedCount) * 2 / 3);
+    },
+
     emptyCount() {
       return this.vote.matrix.reduce((prev, e) => e.vote === 0 ? prev + 1 : prev, 0);
     }

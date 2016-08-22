@@ -238,6 +238,8 @@ class Conference {
    * -1: abstained
    * -2: negative
    * 1: positive
+   *
+   * If vote is a substantive vote, target should be -1
    */
 
   addVote(name, rounds, target, seats, cb) {

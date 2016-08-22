@@ -17,6 +17,7 @@ const VoteView = Vue.extend({
     inputName: '',
     inputRounds: 1,
     inputTarget: 0,
+    isSubstantive: true,
   }),
 
   methods: {
@@ -25,6 +26,7 @@ const VoteView = Vue.extend({
       this.inputName = '';
       this.inputRounds = 0;
       this.inputTarget = 0;
+      this.isSubstantive = true;
     },
 
     discardAddition() {
@@ -34,7 +36,12 @@ const VoteView = Vue.extend({
     performAddition() {
       if(this.inputName.length === 0) return;
 
-      this.$dispatch('add-vote', this.inputName, this.inputTarget, this.inputRounds, this.seats.filter(e => e.present).map(e => e.name));
+      this.$dispatch('add-vote',
+                     this.inputName,
+                     this.isSubstantive ? -1 : this.inputTarget,
+                     this.inputRounds,
+                     this.seats.filter(e => e.present).map(e => e.name));
+
       this.addFlag = false;
     },
 
@@ -43,7 +50,7 @@ const VoteView = Vue.extend({
     },
 
     setToHalf() {
-      this.inputTarget = Math.ceil((this.presentCount + 1) / 2);
+      this.inputTarget = Math.floor(this.presentCount / 2) + 1;
     },
 
     setToTwoThird() {
@@ -52,6 +59,10 @@ const VoteView = Vue.extend({
 
     countVotes(vote, target) {
       return vote.matrix.reduce((prev, e) => e.vote === target ? prev + 1 : prev, 0);
+    },
+
+    getFileTwoThird(vote) {
+      return Math.ceil((vote.matrix.length - this.countVotes(vote, -1)) * 2 / 3);
     }
   },
 
