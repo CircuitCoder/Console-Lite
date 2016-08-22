@@ -72,3 +72,14 @@
 .vote-type {
   opacity: 0.3;
 }
+
+.vote-seats {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.vote-seats .material-icons {
+  opacity: 0.54;
+  margin-right: 2px;
+}
