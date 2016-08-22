@@ -28,20 +28,20 @@
           {{ positiveCount }}
         </span>
       </span>
-      <span class="abstained-count">
-        <span class="vote-indicator-hint">
-          弃权
-        </span>
-        <span class="vote-indicator-value">
-          {{ abstainedCount }}
-        </span>
-      </span>
       <span class="negative-count">
         <span class="vote-indicator-hint">
           反对
         </span>
         <span class="vote-indicator-value">
           {{ negativeCount }}
+        </span>
+      </span>
+      <span class="abstained-count">
+        <span class="vote-indicator-hint">
+          弃权
+        </span>
+        <span class="vote-indicator-value">
+          {{ abstainedCount }}
         </span>
       </span>
       <span class="target-count" v-if="vote.target > 0">

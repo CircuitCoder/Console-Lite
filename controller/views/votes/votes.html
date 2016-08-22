@@ -44,9 +44,9 @@
         <div class="vote-values">
           <span class="vote-value positive">{{ countVotes(vote, 1) }}</span>
           <span class="vote-value-separator">/</span>
-          <span class="vote-value abstained">{{ countVotes(vote, -1) }}</span>
-          <span class="vote-value-separator">/</span>
           <span class="vote-value negative">{{ countVotes(vote, -2) }}</span>
+          <span class="vote-value-separator">/</span>
+          <span class="vote-value abstained">{{ countVotes(vote, -1) }}</span>
           <span class="vote-value-separator" v-if="vote.target !== 0">/</span>
           <span class="vote-value target" v-if="vote.target > 0">{{ vote.target }}</span>
           <span class="vote-value target" v-if="vote.target === -1">{{ getFileTwoThird(vote) }}</span>

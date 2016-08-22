@@ -23,8 +23,8 @@ const VoteView = Vue.extend({
     VOTE_ROWS: [
       { code: 0, text: '过 / 未投票' },
       { code: 1, text: '赞成' },
-      { code: -1, text: '弃权' },
       { code: -2, text: '反对' },
+      { code: -1, text: '弃权' },
     ],
   }),
 
