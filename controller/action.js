@@ -548,6 +548,10 @@ const desc = {
     twoThirdCount() {
       return Math.ceil(this.presentCount * 2 / 3);
     },
+
+    twentyPercentCount() {
+      return Math.ceil(this.presentCount / 5);
+    }
   },
 }
 

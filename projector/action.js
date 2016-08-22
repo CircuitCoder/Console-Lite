@@ -119,6 +119,10 @@ const desc = {
       return Math.ceil(this.present * 2 / 3);
     },
 
+    twentyPercentCount() {
+      return Math.ceil(this.present / 5);
+    },
+
     timerProgressOffset() {
       if(this.timerValue === 0) return 'translateX(-0)';
       else return `translateX(-${100 - 100 * this.timerLeft/this.timerValue}%)`;
