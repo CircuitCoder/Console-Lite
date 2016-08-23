@@ -208,6 +208,35 @@ const desc = {
       if(!this.vote) return 0;
       else return Math.ceil((this.vote.matrix.length - this.voteCount(-1)) * 2 / 3);
     },
+
+    abstainedCount() {
+      return this.voteCount(-1);
+    },
+
+    positiveCount() {
+      return this.voteCount(1);
+    },
+
+    negativeCount() {
+      return this.voteCount(-2);
+    },
+
+    abstainedProgressOffset() {
+      return `translateX(${100 - 100 * this.abstainedCount / this.vote.matrix.length}%)`;
+    },
+
+    negativeProgressOffset() {
+      return `translateX(${100 - 100 * ( this.negativeCount + this.abstainedCount ) / this.vote.matrix.length}%)`;
+    },
+
+    positiveProgressOffset() {
+      return `translateX(-${100 - 100 * this.positiveCount / this.vote.matrix.length}%)`;
+    },
+
+    targetOffset() {
+      const _target = this.vote.target > 0 ? this.vote.target : this.fileTwoThird;
+      return `translateX(${50 * _target / this.vote.matrix.length}vw)`;
+    }
   }
 };
 

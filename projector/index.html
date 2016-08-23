@@ -82,7 +82,7 @@
               赞成
             </span>
             <span class="vote-counter-value">
-              {{ voteCount(1) }}
+              {{ positiveCount }}
             </span>
           </div>
           <div class="vote-counter vote-counter-negative">
@@ -90,7 +90,7 @@
               反对
             </span>
             <span class="vote-counter-value">
-              {{ voteCount(-2) }}
+              {{ negativeCount }}
             </span>
           </div>
           <div class="vote-counter vote-counter-abstained">
@@ -98,7 +98,7 @@
               弃权
             </span>
             <span class="vote-counter-value">
-              {{ voteCount(-1) }}
+              {{ abstainedCount }}
             </span>
           </div>
           <div class="vote-counter vote-counter-target" v-if="vote.target > 0">
@@ -106,7 +106,7 @@
               目标
             </span>
             <span class="vote-counter-value">
-              {{ voteCount(1) }}
+              {{ vote.target }}
             </span>
           </div>
           <div class="vote-counter vote-counter-target" v-if="vote.target === -1">
@@ -124,6 +124,22 @@
           <div class="list-item-indicator"></div>
           <div class="list-item-content">{{ voter.name }}</div>
           <div class="voter-bg"></div>
+        </div>
+      </div>
+      <div class="voter-progress-container">
+        <div class="voter-progress">
+          <div class="voter-progress-inner positive"
+            :style="{ transform: positiveProgressOffset }">
+          </div>
+          <div class="voter-progress-inner negative"
+            :style="{ transform: negativeProgressOffset }">
+          </div>
+          <div class="voter-progress-inner abstained"
+            :style="{ transform: abstainedProgressOffset }">
+          </div>
+        </div>
+        <div class="voter-progress-target"
+          :style="{ transform: targetOffset }">
         </div>
       </div>
     </div>

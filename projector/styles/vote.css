@@ -60,7 +60,7 @@
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 12.5vw;
+  bottom: 17.5vw;
   top: 7vw;
   padding: 0 5vw;
   margin-bottom: 0;
@@ -130,4 +130,59 @@
   font-size: 2vw;
   width: 25vw;
   margin-right: 2.5vw;
+}
+
+.voter-progress-container {
+  position: absolute;
+  bottom: 12.5vw;
+  height: 5vw;
+  left: 0;
+  right: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.voter-progress {
+  position: relative;
+  width: 50vw;
+  height: 0.5vw;
+  overflow: hidden;
+
+  background: rgba(0,0,0,.1);
+}
+
+.voter-progress-inner {
+  position: absolute;
+  right: 0;
+  left: 0;
+  top: 0;
+  bottom: 0;
+
+  transition: transform .2s ease;
+  background: rgba(0,0,0,.3);
+}
+
+.voter-progress-inner.positive {
+  background-color: #A9D9AB;
+}
+
+.voter-progress-inner.negative {
+  background-color: #FAA59E;
+}
+
+.voter-progress-inner.abstained {
+  background-color: #858585;
+}
+
+.voter-progress-target {
+  position: absolute;
+  left: 25vw;
+
+  background-color: #2196F3;
+  height: 2vw;
+  width: 0.5vw;
+  margin-left: -.25vw;
+  transition: transform .2s ease;
 }
