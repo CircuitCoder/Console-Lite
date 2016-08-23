@@ -44,7 +44,9 @@ const VoteView = Vue.extend({
     }
 
     this.$on('vote-rearrange', () => {
-      this.rearrange();
+      setTimeout(() => {
+        this.rearrange();
+      }, 100);
     });
 
     done();

@@ -74,8 +74,9 @@ const desc = {
         }
 
         if(data.rearrange)
-          util.sortVoteMatrix(this.voteMat);
-        console.log(this.voteMat.sort);
+          setTimeout(() => {
+            util.sortVoteMatrix(this.voteMat);
+          }, 100);
       }
     },
 
