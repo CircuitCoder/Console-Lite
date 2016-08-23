@@ -1,4 +1,4 @@
-# Console Next
+# Console Lite
 
 可以，这很现代化
 

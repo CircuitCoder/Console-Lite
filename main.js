@@ -3,7 +3,7 @@ const {ipcMain, app, globalShortcut, BrowserWindow} = electron;
 const server = require('./server/server');
 const util = require('./util');
 
-const name = 'Console Next';
+const name = 'Console Lite';
 
 app.setName(name);
 
