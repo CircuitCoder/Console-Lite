@@ -56,7 +56,7 @@
   color: #2196f3;
 }
 
-.voters {
+.list.voters {
   position: absolute;
   left: 0;
   right: 0;
@@ -64,6 +64,7 @@
   top: 7vw;
   padding: 0 5vw;
   margin-bottom: 0;
+  padding-bottom: 3vw;
 
   display: flex;
   flex-direction: column;
@@ -71,11 +72,13 @@
 
   overflow-x: auto;
 
+  transition: transform .2s ease;
+
   -webkit-app-region: no-drag;
 }
 
-.voter {
-  -webkit-app-region: drag;
+.voters.no-animation {
+  transition: none;
 }
 
 .voter .list-item-indicator {

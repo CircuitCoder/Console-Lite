@@ -19,6 +19,7 @@
   position: absolute;
   flex-flow: column wrap;
   padding: 0 40px;
+  padding-bottom: 24px;
   top: 104px;
   bottom: 0px;
   right: 0px;
@@ -26,6 +27,8 @@
   margin-bottom: 0;
 
   overflow-x: auto;
+
+  -webit-app-region: no-drag;
 }
 
 .voter {

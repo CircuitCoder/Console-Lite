@@ -3,6 +3,7 @@ const VueAnimatedList = require('vue-animated-list');
 Vue.use(VueAnimatedList);
 
 const {ipcRenderer} = require('electron');
+const BezierEasing = require('bezier-easing');
 
 const util = require('../shared/util.js');
 
@@ -48,6 +49,28 @@ const desc = {
       ipcRenderer.send('projectorInitialized');
     },
 
+    _scrollVote(to) {
+      current = this.$els.voters.scrollLeft;
+      scrollCount = 0,
+      startTime = performance.now();
+      easing = BezierEasing(0.25, 0.1, 0.25, 1.0);
+
+      const outer = this;
+      console.log(startTime);
+      function step(now) {
+        console.log(now);
+        if(now - startTime < 200) {
+          const ratio = easing((now - startTime) / 200);
+          outer.$els.voters.scrollLeft = current + (to - current) * ratio;
+          window.requestAnimationFrame(step);
+        } else {
+          outer.$els.voters.scrollLeft = to;
+        }
+      }
+
+      window.requestAnimationFrame(step);
+    },
+
     performUpdate({ target, data }) {
       if(target === 'status') {
         this.connected = data.connected;
@@ -68,7 +91,8 @@ const desc = {
       } else if(target === 'vote') {
         if(data.event === 'iterate') {
           this.vote.status = data.status;
-          this.$els.voters.scrollLeft = 0;
+          this._scrollVote(0);
+
         } else { // update
           this.vote.matrix[data.index].vote = data.vote;
 
@@ -77,8 +101,12 @@ const desc = {
             for(; i<this.voteMat.length; ++i) if(this.voteMat[i] === this.vote.matrix[data.index]) break;
             if(i !== this.voteMat.length) {
               const vw = window.innerWidth;
-              const left = this.$els.voters.children[i].offsetLeft;
-              this.$els.voters.scrollLeft = left - 0.3 * vw < 0 ? 0 : left - 0.3 *vw;
+              let left = this.$els.voters.children[i].offsetLeft - 0.3 * vw;
+              if(left + this.$els.voters.offsetWidth > this.$els.voters.scrollWidth)
+                left = this.$els.voters.scrollWidth - this.$els.voters.offsetWidth;
+              if(left < 0) left = 0;
+
+              this._scrollVote(left);
             }
           }
         }
