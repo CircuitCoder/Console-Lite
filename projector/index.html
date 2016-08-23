@@ -119,7 +119,7 @@
           </div>
         </div>
       </div>
-      <div class="voters list">
+      <div class="voters list" v-el:voters>
         <div class="voter list-item" v-for="voter of voteMat" transition="item" :class="{ positive: voter.vote === 1, abstained: voter.vote === -1, negative: voter.vote === -2 }">
           <div class="list-item-indicator"></div>
           <div class="list-item-content">{{ voter.name }}</div>

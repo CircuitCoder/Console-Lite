@@ -74,6 +74,10 @@
   -webkit-app-region: no-drag;
 }
 
+.voter {
+  -webkit-app-region: drag;
+}
+
 .voter .list-item-indicator {
   transition: opacity .2s ease, background-color .2s ease;
 }

@@ -68,9 +68,19 @@ const desc = {
       } else if(target === 'vote') {
         if(data.event === 'iterate') {
           this.vote.status = data.status;
-        } else if(data.event === 'scroll') {
+          this.$els.voters.scrollLeft = 0;
         } else { // update
           this.vote.matrix[data.index].vote = data.vote;
+
+          if(!data.rearrange) { // Running vote
+            let i = 0;
+            for(; i<this.voteMat.length; ++i) if(this.voteMat[i] === this.vote.matrix[data.index]) break;
+            if(i !== this.voteMat.length) {
+              const vw = window.innerWidth;
+              const left = this.$els.voters.children[i].offsetLeft;
+              this.$els.voters.scrollLeft = left - 0.3 * vw < 0 ? 0 : left - 0.3 *vw;
+            }
+          }
         }
 
         if(data.rearrange)
