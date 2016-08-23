@@ -1,12 +1,12 @@
 <div class="view">
   <div class="view-title">主页</div>
   <div class="view-pagetitle clickable" @click="navigateTo('lists')">活跃发言名单</div>
-  <div class="list">
+  <div class="list inline">
     <div class="list-item clickable" v-for="list of lists"></div>
     <div class="list-item empty-hint">无活跃发言名单</div>
   </div>
   <div class="view-pagetitle clickable" @click="navigateTo('timers')">活跃计时器</div>
-  <div class="list">
+  <div class="list inline">
     <div class="list-item clickable" v-for="timer of timers | filterBy activeTimer | limitBy 5" @click="gotoTimer(timer.name)">
       <div class="list-item-indicator"></div>
       <div class="list-item-content timer-row">
@@ -23,7 +23,7 @@
     <div class="list-item empty-hint">无活跃计时器</div>
   </div>
   <div class="view-pagetitle clickable" @click="navigateTo('votes')">活跃投票</div>
-  <div class="list">
+  <div class="list inline">
     <div class="list-item clickable"
       v-for="vote of votes | filterBy activeVote | limitBy 5"
       :class="{ bold: vote.status.running }"

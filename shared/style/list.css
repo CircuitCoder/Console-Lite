@@ -49,6 +49,9 @@
 .empty-hint {
   display: none;
   color: rgba(0,0,0,.3);
+}
+
+.list.inline .empty-hint {
   margin-left: -5px;
 }
 
