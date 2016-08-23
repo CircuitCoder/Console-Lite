@@ -2,6 +2,8 @@ const Vue = require('vue');
 const fs = require('fs');
 const crypto = require('crypto');
 
+const util = require('../../../shared/util.js');
+
 const VoteView = Vue.extend({
   template: fs.readFileSync(`${__dirname}/vote.html`).toString('utf-8'),
   props: [
@@ -49,30 +51,9 @@ const VoteView = Vue.extend({
   },
 
   methods: {
-    /* Sort the matrix based on the following criterias:
-     * - Passed -> Positive -> Negative -> Abstained
-     * - Sort based on the original iteration in each category
-     */
-
-    _cateCmp(a, b, vote) {
-      if(a.vote === vote) {
-        if(b.vote === vote)
-          return a.originalId < b.originalId ? -1 : 1;
-        else return -1;
-      } else if(b.vote === vote) return 1;
-
-      return 0;
-    },
 
     rearrange() {
-      this.mat.sort((a, b) => {
-        for(const v of [0, 1, -1, -2]) {
-          const res = this._cateCmp(a, b, v);
-          if(res !== 0) return res;
-        }
-
-        return 0;
-      });
+      util.sortVoteMatrix(this.mat);
     },
 
     start() {
@@ -154,6 +135,7 @@ const VoteView = Vue.extend({
 
       if(!this._overrideSetVote
         && this.targetVote === 0
+        && this.vote.running
         && this.vote.status.iteration === this.vote.rounds) {
           if(!confirm('这是最后一轮投票了，是否将投票结果设置为过?')) return;
           else this._overrideSetVote = true;

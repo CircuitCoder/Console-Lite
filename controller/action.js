@@ -303,16 +303,24 @@ const desc = {
 
             if(v === this.vote && !v.status.running)
               this.$broadcast('vote-rearrange');
+
+            if(v === this.projectedVote)
+              this.sendToProjector({ type: 'update', target: 'vote', data: { event: 'update', rearrange: !v.status.running, index, vote }});
+
             break;
           }
         },
 
         voteIterated: (id, status) => {
           for(let v of this.votes) if(v.id === id) {
-            if(v === this.vote && v.status.running !== status.running)
+            v.status = status;
+
+            if(v === this.vote && !status.running)
               this.$broadcast('vote-rearrange');
 
-            v.status = status;
+            if(v === this.projectedVote)
+              this.sendToProjector({ type: 'update', target: 'vote', data: { event: 'iterate', rearrange: !status.running, status }});
+
             break;
           }
         },

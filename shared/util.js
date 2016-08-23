@@ -39,7 +39,34 @@ function getFileType(mime) {
   else return 'download'
 }
 
+function _cateCmp(a, b, vote) {
+  if(a.vote === vote) {
+    if(b.vote === vote)
+      return a.originalId < b.originalId ? -1 : 1;
+    else return -1;
+  } else if(b.vote === vote) return 1;
+
+  return 0;
+}
+
+/* Sort the matrix based on the following criterias:
+ * - Passed -> Positive -> Negative -> Abstained
+ * - Sort based on the original iteration in each category
+ */
+
+function sortVoteMatrix(mat) {
+  mat.sort((a, b) => {
+    for(const v of [0, 1, -2, -1]) {
+      const res = _cateCmp(a, b, v);
+      if(res !== 0) return res;
+    }
+
+    return 0;
+  });
+}
+
 module.exports = {
   renderPDF,
   getFileType,
+  sortVoteMatrix,
 }

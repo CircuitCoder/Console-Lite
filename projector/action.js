@@ -1,4 +1,7 @@
 const Vue = require('vue');
+const VueAnimatedList = require('vue-animated-list');
+Vue.use(VueAnimatedList);
+
 const {ipcRenderer} = require('electron');
 
 const util = require('../shared/util.js');
@@ -29,6 +32,7 @@ const desc = {
     fileCont: null,
 
     vote: null,
+    voteMat: [],
   },
   methods: {
     init() {
@@ -63,10 +67,15 @@ const desc = {
         }
       } else if(target === 'vote') {
         if(data.event === 'iterate') {
+          this.vote.status = data.status;
         } else if(data.event === 'scroll') {
-        } else if(data.event === 'rearrange') {
         } else { // update
+          this.vote.matrix[data.index].vote = data.vote;
         }
+
+        if(data.rearrange)
+          util.sortVoteMatrix(this.voteMat);
+        console.log(this.voteMat.sort);
       }
     },
 
@@ -102,6 +111,12 @@ const desc = {
         } else if(this.fileType === 'image') { }
       } else if(target === 'vote') {
         this.vote = data.vote;
+
+        // Setup mat
+        this.voteMat = [...this.vote.matrix];
+
+        // Sort anyway
+        util.sortVoteMatrix(this.voteMat);
       }
 
       return Promise.resolve();

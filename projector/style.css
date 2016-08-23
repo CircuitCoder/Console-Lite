@@ -2,12 +2,15 @@
 
 @import '../shared/style/common.css';
 @import '../shared/style/transitions.css';
+@import '../shared/style/list.css';
 
 @import '../shared/components/timer.css';
 
 @import './styles/timer.css';
 @import './styles/file.css';
 @import './styles/vote.css';
+
+@import './styles/override/list.css';
 
 body {
   position: absolute;
