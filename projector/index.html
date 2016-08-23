@@ -65,6 +65,12 @@
         <div class="bottom-title">
           {{ vote.name }}
         </div>
+        <div class="vote-iteration" v-if="vote.status.iteration > 0">
+          第{{ vote.status.iteration }}轮
+        </div>
+        <div class="vote-iteration" v-else>
+          未启动
+        </div>
         <div class="vote-seats">
           <i class="material-icons">person</i>
           {{ vote.matrix.length }}

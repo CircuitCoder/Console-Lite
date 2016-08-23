@@ -5,6 +5,12 @@
   font-size: 3vw;
 }
 
+.vote-iteration {
+  font-size: 2vw;
+  font-weight: 200;
+  margin-left: 2.5vw;
+}
+
 .vote-seats .material-icons {
   opacity: 0.54;
   margin-right: .25vw;
@@ -78,6 +84,7 @@
   bottom: 0;
   right: 0;
   left: .625vw;
+  transition: opacity .2s ease, background-color .2s ease;
 }
 
 .voter.abstained .list-item-indicator {
