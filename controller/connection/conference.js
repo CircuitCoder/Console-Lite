@@ -11,74 +11,46 @@ class ConferenceConnection {
     this.listeners = [];
 
     socket.once('pong', cb)
+    this.socket = socket;
 
     /* Seats */
 
-    socket.on('seatsUpdated', ({ seats }) => {
-      if(!seats) {
-        console.error('Empty event: seatsUpdated');
-        return;
-      }
-
-      for(const l of this.listeners)
-        if(l.seatsUpdated)
-          l.seatsUpdated(seats);
-    });
+    this.pushSocketListener('seatsUpdated', ['seats']);
 
     /* Timers */
 
-    socket.on('timerAdded', ({ id, name, type, value }) => {
-      for(const l of this.listeners)
-        if(l.timerAdded) l.timerAdded(id, name, type, value);
-    });
-
-    socket.on('timerStarted', ({ id, value }) => {
-      for(const l of this.listeners)
-        if(l.timerStarted) l.timerStarted(id, value);
-    });
-
-    socket.on('timerStopped', ({ id }) => {
-      for(const l of this.listeners)
-        if(l.timerStopped) l.timerStopped(id);
-    });
-
-    socket.on('timerTick', ({ id, value }) => {
-      for(const l of this.listeners)
-        if(l.timerTick) l.timerTick(id, value);
-    });
-
-    socket.on('timerUpdated', ({ id, value }) => {
-      for(const l of this.listeners)
-        if(l.timerUpdated) l.timerUpdated(id, value);
-    });
+    this.pushSocketListener('timerAdded', ['id', 'name', 'type', 'value']);
+    this.pushSocketListener('timerStarted', ['id', 'value']);
+    this.pushSocketListener('timerReset', ['id', 'value']);
+    this.pushSocketListener('timerStopped', ['id']);
+    this.pushSocketListener('timerTick', ['id', 'value']);
+    this.pushSocketListener('timerUpdated', ['id', 'value']);
 
     /* Files */
 
-    socket.on('fileAdded', ({ id, name, type }) => {
-      for(const l of this.listeners)
-        if(l.fileAdded) l.fileAdded(id, name, type);
-    });
+    this.pushSocketListener('fileAdded', ['id', 'name', 'type']);
+    this.pushSocketListener('fileEdited', ['id']);
 
-    socket.on('fileEdited', ({ id }) => {
-      for(const l of this.listeners)
-        if(l.fileEdited) l.fileEdited(id);
-    });
+    /* Votes */
 
-    socket.on('voteAdded', ({ id, name, target, rounds, seats }) => {
-      for(const l of this.listeners)
-        if(l.voteAdded) l.voteAdded(id, name, target, rounds, seats);
-    });
+    this.pushSocketListener('voteAdded', ['id', 'name', 'target', 'rounds', 'seats']);
+    this.pushSocketListener('voteUpdated', ['id', 'index', 'vote']);
+    this.pushSocketListener('voteIterated', ['id', 'status']);
 
-    socket.on('voteUpdated', ({ id, index, vote }) => {
-      for(const l of this.listeners)
-        if(l.voteUpdated) l.voteUpdated(id, index, vote);
-    });
+    /* Lists*/
 
-    socket.on('voteIterated', ({ id, status }) => {
+    this.pushSocketListener('listAdded', ['id', 'name', 'seats']);
+    this.pushSocketListener('listUpdated', ['id', 'seats']);
+    this.pushSocketListener('listIterated', ['id', 'ptr']);
+  }
+
+  pushSocketListener(name, fields) {
+    this.socket.on(name, (data) => {
       for(const l of this.listeners)
-        if(l.voteIterated) l.voteIterated(id, status);
+        if(name in l) l[name](...fields.map(e => data[e]));
     });
   }
+
 
   addListener(listener) {
     this.listeners.push(listener);
@@ -106,7 +78,7 @@ class ConferenceConnection {
   }
 
   /**
-   * action in { start, restart, stop }
+   * action in { start, restart, stop, reset }
    */
   manipulateTimer(action, id, cb) {
     const token = `${action}Timer`;
@@ -184,6 +156,35 @@ class ConferenceConnection {
     });
 
     socket.emit('iterateVote', { id, status });
+  }
+
+  /* Lists */
+  addList(name, seats, cb) {
+    socket.once('addList', (data) => {
+      console.log(data);
+      if(data.ok) cb(null, data.id);
+      else cb(data.error);
+    });
+
+    socket.emit('addList', { name, seats });
+  }
+
+  updateList(id, seats, cb) {
+    socket.once('updateList', (data) => {
+      if(data.ok) cb(null);
+      else cb(data.error);
+    });
+    
+    socket.emit('updateList', { id, seats });
+  }
+
+  iterateList(id, ptr, cb) {
+    socket.once('iterateList', (data) => {
+      if(data.ok) cb(null);
+      else cb(data.error);
+    });
+
+    socket.emit('iterateVote', { id, ptr });
   }
 }
 

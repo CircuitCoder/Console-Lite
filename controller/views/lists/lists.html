@@ -1,0 +1,76 @@
+<div class="view">
+  <div class="view-title">
+    发言名单
+    <button class="embedded" @click="addFlag = true">
+      添加
+      <i class="material-icons">add</i>
+    </button>
+  </div>
+  <div class="view-search">
+    <i class="material-icons">search</i>
+    <div class="input-group">
+      <input v-model="searchInput" @keydown.esc="searchInput = ''">
+      <div class="border-line"></div>
+    </div>
+    <div class="clear-btn" @click="searchInput = ''" v-show="searchInput" transition="opacity">
+      <i class="material-icons">close</i>
+    </div>
+  </div>
+  <div class="list">
+    <div class="list-item clickable" v-for="list of lists | filterBy searchInput in 'name'" track-by="$index">
+      <div class="list-item-indicator"></div>
+      <div class="list-item-content list-row">
+        <div class="list-name">
+          {{ list.name }}
+        </div>
+
+        <template v-if="list.timerCurrent">
+          <div class="list-timer-icon">
+            <i class="material-icons">person</i>
+          </div>
+          <div class="timer-value-wrapper list-timer">
+            <timer class="timer-left" :time="list.timerCurrent.left"></timer>
+            <span class="timer-value-separator">/</span>
+            <timer class="timer-value" :time="list.timerCurrent.value"></timer>
+          </div>
+        </template>
+
+        <template v-if="list.timerTotal">
+          <div class="list-timer-icon">
+            <i class="material-icons">access_time</i>
+          </div>
+          <div class="timer-value-wrapper list-timer">
+            <timer class="timer-left" :time="list.timerTotal.left"></timer>
+            <span class="timer-value-separator">/</span>
+            <timer class="timer-value" :time="list.timerTotal.value"></timer>
+          </div>
+        </temlate>
+      </div>
+    </div>
+    <div class="empty-hint">请点击添加创建发言名单</div>
+  </div>
+
+  <div class="dialog-overlap" transition="opacity" v-show="addFlag" @click="addFlag = false">
+    <div class="dialog" @click.stop.prevent>
+      <div class="dialog-title">
+        创建发言名单
+      </div>
+      <div class="dialog-content">
+        <div class="input-group">
+          <div class="hint">显示名</div>
+          <input v-model="name">
+          <div class="border-line"></div>
+        </div>
+        <div class="timer-input-hint">总时长</div>
+        <timer-input :time.sync="totTime"></timer-input>
+        <div class="timer-input-hint">每名代表</div>
+        <timer-input :time.sync="eachTime"></timer-input>
+        <button @click="performAdd" class="confirmation-btn">
+          提交
+          <i class="material-icons">keyboard_arrow_right</i>
+        </button>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+</div>

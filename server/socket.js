@@ -85,6 +85,13 @@ function add(id) {
       });
     });
 
+    socket.on('resetTimer', ({ id }) => {
+      if(!id) return socket.emit('resetTimer', { ok: false, error: 'BadRequest' });
+      socket.conf.resetTimer(id, (err) => {
+        if(err) return socket.emit('resetTimer', { ok: false, error: err });
+        else return socket.emit('resetTimer', { ok: true, id });
+      });
+    });
 
     socket.on('stopTimer', ({ id }) => {
       if(!id) return socket.emit('stopTimer', { ok: false, error: 'BadRequest' });
@@ -164,6 +171,32 @@ function add(id) {
         return socket.emit('iterateVote', { ok: true });
       });
     });
+
+    /* Lists */
+
+    socket.on('addList', ({ name, seats }) => {
+      if(!name || !seats) return socket.emit('addList', { ok: false, error: 'BadRequest' });
+      socket.conf.addList(name, seats, (err, id) => {
+        if(err) return socket.emit('addList', { ok: false, error: err });
+        return socket.emit('addList', { ok: true, id });
+      });
+    });
+
+    socket.on('updateList', ({ id, seats }) => {
+      if(!id || !seats) return socket.emit('updateList', { ok: false, error: 'BadRequest' });
+      socket.conf.updateList(id, seats, err => {
+        if(err) return socket.emit('updateList', { ok: false, error: err });
+        return socket.emit('updateList', { ok: true });
+      });
+    });
+
+    socket.on('iterateList', ({ id, ptr }) => {
+      if(!id || !Number.isInteger(ptr)) return socket.emit('iterateList', { ok: false, error: 'BadRequest' });
+      socket.conf.iterateList(id, ptr , err => {
+        if(err) return socket.emit('iterateList', { ok: false, error: err });
+        return socket.emit('iterateList', { ok: true });
+      });
+    });
   });
 
   conf.addListener({
@@ -181,6 +214,10 @@ function add(id) {
 
     timerStarted(id, value) {
       nsp.emit('timerStarted', { id, value });
+    },
+
+    timerReset(id, value) {
+      nsp.emit('timerReset', { id, value });
     },
 
     timerStopped(id) {
@@ -209,6 +246,18 @@ function add(id) {
     
     voteIterated(id, status) {
       nsp.emit('voteIterated', { id, status });
+    },
+
+    listAdded(id, name, seats) {
+      nsp.emit('listAdded', { id, name, seats });
+    },
+
+    listIterated(id, ptr) {
+      nsp.emit('listIterated', { id, ptr });
+    },
+
+    listUpdated(id, seats) {
+      nsp.emit('listUpdated', { id, seats });
     },
   });
 

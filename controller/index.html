@@ -16,9 +16,13 @@
         :seats="seats"
         :files="files"
         :votes="votes"
+        :lists="lists"
 
         :vote="vote"
         :file="file"
+
+        :list-current-timers="listCurrentTimers",
+        :list-total-timers="listTotalTimers",
 
         :search-input="searchInput"
         :alt-hold="altHold"
@@ -42,7 +46,11 @@
         @view-vote="viewVote"
         @update-vote="updateVote"
         @iterate-vote="iterateVote"
-        @project-vote="projectVote">
+        @project-vote="projectVote"
+        
+        @add-list="addList"
+        @update-list="updateList"
+        @iterate-list="iterateList">
 
       </component>
       <!-- Events will loop back through server broadcast -->

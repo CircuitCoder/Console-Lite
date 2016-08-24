@@ -24,6 +24,24 @@ class Conference {
     this.listeners = [];
     this.runningTimers = new Map();
     this.timerValues = new Map();
+
+    this.listTotal = new Map();
+    this.listCurrent = new Map();
+
+    /* Silently in the background */
+    this.db.get('timers', (err, timers) => {
+      if(err) {
+        if(!err.notFound) console.error(err);
+        return;
+      }
+
+      for(let t of timers) {
+        if(t.type === 'list-total')
+          this.listTotal.set(t.name, t.id);
+        if(t.type === 'list-current')
+          this.listCurrent.set(t.id, t.name);
+      }
+    });
   }
 
   setup(cb) {
@@ -70,10 +88,18 @@ class Conference {
       for(const l of this.listeners)
         if(l.timerStarted) l.timerStarted(id, value);
 
-      cb(null);
+      if(this.listCurrent.has(id)) { // Never restart list-total timers
+        const listId = this.listCurrent.get(id);
+        if(this.listTotal.has(listId)) return this.startTimer(this.listTotal.get(listId), cb);
+      }
+
+      return cb(null);
     });
   }
 
+  /**
+   * You should never start list-total timers
+   */
   startTimer(id, cb) {
     return this._startTimer(id, `timer:${id}:left`, cb);
   }
@@ -82,6 +108,24 @@ class Conference {
     return this._startTimer(id, `timer:${id}`, cb);
   }
 
+  resetTimer(id, cb) {
+    this.db.get(`timer:${id}`, (err, all) => {
+      if(err) return cb(err);
+
+      this.db.set(`timers:${id}:left`, all, err => {
+        if(err) return cb(err);
+
+        for(const l of this.listeners)
+          if(l.timerReset) l.timerReset(id, all);
+
+        cb();
+      });
+    });
+  }
+
+  /**
+   * You should never stop list-total timers
+   */
   stopTimer(id, cb) {
     if(!this.runningTimers.has(id)) return cb('AlreadyStopped');
     const intId = this.runningTimers.get(id);
@@ -96,6 +140,11 @@ class Conference {
 
       for(const l of this.listeners)
         if(l.timerStopped) l.timerStopped(id);
+
+      if(this.listCurrent.has(id)) {
+        const listId = this.listCurrent.get(id);
+        if(this.listTotal.has(listId)) return this.stopTimer(this.listTotal.get(listId), cb);
+      }
 
       cb(null);
     });
@@ -117,7 +166,7 @@ class Conference {
   /**
    * Possible values for type:
    * - 'standalone': A standalone timer
-   * - 'speaker': A timer for a speaker list, whose name must be identical to the list's id
+   * - 'list-current', 'list-total': A timer for a speaker list, whose name must be identical to the list's id
    */
 
   addTimer(name, type, value, cb) {
@@ -131,6 +180,11 @@ class Conference {
         (resolve, reject) => this.db.put(`timer:${id}`, value, err ? reject(err) : resolve(err)),
         (resolve, reject) => this.db.put(`timer:${id}:left`, value, err ? reject(err) : resolve(err)),
       ].map(e => new Promise(e))).then(() => {
+        if(type === 'list-current')
+          this.listCurrent.set(id, name);
+        else if(type === 'list-total')
+          this.listTotal.set(name, id);
+
         for(const l of this.listeners)
           if(l.timerAdded) l.timerAdded(id, name, type, value);
         return cb(null, id);
@@ -308,14 +362,76 @@ class Conference {
     });
   }
 
+  /* Lists */
+
+  addList(name, seats, cb) {
+    const id = crypto.randomBytes(16).toString('hex');
+
+    this.db.get('lists', (err, lists) => {
+      if(err) return cb(err);
+
+      lists.unshift({ name, id });
+
+      Promise.all([
+        new Promise((resolve, reject) => this.db.put('lists', lists, err => err ? reject(err) : resolve())),
+        new Promise((resolve, reject) => this.db.put(`list:${id}:seats`, seats, err => err ? reject(err) : resolve())),
+        new Promise((resolve, reject) => this.db.put(`list:${id}:ptr`, 0, err => err ? reject(err) : resolve())),
+      ]).then(() => {
+        for(const l of this.listeners)
+          if(l.listAdded) l.listAdded(id, name, seats);
+
+        cb(null, id);
+      }).catch(cb);
+    });
+  }
+
+  updateList(id, seats, cb) {
+    this.db.put(`list:${id}:seats`, seats, err => {
+      if(err) return err;
+
+      for(l of this.listeners)
+        if(l.listUpdated) l.listUpdated(id, seats);
+
+      cb(null);
+    });
+  }
+
+  iterateList(id, ptr, cb) {
+    this.db.put(`list:${id}:ptr`, ptr, err => {
+      if(err) return err;
+
+      for(l of this.listeners)
+        if(l.listIterated) l.listIterated(id, ptr);
+
+      cb(null);
+    });
+  }
+
+  listLists() {
+    return new Promise((resolve, reject) => this.db.get('lists', (err, lists) => {
+      if(err) return reject(err);
+      else resolve(lists);
+    })).then(lists =>
+      Promise.all(lists.map(list => new Promise((resolve, reject) => Promise.all([
+        (resolve, reject) => this.db.get(`list:${list.id}:seats`, (err, seats) => err ? reject(err) : resolve(seats)),
+        (resolve, reject) => this.db.get(`list:${list.id}:ptr`, (err, ptr) => err ? reject(err) : resolve(ptr)),
+      ].map(e => new Promise(e))).then(([seats, ptr]) => resolve({
+        id: list.id,
+        name: list.name,
+        seats: seats,
+        ptr: ptr,
+      })).catch(reject)))));
+  }
+
   fetchAll(cb) {
     Promise.all([
       this.listTimers(),
       this.listSeats(),
       this.listFiles(),
       this.listVotes(),
-    ]).then(([timers, seats, files, votes]) => {
-      cb(null, { timers, seats, files, votes })
+      this.listLists(),
+    ]).then(([timers, seats, files, votes, lists]) => {
+      cb(null, { timers, seats, files, votes, lists })
     }).catch(cb);
   }
 

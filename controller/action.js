@@ -10,6 +10,7 @@ const GlobalConnection = require('./connection/global');
 const ConferenceConnection = require('./connection/conference');
 
 require('../shared/components/timer');
+require('../shared/components/timer-input');
 
 let globalConn, confConn;
 let serverConfig;
@@ -56,8 +57,10 @@ const desc = {
     seats: [],
     files: [],
     votes: [],
+    lists: [],
 
     fileCache: {},
+    timerWaitingList: [],
 
     file: null,
     vote: null,
@@ -75,6 +78,7 @@ const desc = {
     timers: require('./views/timers/timers'),
     files: require('./views/files/files'),
     votes: require('./views/votes/votes'),
+    lists: require('./views/lists/lists'),
 
     file: require('./views/file/file'),
     vote: require('./views/vote/vote'),
@@ -187,10 +191,33 @@ const desc = {
 
         for(let f of data.files) f.highlight = false;
 
+        for(const list of data.lists) {
+          list.timerCurrent = null;
+          list.timerTotal = null;
+        }
+
+        for(const timer of data.timers) {
+          if(timer.type === 'standalone') continue;
+
+          let flag = false;
+          for(const l of data.lists) if(l.id === timer.name) {
+            console.log("FOUND");
+            if(timer.type === 'list-total')
+              l.timerTotal = timer;
+            if(timer.type === 'list-current')
+              l.timerCurrent = timer;
+            flag = true;
+            break;
+          }
+
+          if(!flag) this.timerWaitingList.push(timer);
+        }
+
         this.timers = data.timers;
         this.seats = data.seats;
         this.files = data.files;
         this.votes = data.votes;
+        this.lists = data.lists;
 
         this.recalcCount();
 
@@ -215,6 +242,18 @@ const desc = {
 
         timerAdded: (id, name, type, value) => {
           this.timers.unshift({ id, name, value, left: value, type, active: false });
+          let flag = false;
+          for(const l of this.lists) if(l.id === name) {
+            if(timer.type === 'standalone') continue;
+            if(type === 'list-total')
+              l.timerTotal = this.timers[0];
+            if(type === 'list-current')
+              l.timerCurrent = this.timers[0];
+            flag = true;
+            break;
+          }
+
+          if(!flag) timerWaitingList.push(this.timers[0]);
         },
         
         timerStarted: (id, value) => {
@@ -225,6 +264,10 @@ const desc = {
 
           if(this.projOn && proj.mode === 'timer' && proj.timer === id)
             this.sendToProjector({ type: 'update', target: 'timer', data: { left: value, active: true } });
+        },
+
+        timerReset: (id, value) => {
+          this.timerUpdated(id, value);
         },
 
         timerStopped: (id, value) => {
@@ -335,6 +378,40 @@ const desc = {
             break;
           }
         },
+
+        /* Lists */
+        listAdded: (id, name, seats) => {
+          let timerTotal = undefined;
+          let timerCurrent = undefined;
+          
+          for(let timer of this.timerWaitingList) {
+            if(timer.name === id) {
+              if(timer.type === 'list-total') timerTotal = timer;
+              else if(timer.type === 'list-current') timerCurrent = timer;
+            }
+          }
+
+          if(timerTotal) this.timerWaitingList.$remove(timerTotal);
+          if(timerCurrent) this.timerWaitingList.$remove(timerCurrent);
+
+          this.lists.unshift({
+            id, name, seats, timerTotal, timerCurrent, ptr: 0
+          });
+        },
+
+        listUpdated: (id, seats) => {
+          for(const list of this.lists) if(list.id === id) {
+            list.seats = seats;
+            break;
+          }
+        },
+
+        listIterated: (id, ptr) => {
+          for(const list of this.lists) if(list.id === id) {
+            list.ptr = ptr;
+            break;
+          }
+        }
       });
     },
 
@@ -399,7 +476,7 @@ const desc = {
     /* Timers */
 
     addTimer(name, sec) {
-      confConn.addTimer(name, 'plain', sec, (err, id) => {
+      confConn.addTimer(name, 'standalone', sec, (err, id) => {
         if(err) {
           console.error(err);
           alert('添加失败!');
@@ -532,6 +609,37 @@ const desc = {
       this.sendToProjector({ type: 'layer', target: 'vote', data: { vote } });
     },
 
+    /* Lists */
+    addList(name, seats, totTime, eachTime) {
+      new Promise((resolve, reject) => confConn.addList(name, seats, (err, id) => err ? reject(err) : resolve(id)))
+        .then(id => Promise.all([
+          new Promise((resolve, reject) => totTime === 0 ? resolve() : confConn.addTimer(id, 'list-total', totTime, err => err ? reject(err) : resolve())),
+          new Promise((resolve, reject) => confConn.addTimer(id, 'list-current', eachTime, err => err ? reject(err) : resolve())),
+        ])).catch(e => {
+          console.error(e);
+          alert('添加失败!');
+        });
+    },
+
+    iterateList(id, ptr) {
+      Promise.all([
+        new Promise((resolve, reject) => confConn.manipulateTimer('reset', tid, err => err ? reject(err) : resolve())),
+        new Promise((resolve, reject) => confConn.iterateList(id, ptr, err => err ? reject(err) : resolve())),
+      ]).catch(e => {
+        console.error(e);
+        alert('更新失败!');
+      });
+    },
+
+    updateList(id, seats) {
+      confConn.updateList(id, seats, err => {
+        if(err) {
+          console.error(err);
+          alert('更新失败!');
+        }
+      });
+    },
+
     /* Utitlities */
 
     checkKeyHold(e) {
@@ -572,6 +680,7 @@ const desc = {
       this.initData = data;
     },
   },
+
   computed: {
     simpleHalfCount() {
       return Math.floor(this.presentCount / 2) + 1;
