@@ -1,6 +1,7 @@
 const { installNodeHeaders, rebuildNativeModules, shouldRebuildNativeModules } = require('electron-rebuild');
 const pathToElectron = require('electron-prebuilt');
 const childProcess = require('child_process');
+const process = require('process');
 
 console.log('Rebuilding native modules...');
 
@@ -16,7 +17,7 @@ shouldRebuildNativeModules(pathToElectron)
     }).match(/v(\d+\.\d+\.\d+)/)[1];
 
     return installNodeHeaders(electronVersion, 'https://atom.io/download/atom-shell')
-      .then(() => rebuildNativeModules(electronVersion, './node_modules'));
+      .then(() => rebuildNativeModules(electronVersion, `${__dirname}/../node_modules`, '--build-from-source'));
   })
   .then(() => {
     console.log('Rebuilding finished.');
