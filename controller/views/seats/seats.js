@@ -63,7 +63,6 @@ const SeatsView = Vue.extend({
 
             for(let i = 0; i < a.pinyin.length; ++i) {
               if(i === b.pinyin.length) return 1; // a > b
-              console.log(a.pinyin[i][0]);
               const lc = a.pinyin[i][0].localeCompare(b.pinyin[i][0]);
               if(lc !== 0) return lc;
             }

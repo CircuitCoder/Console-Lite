@@ -161,7 +161,6 @@ class ConferenceConnection {
   /* Lists */
   addList(name, seats, cb) {
     socket.once('addList', (data) => {
-      console.log(data);
       if(data.ok) cb(null, data.id);
       else cb(data.error);
     });

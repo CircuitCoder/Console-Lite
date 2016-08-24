@@ -41,7 +41,6 @@ const TimersView = Vue.extend({
     },
 
     performEdit() {
-      console.log(this.timerValue);
       if(this.timerName === '' || this.timerValue <= 0) return;
       if(this.additionMode) this.$dispatch('add-timer', this.timerName, this.timerValue);
       else this.$dispatch('update-timer', this.timerId, this.timerValue);

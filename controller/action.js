@@ -201,7 +201,6 @@ const desc = {
 
           let flag = false;
           for(const l of data.lists) if(l.id === timer.name) {
-            console.log("FOUND");
             if(timer.type === 'list-total')
               l.timerTotal = timer;
             if(timer.type === 'list-current')
@@ -555,7 +554,6 @@ const desc = {
 
     projectFile(file) {
       this.getFile(file.id, (err, content) => {
-        console.log(content);
         if(err) {
           console.error(err);
           return alert('获取文件失败');
@@ -581,7 +579,6 @@ const desc = {
        * So it's save to keep a reference of a specific vote
        */
 
-      console.log(vote);
       this.vote = vote;
       this.activeView = 'vote';
     },
