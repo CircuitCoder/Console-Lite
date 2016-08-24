@@ -57,22 +57,7 @@
           <div class="border-line"></div>
         </div>
         <div class="timer-input-hint">时间</div>
-        <div class="timer-input-group">
-          <div class="input-group">
-            <input v-model="timerHour" number @input="validate('hour')">
-            <div class="border-line"></div>
-          </div>
-          <div class="timer-separator">:</div>
-          <div class="input-group">
-            <input v-model="timerMinute" number @input="validate('minute')">
-            <div class="border-line"></div>
-          </div>
-          <div class="timer-separator">:</div>
-          <div class="input-group">
-            <input v-model="timerSecond" number @input="validate('second')">
-            <div class="border-line"></div>
-          </div>
-        </div>
+        <timer-input :time.sync="timerValue"></timer-input>
         <button @click="performEdit" class="confirmation-btn">
           提交
           <i class="material-icons">keyboard_arrow_right</i>

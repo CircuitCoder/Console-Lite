@@ -13,18 +13,14 @@ const TimersView = Vue.extend({
   data: () => ({
     editFlag: false,
     timerName: '',
-    timerHour: 0,
-    timerMinute: 0,
-    timerSecond: 0,
+    timerValue: 0,
     timerId: 0,
     additionMode: false,
   }),
   methods: {
     add() {
       this.timerName = '';
-      this.timerHour = 0;
-      this.timerMinute = 0;
-      this.timerSecond = 0;
+      this.timerValue = 0;
       this.editFlag = true;
       this.additionMode = true;
     },
@@ -34,9 +30,7 @@ const TimersView = Vue.extend({
 
       this.timerId = timer.id;
       this.timerName = timer.name;
-      this.timerHour = Math.floor( timer.value / 3600 );
-      this.timerMinute = Math.floor( timer.value / 60 ) % 60;
-      this.timerSecond = timer.value % 60;
+      this.timerValue = timer.value;
 
       this.additionMode = false;
       this.editFlag = true;
@@ -47,28 +41,13 @@ const TimersView = Vue.extend({
     },
 
     performEdit() {
-      const sec = ( this.timerHour * 60 + this.timerMinute ) * 60 + this.timerSecond;
-      if(this.timerName === '' || sec <= 0) return;
-      if(this.additionMode) this.$dispatch('add-timer', this.timerName, sec);
-      else this.$dispatch('update-timer', this.timerId, sec);
+      console.log(this.timerValue);
+      if(this.timerName === '' || this.timerValue <= 0) return;
+      if(this.additionMode) this.$dispatch('add-timer', this.timerName, this.timerValue);
+      else this.$dispatch('update-timer', this.timerId, this.timerValue);
       this.editFlag = false;
     },
 
-    validate(target) {
-      if(target === 'hour') {
-        if(!Number.isInteger(this.timerHour)) this.timerHour = 0;
-        else if(this.timerHour < 0) this.timerHour = 0;
-      } else if(target === 'minute') {
-        if(!Number.isInteger(this.timerMinute)) this.timerMinute = 0;
-        else if(this.timerMinute < 0) this.timerMinute = 0;
-        else if(this.timerMinute > 59) this.timerMinute = 59;
-      } else if(target === 'second') {
-        if(!Number.isInteger(this.timerSecond)) this.timerSecond = 0;
-        else if(this.timerSecond < 0) this.timerSecond = 0;
-        else if(this.timerSecond > 59) this.timerSecond = 59;
-      }
-    },
-    
     toggle(timer) {
       if(timer.active) this.$dispatch('manipulate-timer', 'stop', timer.id);
       else if(timer.left === 0) this.$dispatch('manipulate-timer', 'restart', timer.id);
