@@ -86,14 +86,14 @@ app.on('activate', () => {
 });
 
 let serverStarted = false;
-let passkey;
+let passkey, idkey;
 let shutdown;
 
 ipcMain.on('startServer', (event, data) => {
   if(serverStarted)
-    return event.sender.send('serverCallback', { url: 'http://localhost:4928', passkey: passkey });
+    return event.sender.send('serverCallback', { url: 'http://localhost:4928', passkey, idkey });
 
-  server((err, pk, sd) => {
+  server((err, pk, ik, sd) => {
     if(err) {
       console.error(err);
       return event.sender.send('serverCallback', { error: err });
@@ -101,8 +101,9 @@ ipcMain.on('startServer', (event, data) => {
 
     serverStarted = true;
     passkey = pk;
+    idkey = ik;
     shutdown = sd;
-    event.sender.send('serverCallback', { url: 'http://localhost:4928', passkey: passkey });
+    event.sender.send('serverCallback', { url: 'http://localhost:4928', passkey, idkey });
   });
 });
 

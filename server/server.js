@@ -20,6 +20,7 @@ module.exports = (cb, port = 4928) => {
     console.log('Backend initialization completed');
 
     const passkey = crypto.randomBytes(4).toString('hex');
+    const idkey = crypto.randomBytes(4).toString('hex').toUpperCase();
 
     // Setup sockets 
     const server = http.createServer((req, res) => {
@@ -36,8 +37,8 @@ module.exports = (cb, port = 4928) => {
         backend.shutdown();
         cb(err);
       } else {
-        console.log(`Server up at port ${port} with passkey ${passkey}.`);
-        cb(null, passkey, shutdown);
+        console.log(`Server ${idkey} up at port ${port} with passkey ${passkey}.`);
+        cb(null, passkey, idkey, shutdown);
       }
     });
   });

@@ -3,9 +3,8 @@ if(!process) process = require('process');
 
 let shutdownHook;
 
-boot((err, passkey, shutdown) => {
+boot((err, passkey, idkey, shutdown) => {
   if(err) throw err;
-  console.log(`Passkey: ${passkey}`);
   shutdownHook = shutdown;
 });
 

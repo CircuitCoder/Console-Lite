@@ -5,7 +5,7 @@
     <link href="style.css" rel="stylesheet">
     <script src="action.js"></script>
   </head>
-  <body onload="setup()" tabindex="0" @keydown="checkAltHold" @keyup="checkAltRelease">
+  <body onload="setup()" tabindex="0" @keydown="checkKeyHold" @keyup="checkKeyRelease">
 
     <div class="frame">
       <component
@@ -170,6 +170,25 @@
             <i class="material-icons">keyboard_arrow_right</i>
           </button>
           <div class="clearfix"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dialog-overlap" transition="opacity" v-show="picker && (showServerFlag || backquoteHold)" @click="showServerFlag = false">
+      <div class="dialog" style="-webkit-app-region: no-drag" @click.stop.prevent>
+        <div class="dialog-title">
+          服务器信息:
+        </div>
+        <div class="dialog-content">
+          <div class="dialog-supporting">
+            URL: <strong>{{ backendUrl }}</strong>
+          </div>
+          <div class="dialog-supporting">
+            ID: <strong>{{ backendIDKey }}</strong>
+          </div>
+          <div class="dialog-supporting">
+            密码: <strong>{{ backendPasskey }}</strong>
+          </div>
         </div>
       </div>
     </div>

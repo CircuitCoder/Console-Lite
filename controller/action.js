@@ -35,7 +35,10 @@ const desc = {
     createConfFlag: false,
     confName: '',
 
+    showServerFlag: false,
+
     connectBackendFlag: false,
+    backendIDKey: '',
     backendUrl: '',
     backendPasskey: '',
 
@@ -63,6 +66,7 @@ const desc = {
     projectedVote: null,
 
     altHold: false,
+    backquoteHold: false,
   },
 
   components: {
@@ -98,6 +102,11 @@ const desc = {
     },
 
     _createGlobalConn() {
+      /* Setup display data */
+      this.backendPasskey = serverConfig.passkey;
+      this.backendIDKey = serverConfig.idkey;
+      this.backendUrl = serverConfig.url;
+
       socket = io(serverConfig.url, {
         extraHeaders: {
           'Console-Passkey': serverConfig.passkey
@@ -137,13 +146,15 @@ const desc = {
     createBackend() {
       ipcRenderer.once('serverCallback', (event, data) => {
         if(data.error) {
-          alert("启动失败！");
+          alert("启动失败! 请检查是否已经启动另一个 Console Lite 实例");
           console.error(data);
           this.loading = false;
           return;
         }
 
         serverConfig = data;
+        this.showServerFlag = true;
+
         this._createGlobalConn();
       });
 
@@ -523,12 +534,18 @@ const desc = {
 
     /* Utitlities */
 
-    checkAltHold(e) {
+    checkKeyHold(e) {
       if(e.key === 'Alt') this.altHold = true;
+      else if(e.key === '`') this.backquoteHold = true;
     },
 
-    checkAltRelease(e) {
+    checkKeyRelease(e) {
       if(e.key === 'Alt') this.altHold = false;
+      else if(e.key === '`') this.backquoteHold = false;
+    },
+
+    requestShowServer(e) {
+      if(globalConn) this.showServerFlag = true;
     },
 
     toggleProjector() {
