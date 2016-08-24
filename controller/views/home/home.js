@@ -10,8 +10,12 @@ const HomeView = Vue.extend({
       this.$dispatch('navigate', dest);
     },
 
-    activeTimer(entry) {
-      return entry.active;
+    activeList(list) {
+      return list.timerCurrent && list.timerCurrent.active;
+    },
+
+    activeStandaloneTimer(timer) {
+      return timer.type === 'standalone' && timer.active;
     },
 
     gotoTimer(name) {
