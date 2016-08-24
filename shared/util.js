@@ -1,4 +1,6 @@
 const pdfjs = require('pdfjs-dist/build/pdf.combined');
+const Trie = require('./trie');
+const pinyin = require('pinyin');
 
 /* Set scale = -1 to auto-scale */
 
@@ -65,8 +67,41 @@ function sortVoteMatrix(mat) {
   });
 }
 
+function buildTrieTree(entries) {
+  const root = new Trie();
+  for(const entry of entries) {
+    const segs = pinyin(entry, {
+      heteronym: true,
+      style: pinyin.STYLE_NORMAL,
+    });
+
+    const segTries = segs.map(seg => Trie.fromStrings(seg));
+    const entryTrie = new Trie();
+    segTries.reduce((leaves, seg) => {
+      const res = leaves.reduce((prev, leaf) => prev.concat(seg.applyTo(leaf)), [])
+      return res;
+    }, [entryTrie]);
+
+    entryTrie.forEach(node => {
+      node.addEntry(entry);
+    });
+
+    entryTrie.applyTo(root);
+  }
+
+  return root;
+}
+
+function resolveAC(trie, prefix) {
+  const node = trie.get(prefix);
+  if(node) return [...node.getEntries()];
+  else return [];
+}
+
 module.exports = {
   renderPDF,
   getFileType,
   sortVoteMatrix,
+  buildTrieTree,
+  resolveAC,
 }
