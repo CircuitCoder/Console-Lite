@@ -27,6 +27,8 @@
 
 .list-item-content {
   padding: 10px 20px;
+  font-size: 16px;
+  line-height: 20px;
   color: black;
 }
 
