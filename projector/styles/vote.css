@@ -72,13 +72,7 @@
 
   overflow-x: auto;
 
-  transition: transform .2s ease;
-
   -webkit-app-region: no-drag;
-}
-
-.voters.no-animation {
-  transition: none;
 }
 
 .voter .list-item-indicator {

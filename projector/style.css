@@ -9,6 +9,7 @@
 @import './styles/timer.css';
 @import './styles/file.css';
 @import './styles/vote.css';
+@import './styles/list.css';
 
 @import './styles/override/list.css';
 

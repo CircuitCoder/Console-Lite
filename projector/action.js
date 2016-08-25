@@ -34,6 +34,9 @@ const desc = {
 
     vote: null,
     voteMat: [],
+
+    list: null,
+    stashedlist: null,
   },
   methods: {
     init() {
@@ -49,26 +52,28 @@ const desc = {
       ipcRenderer.send('projectorInitialized');
     },
 
-    _scrollVote(to) {
-      current = this.$els.voters.scrollLeft;
+    _scrollSmooth(el, to) {
+      current = el.scrollLeft;
       scrollCount = 0,
       startTime = performance.now();
       easing = BezierEasing(0.25, 0.1, 0.25, 1.0);
 
-      const outer = this;
-      console.log(startTime);
       function step(now) {
         console.log(now);
         if(now - startTime < 200) {
           const ratio = easing((now - startTime) / 200);
-          outer.$els.voters.scrollLeft = current + (to - current) * ratio;
+          el.scrollLeft = current + (to - current) * ratio;
           window.requestAnimationFrame(step);
         } else {
-          outer.$els.voters.scrollLeft = to;
+          el.scrollLeft = to;
         }
       }
 
       window.requestAnimationFrame(step);
+    },
+
+    _scrollVote(to) {
+      this._scrollSmooth(this.$els.voters, to);
     },
 
     performUpdate({ target, data }) {
@@ -115,11 +120,16 @@ const desc = {
           setTimeout(() => {
             util.sortVoteMatrix(this.voteMat);
           }, 100);
+      } else if(target === 'list') {
+        if(this.switching) this.stashedlist = data.list;
+        else this.list = data.list;
       }
     },
 
     setupLayer({ target, data }) {
-      if(this.switching) {
+      if(target === 'list') this.stashedList = data.list;
+
+      if(this.switching !== null) {
         clearInterval(this.switching);
       }
 
@@ -156,6 +166,9 @@ const desc = {
 
         // Sort anyway
         util.sortVoteMatrix(this.voteMat);
+      } else if(target === 'list') {
+        // Using stashed list
+        this.list = this.stashedList;
       }
 
       return Promise.resolve();

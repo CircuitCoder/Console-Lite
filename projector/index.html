@@ -144,6 +144,28 @@
       </div>
     </div>
 
+    <div class="layer list-layer full" v-if="mode === 'list'">
+      <div class="bottom-bar">
+        <div class="bottom-title">
+          {{ list.name }}
+        </div>
+      </div>
+      <div class="timer-total" v-if="list.currentTimer && list.currentTimer.length">
+        <timer class="timer-total" :time="" :fix-minute="true"></timer>
+      </div>
+      <div class="list speakers">
+        <div class="list-item speaker"
+          v-for="speaker of list.seats"
+          track-by="uid"
+          transition="item"
+          :class="{ bold: list.ptr === $index }">
+
+          <div class="list-item-indicator"></div>
+          <div class="list-item-content">{{ speaker.name }}</div>
+        </div>
+      </div>
+    </div>
+
     <div class="layer full mask" v-show="switching || !ready" transition="opacity"></div>
   </body>
 </html>

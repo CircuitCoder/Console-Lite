@@ -1,0 +1,69 @@
+.list-layer .bottom-title {
+  flex: 1;
+  overflow: hidden;
+}
+
+.list-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.list.speakers{
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12.5vw;
+  top: 7vw;
+  padding: 0 5vw;
+  margin-bottom: 0;
+  padding-bottom: 3vw;
+
+  display: flex;
+  flex-direction: column;
+  flex-flow: column wrap;
+
+  overflow-x: auto;
+
+  -webkit-app-region: no-drag;
+}
+
+.speaker {
+  width: 25vw;
+}
+
+.timer-total, .timer-current {
+  margin-left: 2.5vw;
+
+  display: flex;
+  align-items: center;
+}
+
+.timer-total .timer, .timer-current .timer {
+  font-size: 4vw;
+  font-weight: 300;
+  opacity: 1;
+}
+
+.timer-total .material-icons, .timer-current .material-icons {
+  font-size: 3vw;
+  margin-right: .2em;
+  opacity: .7;
+}
+
+.speaker-indicator {
+  margin-left: 2.5vw;
+  display: flex;
+  align-items: baseline;
+}
+
+.speaker-current {
+  font-size: 4vw;
+  font-weight: 300;
+}
+
+.speaker-next {
+  font-size: 2vw;
+  font-weight: 300;
+  margin-left: 1.25vw;
+}

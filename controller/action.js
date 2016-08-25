@@ -71,6 +71,7 @@ const desc = {
     searchInput: '',
 
     projectedVote: null,
+    projectedList: null,
 
     altHold: false,
     backquoteHold: false,
@@ -694,6 +695,19 @@ const desc = {
     viewList(list) {
       this.list = list;
       this.activeView = 'list';
+    },
+
+    projectList(list) {
+      this.projectedList = list;
+      this.sendToProjector({ type: 'layer', target: 'list', data: { list: this.projectedList } });
+    },
+
+    /**
+     * Because lists are just too complicated,
+     * We are doing global syncing on list object
+     */
+    syncProjectorList() {
+      this.sendToProjector({ type: 'update', target: 'list', data: { list: this.projectedList } });
     },
 
     /* Utitlities */
