@@ -33,6 +33,9 @@ const ListView = Vue.extend({
     editTimerFlag: false,
     totTime: 0,
     eachTime: 0,
+    
+    _overrideAdd: false,
+    _overrideStart: false,
   }),
 
   methods: {
@@ -58,6 +61,18 @@ const ListView = Vue.extend({
     },
 
     add() {
+      if(!this._overrideAdd)
+        if(this.list.timerTotal && this.list.timerTotal.value > 0)
+          if(this.list.timerCurrent) {
+            const afterThisGuy = this.list.timerTotal.left - this.list.timerCurrent.left;
+            const afterAllGuys = afterThisGuy - this.list.timerCurrent.value * (this.list.seats.length - this.list.ptr - 1);
+
+            if(afterAllGuys < this.list.timerCurrent.value) {
+              if(!confirm('剩余总时间无法容纳添加的代表，是否继续?')) return;
+              this._overrideAdd = true;
+            }
+          }
+
       this.editInput = '';
       this.addFlag = true;
       this.$nextTick(() => {
@@ -210,6 +225,15 @@ const ListView = Vue.extend({
     },
 
     start() {
+      if(!this._overrideStart)
+        if(this.list.timerTotal && this.list.timerTotal.value > 0)
+          if(this.list.timerCurrent)
+            if(this.list.timerCurrent.left > this.list.timerTotal.left) {
+              if(!confirm('剩余时间已不足此名代表发言, 是否继续?')) return;
+
+              this._overrideStart = true;
+            }
+
       this.$dispatch('start-list', this.list);
     },
 
