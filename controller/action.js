@@ -284,7 +284,7 @@ const desc = {
             break;
           }
 
-          if(!flag) timerWaitingList.push(this.timers[0]);
+          if(!flag) this.timerWaitingList.push(this.timers[0]);
         },
         
         timerStarted: (id, value) => {
@@ -329,7 +329,7 @@ const desc = {
         timerTick: (id, value) => {
           this.executeOnTimer(id, timer => {
             timer.left = value;
-            if(value === 0) Push.create(timer.name, {
+            if(value === 0 && timer.type === 'standalone') Push.create(timer.name, {
               body: '计时结束',
               timeout: 4000,
               icon: __dirname + '/../images/timer.png'
