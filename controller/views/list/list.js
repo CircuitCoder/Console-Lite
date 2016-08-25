@@ -33,7 +33,11 @@ const ListView = Vue.extend({
       this.editInput = seat.name;
       this.editTarget = seat.uid;
 
-      this.$nextTick(() => this.$els.seats.children[index].getElementsByTagName('input')[0].focus());
+      this.$nextTick(() => {
+        const el = this.$els.seats.children[index].getElementsByTagName('input')[0];
+        el.focus();
+        el.select();
+      });
     },
 
     discardAddition() {
@@ -58,7 +62,6 @@ const ListView = Vue.extend({
     },
 
     performEdit() {
-      if(this.editInput.length <= 0) return;
       if(!this.editTarget) return;
 
       const seats = [...this.list.seats];
@@ -67,14 +70,19 @@ const ListView = Vue.extend({
 
       for(let i = 0; i < seats.length; ++i)
         if(seats[i].uid === this.editTarget) {
-          if(this.editInput === seats[i].name) return;
+          if(this.editInput === seats[i].name) break;
 
           foundFlag = true;
-          const oriSeat = seats[i];
-          seats[i] = {
-            uid: oriSeat.uid,
-            name: this.editInput,
-          };
+
+          if(this.editInput === '') {
+            seats.splice(i, 1);
+          } else {
+            const oriSeat = seats[i];
+            seats[i] = {
+              uid: oriSeat.uid,
+              name: this.editInput,
+            };
+          }
 
           break;
         }
