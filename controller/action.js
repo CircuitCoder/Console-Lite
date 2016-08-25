@@ -4,6 +4,7 @@ Vue.use(VueAnimatedList);
 
 const io = require('socket.io-client/socket.io.js');
 const Push = require('push.js');
+const polo = require('polo');
 const {ipcRenderer} = require('electron');
 
 const GlobalConnection = require('./connection/global');
@@ -38,6 +39,7 @@ const desc = {
     createConfFlag: false,
     confName: '',
 
+    services: [],
     showServerFlag: false,
 
     connectBackendFlag: false,
@@ -103,6 +105,26 @@ const desc = {
         this.projOn = false;
       });
 
+      const poloRepo = polo();
+      poloRepo.on('up', (name, service) => {
+        if(name.indexOf('console-lite') !== 0) return;
+
+        this.services.push({
+          name,
+          idkey: name.substring(13),
+          host: service.host,
+          port: service.port,
+        });
+      });
+
+      poloRepo.on('down', (name) => {
+        for(let s of this.services)
+          if(s.name === name) {
+            this.services.$remove(s);
+            break;
+          }
+      });
+
       setTimeout(() => {
         this.ready = true;
       }, 1000);
@@ -127,6 +149,11 @@ const desc = {
         this.connectBackendFlag = false;
         // TODO: failure: reconnect
       });
+    },
+
+    applyService(service) {
+      this.backendUrl = `http://${service.host}:${service.port}`;
+      this.$els.connectOverlap.scrollTop = this.$els.connectOverlap.scrollHeight - this.$els.connectOverlap.offsetHeight;
     },
 
     connectBackend() {

@@ -22,6 +22,13 @@
   -webkit-user-select: none;
 }
 
+.selector-hint {
+  font-weight: 400;
+  color: rgba(0,0,0,.3);
+  line-height: 20px;
+  font-size:12px;
+}
+
 .selector-item:last-child {
   border-bottom: none;
 }
@@ -32,4 +39,8 @@
 
 .selector-item .material-icons {
   margin-right: 6px;
+}
+
+.dialog .selector-item {
+  min-width: 0;
 }

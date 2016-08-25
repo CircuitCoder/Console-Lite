@@ -1,6 +1,9 @@
 const backend = require('./backend/main');
 const socket= require('./socket.js');
 
+const polo = require('polo');
+const poloRepo = polo();
+
 const crypto = require('crypto');
 const http = require('http');
 
@@ -38,6 +41,12 @@ module.exports = (cb, port = 4928) => {
         cb(err);
       } else {
         console.log(`Server ${idkey} up at port ${port} with passkey ${passkey}.`);
+
+        poloRepo.put({
+          name: `console-lite-${idkey}`,
+          port: port,
+        });
+
         cb(null, passkey, idkey, shutdown);
       }
     });

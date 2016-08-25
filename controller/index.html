@@ -161,12 +161,19 @@
       </div>
     </div>
 
-    <div class="dialog-overlap" transition="opacity" v-show="connectBackendFlag" @click="discardBackendConnection">
+    <div class="dialog-overlap" transition="opacity" v-show="connectBackendFlag" @click="discardBackendConnection" v-el:connect-overlap>
       <div class="dialog" @click.stop.prevent>
         <div class="dialog-title">
           连接到...
         </div>
         <div class="dialog-content">
+          <div class="selector">
+            <div class="selector-hint">局域网内的服务</div>
+            <div class="selector-item" v-for="service of services" @click="applyService(service)">
+              <i class="material-icons">router</i>{{ service.idkey }}
+            </div>
+          </div>
+
           <div class="input-group">
             <div class="hint">服务器URL</div>
             <input v-model="backendUrl">
