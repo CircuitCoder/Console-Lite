@@ -9,6 +9,8 @@ const {ipcRenderer} = require('electron');
 const GlobalConnection = require('./connection/global');
 const ConferenceConnection = require('./connection/conference');
 
+const util = require('../shared/util.js');
+
 require('../shared/components/timer');
 require('../shared/components/timer-input');
 
@@ -220,6 +222,7 @@ const desc = {
         this.lists = data.lists;
 
         this.recalcCount();
+        util.registerTrie(util.buildTrie(this.seats.filter(e => e.present).map(e => e.name)));
 
         this.title = name;
 
@@ -236,7 +239,7 @@ const desc = {
           this.seats = seats;
           this.recalcCount();
           this.sendSeatCount();
-          util.registerTrie(util.buildTrie(seats));
+          util.registerTrie(util.buildTrie(seats.filter(e => e.present).map(e => e.name)));
         },
 
         /* Timers */

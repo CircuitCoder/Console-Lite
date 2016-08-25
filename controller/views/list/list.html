@@ -1,30 +1,70 @@
-<div class="view vote-view">
+<div class="view vote-view" @click="discardAll">
   <div class="view-title">
     {{ list.name }}
   </div>
   <div class="list" v-el:seats>
-    <div class="list-item list-seat" v-for="seat of list.seats" track-by="uid" @click="edit(seat, $index)">
+    <div class="list-item list-seat" v-for="seat of list.seats" track-by="uid" @click.stop="edit(seat, $index)">
       <div class="list-item-indicator"></div>
       <div class="list-item-content list-seat list-seat-edit"
-        v-if="editTarget == seat.uid">
+        v-if="editTarget == seat.uid"
+        @click.stop>
 
-        <input class="list-seat-input" v-model="editInput" @keydown.enter="performEdit" @keydown.esc="discardEdit" @blur="discardEdit">
+        <input class="list-seat-input" v-model="editInput"
+          @keydown.tab.stop.prevent="performAC()"
+          @keydown.enter="performEdit"
+          @keydown.esc="discardAll"
+          @keydown.down="moveACDown"
+          @keydown.up="moveACUp"
+          @input="updateAC"
+          v-el:add-input>
+
         <i class="material-icons list-seat-input-icon">keyboard_return</i>
+
+        <div class="list-seat-ac">
+          <div class="list-seat-ac-entry" v-for="entry of acList | limitBy 5" @click="performAC(entry)" transition="autocompletion" stagger="100">
+            <span class="ac-content">{{ entry }}</span>
+          </div>
+
+          <div class="list-seat-ac-indicator"
+            :style="{ transform: indicatorTransform }">
+            <i class="material-icons">keyboard_tab</i>
+          </div>
+        </div>
       </div>
-      <div class="list-item-content list-seat" v-else @keydown.enter="performEdit" @keydown.esc="discardEdit">
+      <div class="list-item-content list-seat" v-else>
         {{ seat.name }}
       </div>
     </div>
 
     <div class="list-item list-seat" v-show="addFlag">
       <div class="list-item-indicator"></div>
-      <div class="list-item-content list-seat list-seat-edit" contenteditable="true" @keydown.enter="performAddition" @keydown.esc="discardAddition">
-        <input class="list-seat-input" v-model="editInput" @keydown.enter="performAddition" @keydown.esc="discardAddition" @blur="discardAddition" v-el:add-input>
+      <div class="list-item-content list-seat list-seat-edit" @click.stop>
+
+        <input class="list-seat-input" v-model="editInput"
+          @keydown.tab.stop.prevent="performAC()"
+          @keydown.enter="performAddition"
+          @keydown.esc="discardAll"
+          @keydown.down="moveACDown"
+          @keydown.up="moveACUp"
+          @input="updateAC"
+          v-el:add-input>
+
         <i class="material-icons list-seat-input-icon">keyboard_return</i>
+
+        <div class="list-seat-ac">
+          <div class="list-seat-ac-entry" v-for="entry of acList | limitBy 5" @click="performAC(entry)" transition="autocompletion" stagger="50">
+            <span class="ac-content">{{ entry }}</span>
+          </div>
+
+          <div class="list-seat-ac-indicator"
+            :style="{ transform: indicatorTransform }">
+            <i class="material-icons">keyboard_tab</i>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="list-item clickable list-seat-add" @click="add">
+    <div class="list-item clickable list-seat-add" @click.stop="add">
       <div class="list-item-indicator"></div>
       <div class="list-item-content">
         <i class="material-icons">add</i> 添加

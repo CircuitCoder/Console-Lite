@@ -69,8 +69,8 @@ class Node {
   applyTo(ano) {
     const outer = this;
     const ns = new Set(function*() {
-      yield* outer.entries;
       yield* ano.entries;
+      yield* outer.entries;
     }());
 
     ano.entries = ns;

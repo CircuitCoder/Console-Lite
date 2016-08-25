@@ -15,3 +15,34 @@
 .item-move {
   transition: transform .5s ease;
 }
+
+.autocompletion-transition {
+  transition: height .2s ease-out, box-shadow .2s ease-out;
+  box-shadow: rgba(0,0,0,.12) 0 2px 3px;
+  height: 41px;
+}
+
+.autocompletion-transition .ac-content {
+  transition: opacity .2s ease;
+  opacity: .7;
+}
+
+.autocompletion-enter {
+  height: 0;
+  box-shadow: none;
+}
+
+.autocompletion-enter .ac-content {
+  opacity: 0;
+}
+
+.autocompletion-leave {
+  transition: opacity .2s ease, height .2s ease-in, box-shadow .2s ease-in;
+  height: 0;
+  box-shadow: none;
+}
+
+.autocompletion-leave .ac-content {
+  transition: opacity .2s ease-in;
+  opacity: 0;
+}

@@ -37,4 +37,60 @@
 .list-seat-input-icon {
   margin-right: 5px;
   opacity: 0.3;
+  font-size: 20px;
+}
+
+.list-seat-ac {
+  position: absolute;
+  top: 100%;
+  left: 25px;
+  right: 20px;
+
+  z-index: 1;
+}
+
+.list-seat-ac-entry {
+  line-height: 40px;
+  box-sizing: border-box;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  font-size: 16px;
+  padding: 0 60px 0 20px;
+  border-top: rgba(0,0,0,.12) 1px solid;
+
+  cursor: pointer;
+
+  background: white;
+
+  -webkit-user-select: none;
+}
+
+.list-seat-ac-entry:hover .ac-content {
+  opacity: 1;
+}
+
+.list-seat-ac-entry:first-child {
+  border-color: transparent;
+}
+
+.list-seat-ac-indicator {
+  height: 40px;
+  width: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  position: absolute;
+  right: 10px;
+  top: 0;
+  
+  opacity: .3;
+
+  transition: transform .2s ease;
+}
+
+.list-seat-ac-indicator .material-icons {
+  font-size: 20px;
 }

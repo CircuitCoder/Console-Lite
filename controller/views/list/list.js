@@ -15,18 +15,42 @@ const ListView = Vue.extend({
     addFlag: false,
     editTarget: null,
     editInput: '',
+
+    acIndex: 0,
+    acInput: null
   }),
 
   methods: {
     updateAC() {
+      this.acList = util.resolveAC(this.editInput);
+      if(this.acList.length === 0) this.acIndex = 0;
+      else if(this.acIndex >= this.acList.length) this.acIndex = this.acList.length - 1;
+    },
+
+    performAC(text = null) {
+      if(text) this.editInput = text;
+      else this.editInput = this.acList[this.acIndex];
+      this.updateAC();
+      this.acInput.focus();
+    },
+
+    moveACUp() {
+      if(this.acIndex !== 0) --this.acIndex;
+    },
+
+    moveACDown() {
+      if(this.acIndex !== this.acList.length - 1) ++this.acIndex;
     },
 
     add() {
       this.editInput = '';
       this.addFlag = true;
       this.$nextTick(() => {
+        this.acInput = this.$els.addInput;
         this.$els.addInput.focus();
       });
+      this.updateAC();
+      this.editTarget = null;
     },
 
     edit(seat, index) {
@@ -35,17 +59,20 @@ const ListView = Vue.extend({
 
       this.$nextTick(() => {
         const el = this.$els.seats.children[index].getElementsByTagName('input')[0];
+        this.acInput = el;
         el.focus();
         el.select();
       });
-    },
 
-    discardAddition() {
+      this.updateAC();
+
       this.addFlag = false;
     },
 
-    discardEdit() {
+    discardAll(e) {
+      this.addFlag = false;
       this.editTarget = null;
+      this.acList = [];
     },
 
     performAddition() {
@@ -58,6 +85,7 @@ const ListView = Vue.extend({
 
       this.$dispatch('update-list', this.list.id, seats);
 
+      this.acList = [];
       this.addFlag = false;
     },
 
@@ -87,12 +115,19 @@ const ListView = Vue.extend({
           break;
         }
 
+      this.acList = [];
       this.editTarget = null;
 
       if(!foundFlag) return;
 
       this.$dispatch('update-list', this.list.id, seats);
     },
+  },
+
+  computed: {
+    indicatorTransform() {
+      return `translateY(${this.acIndex * 41}px) scale(${this.acList.length > 0 ? 1 : 0})`;
+    }
   },
 });
 
