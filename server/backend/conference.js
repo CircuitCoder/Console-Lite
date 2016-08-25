@@ -66,6 +66,8 @@ class Conference {
         return cb(err);
       } 
 
+      if(value === 0) return;
+
       this.timerValues.set(id, value);
       const intId = setInterval(() => {
         const t = this.timerValues.get(id) - 1;
@@ -148,7 +150,10 @@ class Conference {
 
       if(this.listCurrent.has(id)) {
         const listId = this.listCurrent.get(id);
-        if(this.listTotal.has(listId)) return this.stopTimer(this.listTotal.get(listId), cb);
+        if(this.listTotal.has(listId)) return this.stopTimer(this.listTotal.get(listId), (err) => {
+          if(err === 'AlreadyStopped') return cb(null);
+          else return cb(err);
+        });
       }
 
       cb(null);

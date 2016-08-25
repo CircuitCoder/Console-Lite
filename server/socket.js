@@ -102,7 +102,7 @@ function add(id) {
     });
 
     socket.on('updateTimer', ({ id, value }) => {
-      if(!id || !value) return socket.emit('updateTimer', { ok: false, error: 'BadRequest' });
+      if(!id || !Number.isInteger(value)) return socket.emit('updateTimer', { ok: false, error: 'BadRequest' });
       socket.conf.updateTimer(id, value, (err) => {
         if(err) return socket.emit('updateTimer', { ok: false, error: err });
         else return socket.emit('updateTimer', { ok: true });
