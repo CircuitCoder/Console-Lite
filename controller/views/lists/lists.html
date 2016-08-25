@@ -17,7 +17,7 @@
     </div>
   </div>
   <div class="list">
-    <div class="list-item clickable" v-for="list of lists | filterBy searchInput in 'name'" track-by="$index">
+    <div class="list-item clickable" v-for="list of lists | filterBy searchInput in 'name'" track-by="$index" :class="{ bold: list.timerCurrent && list.timerCurrent.active }" @click="navigateTo(list)">
       <div class="list-item-indicator"></div>
       <div class="list-item-content list-row">
         <div class="list-name">
@@ -44,7 +44,7 @@
             <span class="timer-value-separator">/</span>
             <timer class="timer-value" :time="list.timerTotal.value"></timer>
           </div>
-        </temlate>
+        </template>
       </div>
     </div>
     <div class="empty-hint">请点击添加创建发言名单</div>
