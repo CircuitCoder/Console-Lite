@@ -1,21 +1,11 @@
-.file-name {
-  line-height: 5vw;
-  padding: 5vw;
-  padding-bottom: 3vw;
-  font-weight: 200;
-  font-size: 3vw;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-
 .file-pdf {
   text-align: center;
   overflow-y: scroll;
   background: rgba(0,0,0,.06);
 
   position: absolute;
-  top: 13vw;
-  bottom: 0;
+  top: 0;
+  bottom: 12.5vw;
   right: 0;
   left: 0;
 
@@ -38,8 +28,8 @@
   justify-content: center;
 
   position: absolute;
-  top: 13vw;
-  bottom: 0;
+  top: 0;
+  bottom: 12.5vw;
   right: 0;
   left: 0;
 
@@ -56,12 +46,12 @@
 
 .file-shadow {
   position: absolute;
-  top: 13.125vw;
-  bottom: 0;
+  top: 0;
+  bottom: 12.5vw;
   right: 0;
   left: 0;
 
-  box-shadow: rgba(0,0,0,.12) 0 .5vw .75vw inset;
+  box-shadow: rgba(0,0,0,.12) 0 -.5vw .75vw inset;
 
   pointer-events: none;
 }
