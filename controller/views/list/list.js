@@ -29,6 +29,10 @@ const ListView = Vue.extend({
     draggingIndex: -1,
     draggingOriginal: -1,
     draggingCounter: 0,
+
+    editTimerFlag: false,
+    totTime: 0,
+    eachTime: 0,
   }),
 
   methods: {
@@ -217,6 +221,35 @@ const ListView = Vue.extend({
       if(this.list.ptr >= this.list.seats.length) return;
       this.$dispatch('iterate-list', this.list, this.list.ptr + 1);
     },
+
+    editTimer() {
+      this.editTimerFlag = true;
+      this.eachTime = 0;
+      this.totTime = 0;
+
+      if(this.list.timerCurrent)
+        this.eachTime = this.list.timerCurrent.value;
+
+      if(this.list.timerTotal)
+        this.totTime = this.list.timerTotal.left;
+    },
+
+    performTimerEdit() {
+      if(this.eachTime === 0) return;
+      if(!this.list.timerCurrent || this.eachTime !== this.list.timerCurrent.value) {
+        this.$dispatch('update-list-current', this.list, this.eachTime);
+      }
+
+      if(!this.list.timerTotal || this.totTime !== this.list.timerTotal.value) {
+        this.$dispatch('update-list-total', this.list, this.totTime);
+      }
+
+      this.editTimerFlag = false;
+    },
+
+    project() {
+      this.$dispatch('project-list', this.list);
+    }
   },
 
   computed: {

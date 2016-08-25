@@ -34,6 +34,9 @@
       </div>
     </div>
     <div class="list-actions">
+      <button class="light" @click="editTimer">
+        <i class="material-icons">edit</i>
+      </button>
       <button class="light" @click="stop" v-show="list.timerCurrent && list.timerCurrent.active">
         <i class="material-icons">pause</i>
       </button>
@@ -122,6 +125,24 @@
       <div class="list-item-indicator"></div>
       <div class="list-item-content">
         <i class="material-icons">add</i> 添加
+      </div>
+    </div>
+  </div>
+  <div class="dialog-overlap" transition="opacity" v-show="editTimerFlag" @click="editTimerFlag = false">
+    <div class="dialog" @click.stop.prevent>
+      <div class="dialog-title">
+        修改时长
+      </div>
+      <div class="dialog-content">
+        <div class="timer-input-hint">总时长</div>
+        <timer-input :time.sync="totTime"></timer-input>
+        <div class="timer-input-hint">每名代表</div>
+        <timer-input :time.sync="eachTime"></timer-input>
+        <button @click="performTimerEdit" class="confirmation-btn">
+          提交
+          <i class="material-icons">keyboard_arrow_right</i>
+        </button>
+        <div class="clearfix"></div>
       </div>
     </div>
   </div>

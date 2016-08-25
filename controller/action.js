@@ -656,6 +656,14 @@ const desc = {
       });
     },
 
+    updateListTotal(list, time) {
+      this.updateTimer(list.timerTotal.id, time);
+    },
+
+    updateListCurrent(list, time) {
+      this.updateTimer(list.timerCurrent.id, time);
+    },
+
     viewList(list) {
       this.list = list;
       this.activeView = 'list';
