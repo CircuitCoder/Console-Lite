@@ -3,6 +3,7 @@
     {{ list.name }}
   </div>
   <div class="list list-seats" v-el:seats :class="{ 'ac-on-top': attachOnTop }">
+    <div class="list-window-drag-handle"></div>
     <div class="list-item list-seat" v-for="seat of list.seats" track-by="uid" @click.stop="edit(seat, $index)">
       <div class="list-item-indicator"></div>
       <div class="list-item-content list-seat-edit"

@@ -59,11 +59,11 @@ const ListView = Vue.extend({
       this.editInput = seat.name;
       this.editTarget = seat.uid;
 
-      const wrapper = this.$els.seats.children[index];
+      const wrapper = this.$els.seats.children[index + 1];
       this.acBottomGap = this.$els.seats.offsetHeight - (wrapper.offsetTop + wrapper.offsetHeight); 
 
       this.$nextTick(() => {
-        const el = this.$els.seats.children[index].getElementsByTagName('input')[0];
+        const el = this.$els.seats.children[index + 1].getElementsByTagName('input')[0];
         this.acInput = el;
         el.focus();
         el.select();

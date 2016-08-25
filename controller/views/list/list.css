@@ -21,6 +21,16 @@
   margin-bottom: 0;
 }
 
+.list-window-drag-handle {
+  position: absolute;
+  top: 0;
+  height: 104px;
+  left: 0;
+  right: 0;
+
+  -webkit-app-region: drag;
+}
+
 .list-seat, .list-seat-add {
   width: 200px;
 }
