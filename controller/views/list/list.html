@@ -1,10 +1,15 @@
-<div class="view list-view" @click="discardAll">
+<div class="view list-view" @click="discardAll" @drag="drag" @dragend="dragend" @drop="drop" @dragleave="dragleave" @dragenter="dragenter" @dragover.prevent>
   <div class="view-title">
     {{ list.name }}
   </div>
   <div class="list list-seats" v-el:seats :class="{ 'ac-on-top': attachOnTop }">
     <div class="list-window-drag-handle"></div>
-    <div class="list-item list-seat" v-for="seat of list.seats" track-by="uid" @click.stop="edit(seat, $index)">
+    <div class="list-item list-seat" v-for="seat of (dragMode ? dragList : list.seats)" track-by="uid"
+      :class="{ dragging: dragging === seat, overlap: overlap === seat }"
+      draggable="true"
+      @drag="drag"
+      @dragstart="dragstart(seat, $index, $event)"
+      transition="item">
       <div class="list-item-indicator"></div>
       <div class="list-item-content list-seat-edit"
         v-if="editTarget == seat.uid"
@@ -32,7 +37,7 @@
           </div>
         </div>
       </div>
-      <div class="list-item-content list-seat" v-else>
+      <div class="list-item-content" v-else>
         {{ seat.name }}
       </div>
     </div>

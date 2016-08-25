@@ -19,6 +19,16 @@ const ListView = Vue.extend({
     acIndex: 0,
     acInput: null,
     acBottomGap: 0,
+
+    dragList: null,
+
+    overlap: null,
+    dragging: null,
+    dragMode: false,
+    dragModeDiscarder: null,
+    draggingIndex: -1,
+    draggingOriginal: -1,
+    draggingCounter: 0,
   }),
 
   methods: {
@@ -126,6 +136,73 @@ const ListView = Vue.extend({
       if(!foundFlag) return;
 
       this.$dispatch('update-list', this.list.id, seats);
+    },
+
+    /* Dragging */
+    dragstart(seat, index, e) {
+      e.dataTransfer.setData('text/plain', null);
+      this.overlap = seat;
+      this.dragging = seat;
+      this.draggingIndex = index;
+      this.draggingOriginal = index;
+      this.draggingCounter = 0;
+
+      if(this.dragModeDiscarder !== null)
+        clearInterval(this.dragModeDiscarder);
+
+      this.dragModeDiscarder = null;
+      this.dragMode = true;
+
+      this.dragList = [...this.list.seats];
+    },
+
+    drag(e) {
+      let curMin = Infinity;
+      let curIndex = -1;
+
+      if(this.draggingCounter > 0)
+        for(let i = 0; i < this.dragList.length; ++i) {
+          const elem = this.$els.seats.children[i + 1];
+          const centerX = elem.offsetLeft + elem.offsetWidth / 2;
+          const centerY = elem.offsetTop + elem.offsetHeight / 2;
+
+          // Manhattan distance
+          const dist = Math.abs(e.clientX - centerX) + Math.abs(e.clientY - centerY);
+          if(dist < curMin) {
+            curMin = dist;
+            curIndex = i;
+          }
+        }
+      else curIndex = this.draggingOriginal;
+
+      if(curIndex !== -1 && curIndex !== this.draggingIndex) {
+        const tmp = this.dragList[this.draggingIndex];
+        this.dragList.$set(this.draggingIndex, this.dragList[curIndex]);
+        this.dragList.$set(curIndex, tmp);
+
+        this.draggingIndex = curIndex;
+      }
+    },
+
+    dragend() {
+      this.dragging = null;
+
+      this.dragModeDiscarder = setTimeout(() => {
+        this.dragModeDiscarder = null;
+        this.dragMode = false;
+      }, 200)
+    },
+
+    dragenter() {
+      ++this.draggingCounter;
+    },
+
+    dragleave() {
+      --this.draggingCounter;
+    },
+
+    drop() {
+      this.$dispatch('update-list', this.list.id, this.dragList);
     },
   },
 

@@ -33,6 +33,20 @@
 
 .list-seat, .list-seat-add {
   width: 200px;
+  transition-property: box-shadow, transform;
+  transition-timing-function: ease-in, ease;
+  transition-duration: .2s;
+  box-shadow: none;
+  background: white;
+}
+
+.list-seat.dragging {
+  box-shadow: rgba(0,0,0,.12) 0 4px 6px;
+  transition-timing-function: ease-out, ease;
+}
+
+.list-seat.overlap {
+  z-index: 1;
 }
 
 .list-seat-edit {
