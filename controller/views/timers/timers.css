@@ -9,8 +9,9 @@
 }
 
 .timer-value-wrapper {
-  display: inline-block;
+  display: inline-flex;
   font-size: 0;
+  align-items: baseline;
 }
 
 .timer.timer-left {

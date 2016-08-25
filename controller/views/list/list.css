@@ -15,7 +15,7 @@
   left: 0px;
   padding: 104px 40px 24px 40px;
 
-  overflow-x: scroll;
+  overflow-x: auto;
   overflow-y: hidden;
 
   margin-bottom: 0;
@@ -138,4 +138,29 @@
 
 .list-seat-ac-indicator .material-icons {
   font-size: 20px;
+}
+
+.view.list-view .view-title {
+  display: flex;
+  align-items: baseline;
+}
+
+.list-brand {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.list-timer-group {
+  display: flex;
+  align-items: center;
+}
+
+.list-actions {
+  display: flex;
+  align-items: center;
+  min-width: max-content;
+
+  z-index: 2;
 }

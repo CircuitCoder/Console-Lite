@@ -1,6 +1,44 @@
 <div class="view list-view" @click="discardAll" @drag="drag" @dragend="dragend" @drop="drop" @dragleave="dragleave" @dragenter="dragenter" @dragover.prevent>
   <div class="view-title">
-    {{ list.name }}
+    <div class="list-brand">
+      {{ list.name }}
+    </div>
+
+    <div class="list-timer-group" v-if="list.timerCurrent">
+      <div class="list-timer-icon">
+        <i class="material-icons">person</i>
+      </div>
+      <div class="timer-value-wrapper list-timer">
+        <timer class="timer-left" :time="list.timerCurrent.left"></timer>
+        <span class="timer-value-separator">/</span>
+        <timer class="timer-value" :time="list.timerCurrent.value"></timer>
+      </div>
+    </div>
+
+    <div class="list-timer-group" v-if="list.timerTotal">
+      <div class="list-timer-icon">
+        <i class="material-icons">access_time</i>
+      </div>
+      <div class="timer-value-wrapper list-timer">
+        <timer class="timer-left" :time="list.timerTotal.left"></timer>
+        <span class="timer-value-separator">/</span>
+        <timer class="timer-value" :time="list.timerTotal.value"></timer>
+      </div>
+    </div>
+    <div class="list-actions">
+      <button class="light" @click="stop" v-show="list.timerCurrent && list.timerCurrent.active">
+        <i class="material-icons">pause</i>
+      </button>
+      <button class="light" @click="start" v-show="list.timerCurrent && list.timerCurrent.left > 0 && !list.timerCurrent.active">
+        <i class="material-icons">play_arrow</i>
+      </button>
+      <button class="light" @click="next">
+        <i class="material-icons">skip_next</i>
+      </button>
+      <button class="light" @click="project">
+        <i class="material-icons">cast</i>
+      </button>
+    </div>
   </div>
   <div class="list list-seats" v-el:seats :class="{ 'ac-on-top': attachOnTop }">
     <div class="list-window-drag-handle"></div>
