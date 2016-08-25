@@ -1,0 +1,34 @@
+<div class="view vote-view">
+  <div class="view-title">
+    {{ list.name }}
+  </div>
+  <div class="list" v-el:seats>
+    <div class="list-item list-seat" v-for="seat of list.seats" track-by="uid" @click="edit(seat, $index)">
+      <div class="list-item-indicator"></div>
+      <div class="list-item-content list-seat list-seat-edit"
+        v-if="editTarget == seat.uid">
+
+        <input class="list-seat-input" v-model="editInput" @keydown.enter="performEdit" @keydown.esc="discardEdit" @blur="discardEdit">
+        <i class="material-icons list-seat-input-icon">keyboard_return</i>
+      </div>
+      <div class="list-item-content list-seat" v-else @keydown.enter="performEdit" @keydown.esc="discardEdit">
+        {{ seat.name }}
+      </div>
+    </div>
+
+    <div class="list-item list-seat" v-show="addFlag">
+      <div class="list-item-indicator"></div>
+      <div class="list-item-content list-seat list-seat-edit" contenteditable="true" @keydown.enter="performAddition" @keydown.esc="discardAddition">
+        <input class="list-seat-input" v-model="editInput" @keydown.enter="performAddition" @keydown.esc="discardAddition" @blur="discardAddition" v-el:add-input>
+        <i class="material-icons list-seat-input-icon">keyboard_return</i>
+      </div>
+    </div>
+
+    <div class="list-item clickable list-seat-add" @click="add">
+      <div class="list-item-indicator"></div>
+      <div class="list-item-content">
+        <i class="material-icons">add</i> 添加
+      </div>
+    </div>
+  </div>
+</div>

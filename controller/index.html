@@ -20,6 +20,7 @@
 
         :vote="vote"
         :file="file"
+        :list="list"
 
         :list-current-timers="listCurrentTimers",
         :list-total-timers="listTotalTimers",
@@ -50,7 +51,8 @@
         
         @add-list="addList"
         @update-list="updateList"
-        @iterate-list="iterateList">
+        @iterate-list="iterateList"
+        @view-list="viewList">
 
       </component>
       <!-- Events will loop back through server broadcast -->

@@ -82,6 +82,7 @@ const desc = {
 
     file: require('./views/file/file'),
     vote: require('./views/vote/vote'),
+    list: require('./views/list/list'),
   },
 
   methods: {
@@ -235,6 +236,7 @@ const desc = {
           this.seats = seats;
           this.recalcCount();
           this.sendSeatCount();
+          util.registerTrie(util.buildTrie(seats));
         },
 
         /* Timers */
@@ -635,6 +637,11 @@ const desc = {
           alert('更新失败!');
         }
       });
+    },
+
+    viewList(list) {
+      this.list = list;
+      this.activeView = 'list';
     },
 
     /* Utitlities */

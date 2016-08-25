@@ -67,7 +67,7 @@ function sortVoteMatrix(mat) {
   });
 }
 
-function buildTrieTree(entries) {
+function buildTrie(entries) {
   const root = new Trie();
   for(const entry of entries) {
     const segs = pinyin(entry, {
@@ -92,7 +92,15 @@ function buildTrieTree(entries) {
   return root;
 }
 
-function resolveAC(trie, prefix) {
+let _trie;
+
+function registerTrie(trie) {
+  _trie = trie;
+}
+
+function resolveAC(prefix, trie = _trie) {
+  if(!trie) return;
+
   const node = trie.get(prefix);
   if(node) return [...node.getEntries()];
   else return [];
@@ -102,6 +110,7 @@ module.exports = {
   renderPDF,
   getFileType,
   sortVoteMatrix,
-  buildTrieTree,
+  buildTrie,
+  registerTrie,
   resolveAC,
 }

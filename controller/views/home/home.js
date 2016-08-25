@@ -11,7 +11,7 @@ const HomeView = Vue.extend({
     },
 
     activeList(list) {
-      return list.timerCurrent && list.timerCurrent.active;
+      return list.timerCurrent && list.timerCurrent.active || list.ptr < list.seats.length;
     },
 
     activeStandaloneTimer(timer) {

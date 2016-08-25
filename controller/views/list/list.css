@@ -1,0 +1,40 @@
+.list-seats {
+  -webkit-app-region: no-drag;
+}
+
+.list-seat .list-item-content {
+}
+
+.list-seat-edit {
+  display: flex;
+  align-items: center;
+}
+
+.list-seat-add .list-item-content {
+  display: flex;
+  align-items: center;
+  color: rgba(0,0,0,.3);
+}
+
+.list-seat-input {
+  outline: none;
+  border: none;
+
+  padding: 0;
+  margin: 0;
+
+  flex: 1;
+
+  font-size: inherit;
+  line-height: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  word-spacing: inherit;
+  color: inherit;
+  font-weight: inherit;
+}
+
+.list-seat-input-icon {
+  margin-right: 5px;
+  opacity: 0.3;
+}

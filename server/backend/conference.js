@@ -389,7 +389,7 @@ class Conference {
     this.db.put(`list:${id}:seats`, seats, err => {
       if(err) return err;
 
-      for(l of this.listeners)
+      for(const l of this.listeners)
         if(l.listUpdated) l.listUpdated(id, seats);
 
       cb(null);
@@ -400,7 +400,7 @@ class Conference {
     this.db.put(`list:${id}:ptr`, ptr, err => {
       if(err) return err;
 
-      for(l of this.listeners)
+      for(const l of this.listeners)
         if(l.listIterated) l.listIterated(id, ptr);
 
       cb(null);

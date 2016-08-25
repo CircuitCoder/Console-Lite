@@ -6,4 +6,4 @@ npm-debug.log
 
 /server/backend/storage/**/*.db/
 /server/backend/storage/**/*.files/
-/console-next-*-*/
+/Console\ Lite-*-*/
