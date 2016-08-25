@@ -56,8 +56,8 @@ const ListView = Vue.extend({
     add() {
       this.editInput = '';
       this.addFlag = true;
-      this.acBottomGap = this.$els.seats.offsetHeight - (this.$els.addItem.offsetTop + this.$els.addItem.offsetHeight); 
       this.$nextTick(() => {
+        this.acBottomGap = this.$els.seats.offsetHeight - (this.$els.addItem.offsetTop + this.$els.addItem.offsetHeight); 
         this.acInput = this.$els.addInput;
         this.$els.addInput.focus();
       });
@@ -98,7 +98,7 @@ const ListView = Vue.extend({
         uid: crypto.randomBytes(16).toString('hex'),
       });
 
-      this.$dispatch('update-list', this.list.id, seats);
+      this.$dispatch('update-list', this.list, seats);
 
       this.acList = [];
       this.addFlag = false;
@@ -135,7 +135,7 @@ const ListView = Vue.extend({
 
       if(!foundFlag) return;
 
-      this.$dispatch('update-list', this.list.id, seats);
+      this.$dispatch('update-list', this.list, seats);
     },
 
     /* Dragging */
@@ -202,7 +202,20 @@ const ListView = Vue.extend({
     },
 
     drop() {
-      this.$dispatch('update-list', this.list.id, this.dragList);
+      this.$dispatch('update-list', this.list, this.dragList);
+    },
+
+    start() {
+      this.$dispatch('start-list', this.list);
+    },
+
+    stop() {
+      this.$dispatch('stop-list', this.list);
+    },
+
+    next() {
+      if(this.list.ptr >= this.list.seats.length) return;
+      this.$dispatch('iterate-list', this.list, this.list.ptr + 1);
     },
   },
 

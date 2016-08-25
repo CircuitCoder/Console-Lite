@@ -248,7 +248,7 @@ const desc = {
           this.timers.unshift({ id, name, value, left: value, type, active: false });
           let flag = false;
           for(const l of this.lists) if(l.id === name) {
-            if(timer.type === 'standalone') continue;
+            if(type === 'standalone') continue;
             if(type === 'list-total')
               l.timerTotal = this.timers[0];
             if(type === 'list-current')
@@ -271,7 +271,13 @@ const desc = {
         },
 
         timerReset: (id, value) => {
-          this.timerUpdated(id, value);
+          this.executeOnTimer(id, timer => {
+            timer.value = value;
+            timer.left = value;
+          });
+
+          if(this.projOn && proj.mode === 'timer' && proj.timer === id)
+            this.sendToProjector({ type: 'update', target: 'timer', data: { left: value, value } });
         },
 
         timerStopped: (id, value) => {
@@ -623,18 +629,26 @@ const desc = {
         });
     },
 
-    iterateList(id, ptr) {
+    startList(list) {
+      this.manipulateTimer('start', list.timerCurrent.id);
+    },
+
+    stopList(list) {
+      this.manipulateTimer('stop', list.timerCurrent.id);
+    },
+
+    iterateList(list, ptr) {
       Promise.all([
-        new Promise((resolve, reject) => confConn.manipulateTimer('reset', tid, err => err ? reject(err) : resolve())),
-        new Promise((resolve, reject) => confConn.iterateList(id, ptr, err => err ? reject(err) : resolve())),
+        new Promise((resolve, reject) => confConn.manipulateTimer('reset', list.timerCurrent.id, err => err ? reject(err) : resolve())),
+        new Promise((resolve, reject) => confConn.iterateList(list.id, ptr, err => err ? reject(err) : resolve())),
       ]).catch(e => {
         console.error(e);
         alert('更新失败!');
       });
     },
 
-    updateList(id, seats) {
-      confConn.updateList(id, seats, err => {
+    updateList(list, seats) {
+      confConn.updateList(list.id, seats, err => {
         if(err) {
           console.error(err);
           alert('更新失败!');

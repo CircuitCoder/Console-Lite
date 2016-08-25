@@ -1,4 +1,12 @@
-<div class="view list-view" @click="discardAll" @drag="drag" @dragend="dragend" @drop="drop" @dragleave="dragleave" @dragenter="dragenter" @dragover.prevent>
+<div class="view list-view"
+  @click="discardAll"
+  @drag="drag"
+  @dragend="dragend"
+  @drop="drop"
+  @dragleave="dragleave"
+  @dragenter="dragenter"
+  @dragover.prevent>
+
   <div class="view-title">
     <div class="list-brand">
       {{ list.name }}
@@ -29,10 +37,10 @@
       <button class="light" @click="stop" v-show="list.timerCurrent && list.timerCurrent.active">
         <i class="material-icons">pause</i>
       </button>
-      <button class="light" @click="start" v-show="list.timerCurrent && list.timerCurrent.left > 0 && !list.timerCurrent.active">
+      <button class="light" @click="start" v-show="list.ptr < list.seats.length && list.timerCurrent && list.timerCurrent.left > 0 && !list.timerCurrent.active">
         <i class="material-icons">play_arrow</i>
       </button>
-      <button class="light" @click="next">
+      <button class="light" @click="next" v-show="list.ptr < list.seats.length">
         <i class="material-icons">skip_next</i>
       </button>
       <button class="light" @click="project">
@@ -40,11 +48,13 @@
       </button>
     </div>
   </div>
+
   <div class="list list-seats" v-el:seats :class="{ 'ac-on-top': attachOnTop }">
     <div class="list-window-drag-handle"></div>
     <div class="list-item list-seat" v-for="seat of (dragMode ? dragList : list.seats)" track-by="uid"
-      :class="{ dragging: dragging === seat, overlap: overlap === seat }"
+      :class="{ dragging: dragging === seat, overlap: overlap === seat, bold: $index === list.ptr }"
       draggable="true"
+      @click.stop="edit(seat, $index)"
       @drag="drag"
       @dragstart="dragstart(seat, $index, $event)"
       transition="item">

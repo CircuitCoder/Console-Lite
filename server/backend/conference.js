@@ -109,18 +109,23 @@ class Conference {
   }
 
   resetTimer(id, cb) {
-    this.db.get(`timer:${id}`, (err, all) => {
-      if(err) return cb(err);
-
-      this.db.set(`timers:${id}:left`, all, err => {
+    const _cb = () => {
+      this.db.get(`timer:${id}`, (err, all) => {
         if(err) return cb(err);
 
-        for(const l of this.listeners)
-          if(l.timerReset) l.timerReset(id, all);
+        this.db.put(`timer:${id}:left`, all, err => {
+          if(err) return cb(err);
 
-        cb();
+          for(const l of this.listeners)
+            if(l.timerReset) l.timerReset(id, all);
+
+          cb();
+        });
       });
-    });
+    }
+
+    if(this.runningTimers.has(id)) stopTimer(id, _cb);
+    else _cb();
   }
 
   /**

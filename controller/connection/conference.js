@@ -183,7 +183,7 @@ class ConferenceConnection {
       else cb(data.error);
     });
 
-    socket.emit('iterateVote', { id, ptr });
+    socket.emit('iterateList', { id, ptr });
   }
 }
 
