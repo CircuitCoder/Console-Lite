@@ -1,8 +1,28 @@
-.list-seats {
-  -webkit-app-region: no-drag;
+.view.list-view {
+  overflow: visible;
 }
 
-.list-seat .list-item-content {
+.list-seats {
+  -webkit-app-region: no-drag;
+  display: flex;
+  flex-direction: column;
+  flex-flow: column wrap;
+
+  position: absolute;
+  top: 0;
+  bottom: 0px;
+  right: 0px;
+  left: 0px;
+  padding: 104px 40px 24px 40px;
+
+  overflow-x: scroll;
+  overflow-y: hidden;
+
+  margin-bottom: 0;
+}
+
+.list-seat, .list-seat-add {
+  width: 200px;
 }
 
 .list-seat-edit {
@@ -23,6 +43,7 @@
   padding: 0;
   margin: 0;
 
+  width: 135px;
   flex: 1;
 
   font-size: inherit;
@@ -49,6 +70,11 @@
   z-index: 1;
 }
 
+.ac-on-top .list-seat-ac {
+  top: auto;
+  bottom: 100%;
+}
+
 .list-seat-ac-entry {
   line-height: 40px;
   box-sizing: border-box;
@@ -58,7 +84,6 @@
 
   font-size: 16px;
   padding: 0 60px 0 20px;
-  border-top: rgba(0,0,0,.12) 1px solid;
 
   cursor: pointer;
 
@@ -69,10 +94,6 @@
 
 .list-seat-ac-entry:hover .ac-content {
   opacity: 1;
-}
-
-.list-seat-ac-entry:first-child {
-  border-color: transparent;
 }
 
 .list-seat-ac-indicator {

@@ -1,11 +1,11 @@
-<div class="view vote-view" @click="discardAll">
+<div class="view list-view" @click="discardAll">
   <div class="view-title">
     {{ list.name }}
   </div>
-  <div class="list" v-el:seats>
+  <div class="list list-seats" v-el:seats :class="{ 'ac-on-top': attachOnTop }">
     <div class="list-item list-seat" v-for="seat of list.seats" track-by="uid" @click.stop="edit(seat, $index)">
       <div class="list-item-indicator"></div>
-      <div class="list-item-content list-seat list-seat-edit"
+      <div class="list-item-content list-seat-edit"
         v-if="editTarget == seat.uid"
         @click.stop>
 
@@ -21,7 +21,7 @@
         <i class="material-icons list-seat-input-icon">keyboard_return</i>
 
         <div class="list-seat-ac">
-          <div class="list-seat-ac-entry" v-for="entry of acList | limitBy 5" @click="performAC(entry)" transition="autocompletion" stagger="100">
+          <div class="list-seat-ac-entry" v-for="entry of acList" @click="performAC(entry)" transition="autocompletion" stagger="100">
             <span class="ac-content">{{ entry }}</span>
           </div>
 
@@ -36,9 +36,9 @@
       </div>
     </div>
 
-    <div class="list-item list-seat" v-show="addFlag">
+    <div class="list-item list-seat" v-show="addFlag" v-el:add-item>
       <div class="list-item-indicator"></div>
-      <div class="list-item-content list-seat list-seat-edit" @click.stop>
+      <div class="list-item-content list-seat-edit" @click.stop>
 
         <input class="list-seat-input" v-model="editInput"
           @keydown.tab.stop.prevent="performAC()"
@@ -52,7 +52,7 @@
         <i class="material-icons list-seat-input-icon">keyboard_return</i>
 
         <div class="list-seat-ac">
-          <div class="list-seat-ac-entry" v-for="entry of acList | limitBy 5" @click="performAC(entry)" transition="autocompletion" stagger="50">
+          <div class="list-seat-ac-entry" v-for="entry of acList" @click="performAC(entry)" transition="autocompletion" stagger="25">
             <span class="ac-content">{{ entry }}</span>
           </div>
 

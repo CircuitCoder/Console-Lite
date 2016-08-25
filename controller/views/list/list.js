@@ -17,12 +17,13 @@ const ListView = Vue.extend({
     editInput: '',
 
     acIndex: 0,
-    acInput: null
+    acInput: null,
+    acBottomGap: 0,
   }),
 
   methods: {
     updateAC() {
-      this.acList = util.resolveAC(this.editInput);
+      this.acList = util.resolveAC(this.editInput).splice(0, 5);
       if(this.acList.length === 0) this.acIndex = 0;
       else if(this.acIndex >= this.acList.length) this.acIndex = this.acList.length - 1;
     },
@@ -45,6 +46,7 @@ const ListView = Vue.extend({
     add() {
       this.editInput = '';
       this.addFlag = true;
+      this.acBottomGap = this.$els.seats.offsetHeight - (this.$els.addItem.offsetTop + this.$els.addItem.offsetHeight); 
       this.$nextTick(() => {
         this.acInput = this.$els.addInput;
         this.$els.addInput.focus();
@@ -56,6 +58,9 @@ const ListView = Vue.extend({
     edit(seat, index) {
       this.editInput = seat.name;
       this.editTarget = seat.uid;
+
+      const wrapper = this.$els.seats.children[index];
+      this.acBottomGap = this.$els.seats.offsetHeight - (wrapper.offsetTop + wrapper.offsetHeight); 
 
       this.$nextTick(() => {
         const el = this.$els.seats.children[index].getElementsByTagName('input')[0];
@@ -126,8 +131,12 @@ const ListView = Vue.extend({
 
   computed: {
     indicatorTransform() {
-      return `translateY(${this.acIndex * 41}px) scale(${this.acList.length > 0 ? 1 : 0})`;
-    }
+      return `translateY(${this.acIndex * 40}px) scale(${this.acList.length > 0 ? 1 : 0})`;
+    },
+
+    attachOnTop() {
+      return this.acBottomGap < 200;
+    },
   },
 });
 

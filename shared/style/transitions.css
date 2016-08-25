@@ -19,7 +19,7 @@
 .autocompletion-transition {
   transition: height .2s ease-out, box-shadow .2s ease-out;
   box-shadow: rgba(0,0,0,.12) 0 2px 3px;
-  height: 41px;
+  height: 40px;
 }
 
 .autocompletion-transition .ac-content {
