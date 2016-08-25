@@ -62,6 +62,13 @@ body {
 
 .bottom-title {
   font-size: 4vw;
+  display: flex;
+  align-items: center;
+}
+
+.bottom-title .material-icons {
+  margin-right: 2vw;
+  font-size: 4vw;
 }
 
 .background {

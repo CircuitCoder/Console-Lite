@@ -52,7 +52,7 @@
     <div class="layer file-layer full" v-show="mode === 'file'">
       <div class="bottom-bar">
         <div class="bottom-title">
-          {{ shortName }}
+          <i class="material-icons">insert_drive_file</i>{{ shortName }}
         </div>
       </div>
       <div class="file-pdf" v-el:pages v-show="fileType === 'pdf'"></div>
@@ -65,7 +65,7 @@
     <div class="layer full vote-layer" v-if="mode === 'vote' && vote">
       <div class="bottom-bar">
         <div class="bottom-title">
-          {{ vote.name }}
+          <i class="material-icons">thumbs_up_down</i>{{ vote.name }}
         </div>
         <div class="vote-iteration" v-if="vote.status.iteration > 0">
           第{{ vote.status.iteration }}轮
@@ -149,7 +149,7 @@
     <div class="layer list-layer full" v-if="mode === 'list'">
       <div class="bottom-bar">
         <div class="bottom-title">
-          {{ list.name }}
+          <i class="material-icons">record_voice_over</i>{{ list.name }}
         </div>
       </div>
       <div class="timer-total" v-if="list.currentTimer && list.currentTimer.length">
