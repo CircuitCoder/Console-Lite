@@ -67,10 +67,13 @@ const desc = {
 
     file: null,
     vote: null,
+    list: null,
     searchInput: '',
 
     altHold: false,
     backquoteHold: false,
+
+    pendingListSync: null,
   },
 
   components: {
@@ -295,7 +298,7 @@ const desc = {
           else if(this.projOn && this.proj.mode === 'list') {
             const l = this.proj.target;
             if((l.timerCurrent && l.timerCurrent.id === id)
-               || (l.timerTotal && l.timerCurrent.id === id))
+               || (l.timerTotal && l.timerTotal.id === id))
              this.syncProjectorList();
           }
         },
@@ -311,7 +314,7 @@ const desc = {
           else if(this.projOn && this.proj.mode === 'list') {
             const l = this.proj.target;
             if((l.timerCurrent && l.timerCurrent.id === id)
-               || (l.timerTotal && l.timerCurrent.id === id))
+               || (l.timerTotal && l.timerTotal.id === id))
              this.syncProjectorList();
           }
         },
@@ -326,7 +329,7 @@ const desc = {
           else if(this.projOn && this.proj.mode === 'list') {
             const l = this.proj.target;
             if((l.timerCurrent && l.timerCurrent.id === id)
-               || (l.timerTotal && l.timerCurrent.id === id))
+               || (l.timerTotal && l.timerTotal.id === id))
              this.syncProjectorList();
           }
         },
@@ -342,7 +345,7 @@ const desc = {
           else if(this.projOn && this.proj.mode === 'list') {
             const l = this.proj.target;
             if((l.timerCurrent && l.timerCurrent.id === id)
-               || (l.timerTotal && l.timerCurrent.id === id))
+               || (l.timerTotal && l.timerTotal.id === id))
              this.syncProjectorList();
           }
         },
@@ -362,7 +365,7 @@ const desc = {
           else if(this.projOn && this.proj.mode === 'list') {
             const l = this.proj.target;
             if((l.timerCurrent && l.timerCurrent.id === id)
-               || (l.timerTotal && l.timerCurrent.id === id))
+               || (l.timerTotal && l.timerTotal.id === id))
              this.syncProjectorList();
           }
         },
@@ -745,8 +748,14 @@ const desc = {
      * We are doing global syncing on list object
      */
     syncProjectorList() {
+      if(this.pendingListSync !== null) return;
+
       if(this.projOn && this.proj.mode === 'list')
-        this.sendToProjector({ type: 'update', target: 'list', data: { list: this.proj.target } });
+        this.pendingListSync = setTimeout(() => {
+          this.pendingListSync = null;
+          console.log("SYNC");
+          this.sendToProjector({ type: 'update', target: 'list', data: { list: this.proj.target } });
+        }, 10);
     },
 
     /* Utitlities */
