@@ -13,22 +13,25 @@ const confs = new Map();
 let confList;
 
 function init(cb) {
-  main = levelup(path.resolve(__dirname, 'storage', 'main.db'), levelopt);
-  main.get('list', (err, list) => {
-    if(err)
-      if(err.notFound) {
-        confList = [];
-        return void main.put('list', [], cb);
-      } else return void cb(err);
-    else {
-      confList = list;
-      for(const conf of list) {
-        const db = levelup(`${__dirname}/storage/${conf.id}.db`, levelopt);
-        const filedir = `${__dirname}/storage/${conf.id}.files`;
-        confs.set(conf.id, new Conference(conf.name, db, filedir));
+  main = levelup(path.resolve(__dirname, 'storage', 'main.db'), levelopt, (err) => {
+    if(err) return void cb(err);
+
+    main.get('list', (err, list) => {
+      if(err)
+        if(err.notFound) {
+          confList = [];
+          return void main.put('list', [], cb);
+        } else return void cb(err);
+      else {
+        confList = list;
+        for(const conf of list) {
+          const db = levelup(`${__dirname}/storage/${conf.id}.db`, levelopt);
+          const filedir = `${__dirname}/storage/${conf.id}.files`;
+          confs.set(conf.id, new Conference(conf.name, db, filedir));
+        }
+        return void cb(null);
       }
-      return void cb(null);
-    }
+    });
   });
 }
 
