@@ -31,24 +31,24 @@ module.exports = (cb, port = 4928) => {
       res.end('Please use socket.io to connect.');
     });
 
-    socket.init(server, passkey);
+    socket.init(server, idkey, passkey);
     const confs = backend.list();
     for(const conf of confs) socket.add(conf.id);
 
-    server.listen(port, (err) => {
-      if(err) {
-        backend.shutdown();
-        cb(err);
-      } else {
-        console.log(`Server ${idkey} up at port ${port} with passkey ${passkey}.`);
+    server.listen(port, () => {
+      console.log(`Server ${idkey} up at port ${port} with passkey ${passkey}.`);
 
-        poloRepo.put({
-          name: `console-lite-${idkey}`,
-          port,
-        });
+      poloRepo.put({
+        name: `console-lite-${idkey}`,
+        port,
+      });
 
-        cb(null, passkey, idkey, shutdown);
-      }
+      cb(null, passkey, idkey, shutdown);
+    });
+
+    server.on('error', (err) => {
+      backend.shutdown();
+      cb(err);
     });
   });
 };

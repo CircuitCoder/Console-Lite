@@ -148,7 +148,7 @@ const desc = {
         query: `console-passkey=${serverConfig.passkey}`,
       });
 
-      globalConn = new GlobalConnection(socket, ({ confs, authorized }) => {
+      globalConn = new GlobalConnection(socket, ({ confs, authorized, idkey }) => {
         this.confs = confs;
         this.authorized = authorized;
 
@@ -161,6 +161,8 @@ const desc = {
             globalConn = null;
             return;
           }
+
+        this.backendIDKey = idkey;
 
         this.picker = true;
         this.connectBackendFlag = false;

@@ -283,7 +283,7 @@ function add(nsid) {
   namespaces.set(nsid, nsp);
 }
 
-function init(app, psk) {
+function init(app, idk, psk) {
   io = socketIO(app);
   passkey = psk;
 
@@ -293,10 +293,10 @@ function init(app, psk) {
   });
 
   io.on('connection', (socket) => {
-    socket.emit('pong', { authorized: socket.consoleAuthorized, confs: backend.list() });
+    socket.emit('pong', { authorized: socket.consoleAuthorized, confs: backend.list(), idkey: idk });
 
     socket.on('ping', () => {
-      socket.emit('pong', { authorized: socket.consoleAuthorized, confs: backend.list() });
+      socket.emit('pong', { authorized: socket.consoleAuthorized, confs: backend.list(), idkey: idk });
     });
 
     socket.on('create', (data) => {
