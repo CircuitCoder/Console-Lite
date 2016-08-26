@@ -20,7 +20,7 @@ body {
   padding: 0;
   margin: 0;
 
-  font-family: 'Roboto', 'NotoSansCJK SC';
+  font-family: 'Roboto', 'NotoSansCJK SC', sans-serif;
 
   overflow: hidden;
 
