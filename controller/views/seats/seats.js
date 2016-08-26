@@ -4,7 +4,7 @@ const pinyin = require('pinyin');
 
 const SeatsView = Vue.extend({
   template: fs.readFileSync(`${__dirname}/seats.html`).toString('utf-8'),
-  props: ['seats'],
+  props: ['seats', 'authorized'],
 
   data() {
     return {
@@ -31,6 +31,7 @@ const SeatsView = Vue.extend({
     },
 
     toggleStatus(seat) {
+      if(!this.authorized) return;
       // TODO: immutables
       seat.present = !seat.present;
       this.$dispatch('update-seats', this.seats);

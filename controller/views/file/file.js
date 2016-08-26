@@ -8,6 +8,7 @@ const FileView = Vue.extend({
   template: fs.readFileSync(`${__dirname}/file.html`).toString('utf-8'),
   props: [
     'file',
+    'authorized',
   ],
 
   data: () => ({
@@ -79,7 +80,7 @@ const FileView = Vue.extend({
     },
 
     dragover() {
-      this.dragging = true;
+      if(this.authorized) this.dragging = true;
     },
 
     dragleave() {
@@ -91,6 +92,7 @@ const FileView = Vue.extend({
     },
 
     drop(e) {
+      if(!this.authorized) return;
       const dt = e.dataTransfer;
       if(dt.files.length !== 1) {
         this.dragging = false;

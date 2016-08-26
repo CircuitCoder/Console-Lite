@@ -8,6 +8,7 @@ const VoteView = Vue.extend({
   props: [
     'vote',
     'altHold',
+    'authorized',
   ],
 
   data: () => ({
@@ -118,6 +119,8 @@ const VoteView = Vue.extend({
     },
 
     manipulate(voter) {
+      if(!this.authorized) return;
+
       this.targetVoter = voter;
       this.targetVote = voter.vote;
       this.manipulateFlag = true;

@@ -27,6 +27,7 @@
 
         :search-input="searchInput"
         :alt-hold="altHold"
+        :authorized="authorized"
 
         @navigate="navigate"
 
@@ -119,7 +120,7 @@
           <div class="selector-item" v-for="conf of confs" @click="connectConf(conf.id, conf.name)">
             {{ conf.name }}
           </div>
-          <div class="selector-item" @click="createConf">
+          <div class="selector-item" @click="createConf" v-if="authorized">
             <i class="material-icons">add</i>创建一个新委员会
           </div>
         </div>
@@ -172,7 +173,7 @@
         </div>
         <div class="dialog-content">
           <div class="selector">
-            <div class="selector-hint">局域网内的服务</div>
+            <div class="selector-hint" v-show="services.length > 0">局域网内的服务</div>
             <div class="selector-item" v-for="service of services" @click="applyService(service)">
               <i class="material-icons">router</i>{{ service.idkey }}
             </div>

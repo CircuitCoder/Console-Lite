@@ -1,7 +1,7 @@
 <div class="view">
   <div class="view-title">
     投票
-    <button class="embedded" @click="add">
+    <button class="embedded" @click="add" v-if="authorized">
       添加
       <i class="material-icons">add</i>
     </button>

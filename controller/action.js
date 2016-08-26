@@ -145,17 +145,27 @@ const desc = {
       this.backendUrl = serverConfig.url;
 
       const socket = io(serverConfig.url, {
-        extraHeaders: {
-          'Console-Passkey': serverConfig.passkey,
-        },
+        query: `console-passkey=${serverConfig.passkey}`,
       });
 
       globalConn = new GlobalConnection(socket, ({ confs, authorized }) => {
         this.confs = confs;
         this.authorized = authorized;
+
+        if(!this.authorized)
+          if(!confirm('密码错误，是否在只读模式连接?')) {
+            this.confs = null;
+            this.authorized = false;
+            this.connectBackendFlag = true;
+
+            globalConn = null;
+            return;
+          }
+
         this.picker = true;
         this.connectBackendFlag = false;
         // TODO: failure: reconnect
+
       });
     },
 

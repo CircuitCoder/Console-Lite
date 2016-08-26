@@ -11,7 +11,7 @@ function add(nsid) {
   const conf = backend.get(nsid);
 
   nsp.use((socket, next) => {
-    socket.consoleAuthorized = socket.request.headers['console-passkey'] === passkey;
+    socket.consoleAuthorized = socket.handshake.query['console-passkey'] === passkey;
     socket.conf = backend.get(nsid);
     next();
   });
@@ -34,6 +34,9 @@ function add(nsid) {
     socket.on('addTimer', ({ name, value, type }) => {
       if(!name || !value || !type)
         return void socket.emit('addTimer', { ok: false, error: 'BadRequest' });
+      else if(!socket.consoleAuthorized)
+        return void socket.emit('addTimer', { ok: false, error: 'NotAuthorized' });
+
       socket.conf.addTimer(name, type, value, (err, id) => {
         if(err) return void socket.emit('addTimer', { ok: false, error: err });
         else return void socket.emit('addTimer', { ok: true, id });
@@ -42,6 +45,9 @@ function add(nsid) {
 
     socket.on('startTimer', ({ id }) => {
       if(!id) return void socket.emit('startTimer', { ok: false, error: 'BadRequest' });
+      else if(!socket.consoleAuthorized)
+        return void socket.emit('startTimer', { ok: false, error: 'NotAuthorized' });
+
       socket.conf.startTimer(id, (err) => {
         if(err) return void socket.emit('startTimer', { ok: false, error: err });
         else return void socket.emit('startTimer', { ok: true, id });
@@ -50,6 +56,9 @@ function add(nsid) {
 
     socket.on('restartTimer', ({ id }) => {
       if(!id) return void socket.emit('restartTimer', { ok: false, error: 'BadRequest' });
+      else if(!socket.consoleAuthorized)
+        return void socket.emit('restartTimer', { ok: false, error: 'NotAuthorized' });
+
       socket.conf.restartTimer(id, (err) => {
         if(err) return void socket.emit('restartTimer', { ok: false, error: err });
         else return void socket.emit('restartTimer', { ok: true, id });
@@ -58,6 +67,9 @@ function add(nsid) {
 
     socket.on('resetTimer', ({ id }) => {
       if(!id) return void socket.emit('resetTimer', { ok: false, error: 'BadRequest' });
+      else if(!socket.consoleAuthorized)
+        return void socket.emit('resetTimer', { ok: false, error: 'NotAuthorized' });
+
       socket.conf.resetTimer(id, (err) => {
         if(err) return void socket.emit('resetTimer', { ok: false, error: err });
         else return void socket.emit('resetTimer', { ok: true, id });
@@ -66,6 +78,9 @@ function add(nsid) {
 
     socket.on('stopTimer', ({ id }) => {
       if(!id) return void socket.emit('stopTimer', { ok: false, error: 'BadRequest' });
+      else if(!socket.consoleAuthorized)
+        return void socket.emit('stopTimer', { ok: false, error: 'NotAuthorized' });
+
       socket.conf.stopTimer(id, (err) => {
         if(err) return void socket.emit('stopTimer', { ok: false, error: err });
         else return void socket.emit('stopTimer', { ok: true, id });
@@ -75,6 +90,9 @@ function add(nsid) {
     socket.on('updateTimer', ({ id, value }) => {
       if(!id || !Number.isInteger(value))
         return void socket.emit('updateTimer', { ok: false, error: 'BadRequest' });
+      else if(!socket.consoleAuthorized)
+        return void socket.emit('updateTimer', { ok: false, error: 'NotAuthorized' });
+
       socket.conf.updateTimer(id, value, (err) => {
         if(err) return void socket.emit('updateTimer', { ok: false, error: err });
         else return void socket.emit('updateTimer', { ok: true });
@@ -84,6 +102,9 @@ function add(nsid) {
     /* Seats */
     socket.on('updateSeats', ({ seats }) => {
       if(!seats) return void socket.emit('updateSeats', { ok: false, error: 'BadRequest' });
+      else if(!socket.consoleAuthorized)
+        return void socket.emit('updateSeats', { ok: false, error: 'NotAuthorized' });
+
       socket.conf.updateSeats(seats, err => {
         if(err) return void socket.emit('updateSeats', { ok: false, error: err });
         else return void socket.emit('updateSeats', { ok: true });
@@ -95,6 +116,9 @@ function add(nsid) {
     socket.on('addFile', ({ name, type, content }) => {
       if(!name || !type || !content)
         return void socket.emit('addFile', { ok: false, error: 'BadRequest' });
+      else if(!socket.consoleAuthorized)
+        return void socket.emit('addFile', { ok: false, error: 'NotAuthorized' });
+
       socket.conf.addFile(name, type, content, (err, id) => {
         if(err) return void socket.emit('addFile', { ok: false, error: err });
         else return void socket.emit('addFile', { ok: true, id });
@@ -103,6 +127,9 @@ function add(nsid) {
 
     socket.on('editFile', ({ id, content }) => {
       if(!id || !content) return void socket.emit('editFile', { ok: false, error: 'BadRequest' });
+      else if(!socket.consoleAuthorized)
+        return void socket.emit('editFile', { ok: false, error: 'NotAuthorized' });
+
       socket.conf.editFile(id, content, err => {
         if(err) return void socket.emit('editFile', { ok: false, error: err });
         else return void socket.emit('editFile', { ok: true });
@@ -121,6 +148,9 @@ function add(nsid) {
     socket.on('addVote', ({ name, rounds, target, seats }) => {
       if(!name || !Number.isInteger(rounds) || !Number.isInteger(target) || !seats)
         return void socket.emit('addVote', { ok: false, error: 'BadRequest' });
+      else if(!socket.consoleAuthorized)
+        return void socket.emit('addVote', { ok: false, error: 'NotAuthorized' });
+
       socket.conf.addVote(name, rounds, target, seats, (err, id) => {
         if(err) return void socket.emit('addVote', { ok: false, error: err });
         return void socket.emit('addVote', { ok: true, id });
@@ -130,6 +160,9 @@ function add(nsid) {
     socket.on('updateVote', ({ id, index, vote }) => {
       if(!id || !Number.isInteger(index) || !Number.isInteger(vote))
         return void socket.emit('updateVote', { ok: false, error: 'BadRequest' });
+      else if(!socket.consoleAuthorized)
+        return void socket.emit('updateVote', { ok: false, error: 'NotAuthorized' });
+
       socket.conf.updateVote(id, index, vote, err => {
         if(err) return void socket.emit('updateVote', { ok: false, error: err });
         return void socket.emit('updateVote', { ok: true });
@@ -139,6 +172,9 @@ function add(nsid) {
     socket.on('iterateVote', ({ id, status }) => {
       if(!id || !status)
         return void socket.emit('iterateVote', { ok: false, error: 'BadRequest' });
+      else if(!socket.consoleAuthorized)
+        return void socket.emit('iterateVote', { ok: false, error: 'NotAuthorized' });
+
       socket.conf.iterateVote(id, status, err => {
         if(err) return void socket.emit('iterateVote', { ok: false, error: err });
         return void socket.emit('iterateVote', { ok: true });
@@ -149,6 +185,9 @@ function add(nsid) {
 
     socket.on('addList', ({ name, seats }) => {
       if(!name || !seats) return void socket.emit('addList', { ok: false, error: 'BadRequest' });
+      else if(!socket.consoleAuthorized)
+        return void socket.emit('addList', { ok: false, error: 'NotAuthorized' });
+
       socket.conf.addList(name, seats, (err, id) => {
         if(err) return void socket.emit('addList', { ok: false, error: err });
         return void socket.emit('addList', { ok: true, id });
@@ -157,6 +196,9 @@ function add(nsid) {
 
     socket.on('updateList', ({ id, seats }) => {
       if(!id || !seats) return void socket.emit('updateList', { ok: false, error: 'BadRequest' });
+      else if(!socket.consoleAuthorized)
+        return void socket.emit('updateList', { ok: false, error: 'NotAuthorized' });
+
       socket.conf.updateList(id, seats, err => {
         if(err) return void socket.emit('updateList', { ok: false, error: err });
         return void socket.emit('updateList', { ok: true });
@@ -166,6 +208,9 @@ function add(nsid) {
     socket.on('iterateList', ({ id, ptr }) => {
       if(!id || !Number.isInteger(ptr))
         return void socket.emit('iterateList', { ok: false, error: 'BadRequest' });
+      else if(!socket.consoleAuthorized)
+        return void socket.emit('iterateList', { ok: false, error: 'NotAuthorized' });
+
       socket.conf.iterateList(id, ptr, err => {
         if(err) return void socket.emit('iterateList', { ok: false, error: err });
         return void socket.emit('iterateList', { ok: true });
@@ -243,7 +288,7 @@ function init(app, psk) {
   passkey = psk;
 
   io.use((socket, next) => {
-    socket.consoleAuthorized = socket.request.headers['console-passkey'] === passkey;
+    socket.consoleAuthorized = socket.handshake.query['console-passkey'] === passkey;
     next();
   });
 
@@ -255,8 +300,8 @@ function init(app, psk) {
     });
 
     socket.on('create', (data) => {
-      // TODO: check authorized
       if(!data.name) return void socket.emit('create', { ok: false, error: 'BadRequest' });
+      else if(!socket.consoleAuthorized) return void socket.emit('create', { ok: false, error: 'NotAuthorized' });
 
       backend.add(data.name, (err, id) => {
         if(err) return void socket.emit('create', { ok: false, error: err });

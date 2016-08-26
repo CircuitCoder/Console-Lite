@@ -5,6 +5,7 @@ const FilesView = Vue.extend({
   template: fs.readFileSync(`${__dirname}/files.html`).toString('utf-8'),
   props: [
     'files',
+    'authorized',
     {
       name: 'searchInput',
       default: '',
@@ -17,7 +18,7 @@ const FilesView = Vue.extend({
 
   methods: {
     dragover() {
-      this.dragging = true;
+      if(this.authorized) this.dragging = true;
     },
 
     dragleave() {
@@ -29,6 +30,7 @@ const FilesView = Vue.extend({
     },
 
     drop(e) {
+      if(!this.authorized) return;
       const dt = e.dataTransfer;
       if(dt.files.length !== 1) {
         this.dragging = false;

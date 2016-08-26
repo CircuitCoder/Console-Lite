@@ -1,7 +1,7 @@
 <div class="view">
   <div class="view-title">
     发言名单
-    <button class="embedded" @click="addFlag = true">
+    <button class="embedded" @click="addFlag = true" v-if="authorized">
       添加
       <i class="material-icons">add</i>
     </button>

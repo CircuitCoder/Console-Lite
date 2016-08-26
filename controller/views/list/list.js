@@ -9,6 +9,7 @@ const ListView = Vue.extend({
   props: [
     'list',
     'altHold',
+    'authorized',
   ],
 
   data: () => ({
@@ -89,6 +90,8 @@ const ListView = Vue.extend({
     },
 
     edit(seat, index) {
+      if(!this.authorized) return;
+
       this.editInput = seat.name;
       this.editTarget = seat.uid;
 

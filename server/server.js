@@ -31,7 +31,7 @@ module.exports = (cb, port = 4928) => {
       res.end('Please use socket.io to connect.');
     });
 
-    socket.init(server);
+    socket.init(server, passkey);
     const confs = backend.list();
     for(const conf of confs) socket.add(conf.id);
 

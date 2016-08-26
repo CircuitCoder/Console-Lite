@@ -34,18 +34,20 @@
       </div>
     </div>
     <div class="list-actions">
-      <button class="light" @click="editTimer">
-        <i class="material-icons">edit</i>
-      </button>
-      <button class="light" @click="stop" v-show="list.timerCurrent && list.timerCurrent.active">
-        <i class="material-icons">pause</i>
-      </button>
-      <button class="light" @click="start" v-show="list.ptr < list.seats.length && list.timerCurrent && list.timerCurrent.left > 0 && !list.timerCurrent.active">
-        <i class="material-icons">play_arrow</i>
-      </button>
-      <button class="light" @click="next" v-show="list.ptr < list.seats.length">
-        <i class="material-icons">skip_next</i>
-      </button>
+      <template v-if="authorized">
+        <button class="light" @click="editTimer">
+          <i class="material-icons">edit</i>
+        </button>
+        <button class="light" @click="stop" v-show="list.timerCurrent && list.timerCurrent.active">
+          <i class="material-icons">pause</i>
+        </button>
+        <button class="light" @click="start" v-show="list.ptr < list.seats.length && list.timerCurrent && list.timerCurrent.left > 0 && !list.timerCurrent.active">
+          <i class="material-icons">play_arrow</i>
+        </button>
+        <button class="light" @click="next" v-show="list.ptr < list.seats.length">
+          <i class="material-icons">skip_next</i>
+        </button>
+      </template>
       <button class="light" @click="project">
         <i class="material-icons">cast</i>
       </button>
@@ -56,7 +58,7 @@
     <div class="list-window-drag-handle"></div>
     <div class="list-item list-seat" v-for="seat of (dragMode ? dragList : list.seats)" track-by="uid"
       :class="{ dragging: dragging === seat, overlap: overlap === seat, bold: $index === list.ptr }"
-      draggable="true"
+      :draggable="authorized"
       @click.stop="edit(seat, $index)"
       @drag="drag"
       @dragstart="dragstart(seat, $index, $event)"
@@ -121,7 +123,7 @@
       </div>
     </div>
 
-    <div class="list-item clickable list-seat-add" @click.stop="add">
+    <div class="list-item clickable list-seat-add" @click.stop="add" v-if="authorized">
       <div class="list-item-indicator"></div>
       <div class="list-item-content">
         <i class="material-icons">add</i> 添加

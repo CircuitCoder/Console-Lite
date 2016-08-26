@@ -5,6 +5,7 @@ const TimersView = Vue.extend({
   template: fs.readFileSync(`${__dirname}/timers.html`).toString('utf-8'),
   props: [
     'timers',
+    'authorized',
     {
       name: 'searchInput',
       default: '',

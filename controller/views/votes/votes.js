@@ -6,6 +6,7 @@ const VoteView = Vue.extend({
   props: [
     'votes',
     'seats',
+    'authorized',
     {
       name: 'searchInput',
       default: '',

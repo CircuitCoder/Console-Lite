@@ -1,7 +1,7 @@
 <div class="view">
   <div class="view-title">
     计时器
-    <button class="embedded" @click="add">
+    <button class="embedded" @click="add" v-if="authorized">
       添加
       <i class="material-icons">add</i>
     </button>
@@ -29,11 +29,11 @@
           <timer class="timer-value" :time="timer.value"></timer>
         </div>
         <div class="timer-actions">
-          <button class="timer-action light" @click="toggle(timer)">
+          <button class="timer-action light" @click="toggle(timer)" v-if="authorized">
             <i class="material-icons" v-show="timer.active">pause</i>
             <i class="material-icons" v-else>play_arrow</i>
           </button>
-          <button class="timer-action light" @click="edit(timer)" :disabled="timer.active">
+          <button class="timer-action light" @click="edit(timer)" :disabled="timer.active" v-if="authorized">
             <i class="material-icons">edit</i>
           </button>
           <button class="timer-action light" @click="project(timer)">
@@ -42,7 +42,8 @@
         </div>
       </div>
     </div>
-    <div class="empty-hint">请点击添加创建计时器</div>
+    <div class="empty-hint" v-if="authorized">请点击添加创建计时器</div>
+    <div class="empty-hint" v-else>无计时器</div>
   </div>
 
   <div class="dialog-overlap" transition="opacity" v-show="editFlag" @click="discardEdit">

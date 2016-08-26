@@ -5,6 +5,7 @@ const ListsView = Vue.extend({
   template: fs.readFileSync(`${__dirname}/lists.html`).toString('utf-8'),
   props: [
     'lists',
+    'authorized',
     {
       name: 'searchInput',
       default: '',

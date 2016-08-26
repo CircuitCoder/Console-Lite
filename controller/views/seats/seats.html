@@ -1,17 +1,18 @@
 <div class="view">
   <div class="view-title">
     席位
-    <button class="embedded" @click="edit">
+    <button class="embedded" @click="edit" v-if="authorized">
       编辑
       <i class="material-icons">edit</i>
     </button>
   </div>
   <div class="seats list">
-    <div class="seat list-item clickable" v-for="seat of seats" track-by="$index" :class="{ bold: seat.present }" @click="toggleStatus(seat)">
+    <div class="seat list-item" v-for="seat of seats" track-by="$index" :class="{ clickable: authorized, bold: seat.present }" @click="toggleStatus(seat)">
       <div class="list-item-indicator"></div>
       <div class="list-item-content">{{ seat.name }}</div>
     </div>
-    <div class="empty-hint">请点击编辑添加席位</div>
+    <div class="empty-hint" v-if="authorized">请点击编辑添加席位</div>
+    <div class="empty-hint" v-else>席位列表为空</div>
   </div>
   <div class="dialog-overlap" transition="opacity" v-show="editFlag" @click="discardEditing">
     <div class="dialog wide" @click.stop.prevent>

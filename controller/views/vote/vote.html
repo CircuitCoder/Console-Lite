@@ -63,20 +63,22 @@
     </div>
 
     <div class="vote-actions">
-      <button class="light" @click="stop()" v-if="vote.status.running">
-        <i class="material-icons">done</i>
-        结束第{{ vote.status.iteration }}轮
-      </button>
-      <template v-else>
-        <button class="light" @click="start()" v-if="emptyCount === 0 || altHold">
-          <i class="material-icons">play_arrow</i>
-          手动进行第{{ vote.status.iteration + 1 }}轮
+      <template v-if="authorized">
+        <button class="light" @click="stop()" v-if="vote.status.running">
+          <i class="material-icons">done</i>
+          结束第{{ vote.status.iteration }}轮
         </button>
-        <button class="light" @click="autoStart()" v-else>
-          <i class="material-icons">play_arrow</i>
-          开始第{{ vote.status.iteration + 1 }}轮
-        </button>
-      </template>
+        <template v-else>
+          <button class="light" @click="start()" v-if="emptyCount === 0 || altHold">
+            <i class="material-icons">play_arrow</i>
+            手动进行第{{ vote.status.iteration + 1 }}轮
+          </button>
+          <button class="light" @click="autoStart()" v-else>
+            <i class="material-icons">play_arrow</i>
+            开始第{{ vote.status.iteration + 1 }}轮
+          </button>
+        </template>
+    </template>
       <button class="light" @click="project()">
         <i class="material-icons">cast</i>
       </button>
@@ -84,7 +86,14 @@
   </div>
 
   <div class="voters list">
-    <div class="voter list-item clickable" v-for="voter of mat" track-by="originalId" transition="item" :class="{ positive: voter.vote === 1, abstained: voter.vote === -1, negative: voter.vote === -2 }" @click="manipulate(voter)">
+    <div
+      class="voter list-item"
+      v-for="voter of mat"
+      track-by="originalId"
+      transition="item"
+      :class="{ positive: voter.vote === 1, abstained: voter.vote === -1, negative: voter.vote === -2, clickable: authorized }"
+      @click="manipulate(voter)">
+
       <div class="list-item-indicator"></div>
       <div class="list-item-content">{{ voter.name }}</div>
     </div>
