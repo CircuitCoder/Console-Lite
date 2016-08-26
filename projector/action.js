@@ -59,7 +59,6 @@ const desc = {
       easing = BezierEasing(0.25, 0.1, 0.25, 1.0);
 
       function step(now) {
-        console.log(now);
         if(now - startTime < 200) {
           const ratio = easing((now - startTime) / 200);
           el.scrollLeft = current + (to - current) * ratio;
@@ -72,8 +71,17 @@ const desc = {
       window.requestAnimationFrame(step);
     },
 
-    _scrollVote(to) {
-      this._scrollSmooth(this.$els.voters, to);
+    _recenterList() {
+      let i = this.list.ptr;
+      if(i >= this.list.length) i = this.list.seats.length - 1;
+
+      const vw = window.innerWidth;
+      let left = this.$els.speakers.children[i].offsetLeft - 0.3 * vw;
+      if(left + this.$els.speakers.offsetWidth > this.$els.speakers.scrollWidth)
+        left = this.$els.speakers.scrollWidth - this.$els.speakers.offsetWidth;
+      if(left < 0) left = 0;
+
+      this._scrollSmooth(this.$els.speakers, left);
     },
 
     performUpdate({ target, data }) {
@@ -96,7 +104,7 @@ const desc = {
       } else if(target === 'vote') {
         if(data.event === 'iterate') {
           this.vote.status = data.status;
-          this._scrollVote(0);
+          this._scrollSmooth(this.$els.voters, 0);
 
         } else { // update
           this.vote.matrix[data.index].vote = data.vote;
@@ -111,7 +119,7 @@ const desc = {
                 left = this.$els.voters.scrollWidth - this.$els.voters.offsetWidth;
               if(left < 0) left = 0;
 
-              this._scrollVote(left);
+              this._scrollSmooth(this.$els.voters, left);
             }
           }
         }
@@ -122,7 +130,10 @@ const desc = {
           }, 100);
       } else if(target === 'list') {
         if(this.switching) this.stashedlist = data.list;
-        else this.list = data.list;
+        else {
+          this.list = data.list;
+          if(this.mode === 'list') this.$nextTick(() => this._recenterList());
+        }
       }
     },
 
@@ -169,6 +180,7 @@ const desc = {
       } else if(target === 'list') {
         // Using stashed list
         this.list = this.stashedList;
+        this.$nextTick(() => this._recenterList());
       }
 
       return Promise.resolve();

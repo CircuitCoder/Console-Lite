@@ -149,7 +149,7 @@
     <div class="layer list-layer full" v-if="mode === 'list'">
       <div class="bottom-bar">
         <div class="bottom-title">
-          <i class="material-icons">record_voice_over</i>{{ list.name }}
+          <i class="material-icons">record_voice_over</i><span class="list-name">{{ list.name }}</span>
         </div>
         <div class="speaker-indicator" v-if="list.ptr < list.seats.length">
           <span class="speaker-current">
@@ -168,7 +168,7 @@
           <timer :time="list.timerTotal.left" :fix-minute="true"></timer>
         </div>
       </div>
-      <div class="list speakers">
+      <div class="list speakers" v-el:speakers>
         <div class="list-item speaker"
           v-for="speaker of list.seats"
           track-by="uid"
