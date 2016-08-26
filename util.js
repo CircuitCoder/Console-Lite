@@ -66,6 +66,10 @@ function getControllerMenu() {
       role: 'help',
       submenu: [
         {
+          label: '指南',
+          click() { shell.openExternal('http://kb.bjmun.org/console-lite'); },
+        },
+        {
           label: '关于 Electron',
           click() { shell.openExternal('http://electron.atom.io'); },
         },
