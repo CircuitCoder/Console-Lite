@@ -26,7 +26,10 @@ npm run server
 
 ```bash
 npm prune --producation # 删除开发依赖
+npm install electron-packager # 重新安装打包器
+npm install electron # 重新安装Electron
 npm run pack
+npm install # 重新安装开发依赖
 ```
 
 ## 许可证
