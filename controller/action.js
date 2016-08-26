@@ -20,11 +20,6 @@ let serverConfig;
 
 let connectedConf;
 
-/* Data for projector */
-let proj = {
-  mode: 'none',
-};
-
 const desc = {
   el: 'body',
   data: {
@@ -35,6 +30,10 @@ const desc = {
     frame: false,
 
     projOn: false,
+    proj: {
+      mode: 'none',
+      target: null,
+    },
 
     createConfFlag: false,
     confName: '',
@@ -69,9 +68,6 @@ const desc = {
     file: null,
     vote: null,
     searchInput: '',
-
-    projectedVote: null,
-    projectedList: null,
 
     altHold: false,
     backquoteHold: false,
@@ -294,8 +290,14 @@ const desc = {
             timer.left = value;
           });
 
-          if(this.projOn && proj.mode === 'timer' && proj.timer === id)
+          if(this.projOn && this.proj.mode === 'timer' && this.proj.target === id)
             this.sendToProjector({ type: 'update', target: 'timer', data: { left: value, active: true } });
+          else if(this.projOn && this.proj.mode === 'list') {
+            const l = this.proj.target;
+            if((l.timerCurrent && l.timerCurrent.id === id)
+               || (l.timerTotal && l.timerCurrent.id === id))
+             this.syncProjectorList();
+          }
         },
 
         timerReset: (id, value) => {
@@ -304,8 +306,14 @@ const desc = {
             timer.left = value;
           });
 
-          if(this.projOn && proj.mode === 'timer' && proj.timer === id)
+          if(this.projOn && this.proj.mode === 'timer' && this.proj.target === id)
             this.sendToProjector({ type: 'update', target: 'timer', data: { left: value, value } });
+          else if(this.projOn && this.proj.mode === 'list') {
+            const l = this.proj.target;
+            if((l.timerCurrent && l.timerCurrent.id === id)
+               || (l.timerTotal && l.timerCurrent.id === id))
+             this.syncProjectorList();
+          }
         },
 
         timerStopped: (id, value) => {
@@ -313,8 +321,14 @@ const desc = {
             timer.active = false;
           });
 
-          if(this.projOn && proj.mode === 'timer' && proj.timer === id)
+          if(this.projOn && this.proj.mode === 'timer' && this.proj.target === id)
             this.sendToProjector({ type: 'update', target: 'timer', data: { active: false } });
+          else if(this.projOn && this.proj.mode === 'list') {
+            const l = this.proj.target;
+            if((l.timerCurrent && l.timerCurrent.id === id)
+               || (l.timerTotal && l.timerCurrent.id === id))
+             this.syncProjectorList();
+          }
         },
 
         timerUpdated: (id, value) => {
@@ -323,8 +337,14 @@ const desc = {
             timer.left = value;
           });
 
-          if(this.projOn && proj.mode === 'timer' && proj.timer === id)
+          if(this.projOn && this.proj.mode === 'timer' && this.proj.target === id)
             this.sendToProjector({ type: 'update', target: 'timer', data: { left: value, value } });
+          else if(this.projOn && this.proj.mode === 'list') {
+            const l = this.proj.target;
+            if((l.timerCurrent && l.timerCurrent.id === id)
+               || (l.timerTotal && l.timerCurrent.id === id))
+             this.syncProjectorList();
+          }
         },
 
         timerTick: (id, value) => {
@@ -337,8 +357,14 @@ const desc = {
             });
           });
 
-          if(this.projOn && proj.mode === 'timer' && proj.timer === id)
+          if(this.projOn && this.proj.mode === 'timer' && this.proj.target === id)
             this.sendToProjector({ type: 'update', target: 'timer', data: { left: value } });
+          else if(this.projOn && this.proj.mode === 'list') {
+            const l = this.proj.target;
+            if((l.timerCurrent && l.timerCurrent.id === id)
+               || (l.timerTotal && l.timerCurrent.id === id))
+             this.syncProjectorList();
+          }
         },
 
         /* Files */
@@ -396,7 +422,7 @@ const desc = {
             if(v === this.vote && !v.status.running)
               this.$broadcast('vote-rearrange');
 
-            if(v === this.projectedVote)
+            if(this.proj.mode === 'vote' && v === this.proj.target)
               this.sendToProjector({ type: 'update', target: 'vote', data: { event: 'update', rearrange: !v.status.running, index, vote }});
 
             break;
@@ -410,7 +436,7 @@ const desc = {
             if(v === this.vote && !status.running)
               this.$broadcast('vote-rearrange');
 
-            if(v === this.projectedVote)
+            if(this.proj.mode === 'vote' && v === this.proj.target)
               this.sendToProjector({ type: 'update', target: 'vote', data: { event: 'iterate', rearrange: !status.running, status }});
 
             break;
@@ -440,6 +466,10 @@ const desc = {
         listUpdated: (id, seats) => {
           for(const list of this.lists) if(list.id === id) {
             list.seats = seats;
+
+            if(this.proj.mode === 'list' && this.proj.target === list)
+              this.syncProjectorList();
+
             break;
           }
         },
@@ -447,6 +477,10 @@ const desc = {
         listIterated: (id, ptr) => {
           for(const list of this.lists) if(list.id === id) {
             list.ptr = ptr;
+
+            if(this.proj.mode === 'list' && this.proj.target === list)
+              this.syncProjectorList();
+
             break;
           }
         }
@@ -542,8 +576,8 @@ const desc = {
 
     projectTimer(timer) {
       this.sendToProjector({ type: 'layer', target: 'timer', data: timer });
-      proj.mode = 'timer';
-      proj.timer = timer.id;
+      this.proj.mode = 'timer';
+      this.proj.target = timer.id;
     },
 
     executeOnTimer(id, cb) {
@@ -598,6 +632,8 @@ const desc = {
           return alert('获取文件失败');
         }
 
+        this.proj.mode = 'file';
+
         this.sendToProjector({ type: 'layer', target: 'file', data: { meta: file, content: new Uint8Array(content) }});
       });
     },
@@ -641,7 +677,8 @@ const desc = {
     },
 
     projectVote(vote) {
-      this.projectedVote = vote;
+      this.proj.mode = 'vote';
+      this.proj.target = vote;
       this.sendToProjector({ type: 'layer', target: 'vote', data: { vote } });
     },
 
@@ -698,8 +735,9 @@ const desc = {
     },
 
     projectList(list) {
-      this.projectedList = list;
-      this.sendToProjector({ type: 'layer', target: 'list', data: { list: this.projectedList } });
+      this.proj.mode = 'list';
+      this.proj.target = list;
+      this.sendToProjector({ type: 'layer', target: 'list', data: { list: this.proj.target } });
     },
 
     /**
@@ -707,7 +745,8 @@ const desc = {
      * We are doing global syncing on list object
      */
     syncProjectorList() {
-      this.sendToProjector({ type: 'update', target: 'list', data: { list: this.projectedList } });
+      if(this.projOn && this.proj.mode === 'list')
+        this.sendToProjector({ type: 'update', target: 'list', data: { list: this.proj.target } });
     },
 
     /* Utitlities */
@@ -732,6 +771,7 @@ const desc = {
     },
 
     clearProjector() {
+      this.proj.mode = 'none';
       this.sendToProjector({ type: 'layer', target: null });
     },
 
