@@ -47,7 +47,8 @@
         </template>
       </div>
     </div>
-    <div class="empty-hint">请点击添加创建发言名单</div>
+    <div class="empty-hint" v-if="authorized">请点击添加创建发言名单</div>
+    <div class="empty-hint" v-else>无发言名单</div>
   </div>
 
   <div class="dialog-overlap" transition="opacity" v-show="addFlag" @click="addFlag = false">
