@@ -165,7 +165,6 @@ const desc = {
         this.picker = true;
         this.connectBackendFlag = false;
         // TODO: failure: reconnect
-
       });
     },
 

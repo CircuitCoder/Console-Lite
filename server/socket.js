@@ -301,7 +301,8 @@ function init(app, psk) {
 
     socket.on('create', (data) => {
       if(!data.name) return void socket.emit('create', { ok: false, error: 'BadRequest' });
-      else if(!socket.consoleAuthorized) return void socket.emit('create', { ok: false, error: 'NotAuthorized' });
+      else if(!socket.consoleAuthorized)
+        return void socket.emit('create', { ok: false, error: 'NotAuthorized' });
 
       backend.add(data.name, (err, id) => {
         if(err) return void socket.emit('create', { ok: false, error: err });
