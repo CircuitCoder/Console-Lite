@@ -151,9 +151,22 @@
         <div class="bottom-title">
           <i class="material-icons">record_voice_over</i>{{ list.name }}
         </div>
-      </div>
-      <div class="timer-total" v-if="list.currentTimer && list.currentTimer.length">
-        <timer class="timer-total" :time="" :fix-minute="true"></timer>
+        <div class="speaker-indicator" v-if="list.ptr < list.seats.length">
+          <span class="speaker-current">
+            {{ list.seats[list.ptr].name }}
+          </span>
+          <span class="speaker-next" v-if="list.ptr < list.seats.length - 1">
+            {{ list.seats[list.ptr + 1].name }}
+          </span>
+        </div>
+        <div class="timer-current" v-if="list.timerCurrent">
+          <i class="material-icons">person</i>
+          <timer :time="list.timerCurrent.left" :fix-minute="true"></timer>
+        </div>
+        <div class="timer-total" v-if="list.timerTotal && list.timerTotal.value > 0">
+          <i class="material-icons">access_time</i>
+          <timer :time="list.timerTotal.left" :fix-minute="true"></timer>
+        </div>
       </div>
       <div class="list speakers">
         <div class="list-item speaker"
