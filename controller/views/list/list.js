@@ -8,6 +8,7 @@ const ListView = Vue.extend({
   template: fs.readFileSync(`${__dirname}/list.html`).toString('utf-8'),
   props: [
     'list',
+    'altHold',
   ],
 
   data: () => ({
@@ -121,6 +122,9 @@ const ListView = Vue.extend({
 
       this.acList = [];
       this.addFlag = false;
+
+      if(this.altHold)
+        this.$nextTick(() => this.add());
     },
 
     performEdit() {
