@@ -208,11 +208,11 @@
           <div class="dialog-supporting">
             URL: <strong>{{ backendUrl }}</strong>
           </div>
-          <div class="dialog-supporting">
-            ID: <strong>{{ backendIDKey }}</strong>
+          <div class="dialog-supporting" @click="copyServerSetting('idkey')">
+            ID: <strong>{{ backendIDKey }}</strong> <span v-show="copied === 'idkey'" transition="opacity">已复制</span>
           </div>
-          <div class="dialog-supporting">
-            密码: <strong>{{ backendPasskey }}</strong>
+          <div class="dialog-supporting" @click="copyServerSetting('passkey')">
+            密码: <strong>{{ backendPasskey }}</strong> <span v-show="copied === 'passkey'" transition="opacity">已复制</span>
           </div>
         </div>
       </div>

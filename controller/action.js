@@ -6,6 +6,7 @@ const io = require('socket.io-client/socket.io.js');
 const Push = require('push.js');
 const polo = require('polo');
 const {ipcRenderer} = require('electron');
+const {clipboard} = require('electron').remote;
 
 const GlobalConnection = require('./connection/global');
 const ConferenceConnection = require('./connection/conference');
@@ -45,6 +46,8 @@ const desc = {
     backendIDKey: '',
     backendUrl: '',
     backendPasskey: '',
+    copied: null,
+    copiedDiscarder: null,
 
     title: '',
 
@@ -772,6 +775,18 @@ const desc = {
 
     requestShowServer(e) {
       if(globalConn) this.showServerFlag = true;
+    },
+
+    copyServerSetting(key) {
+      const v = key === 'idkey' ? this.backendIDKey : this.backendPasskey;
+      clipboard.writeText(v);
+
+      this.copied = key;
+      if(this.copiedDiscarder !== null) clearInterval(this.copiedDiscarder);
+      this.copiedDiscarder = setTimeout(() => {
+        this.copiedDiscarder = null;
+        this.copied = null;
+      }, 500);
     },
 
     toggleProjector() {
