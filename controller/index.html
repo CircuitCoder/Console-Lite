@@ -101,7 +101,10 @@
           <div class="action" @click="navigate('votes')">
             <i class="material-icons">thumbs_up_down</i>
           </div>
-          <div class="action" @click="toggleProjector">
+          <div class="action" @click="clearProjector" v-if="altHold && projOn">
+            <i class="material-icons">layers_clear</i>
+          </div>
+          <div class="action" @click="toggleProjector" v-else>
             <i class="material-icons" v-show="projOn">cast_connected</i>
             <i class="material-icons" v-else>cast</i>
           </div>

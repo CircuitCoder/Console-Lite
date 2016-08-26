@@ -731,6 +731,10 @@ const desc = {
       else ipcRenderer.send('openProjector');
     },
 
+    clearProjector() {
+      this.sendToProjector({ type: 'layer', target: null });
+    },
+
     sendConfName() {
       this.sendToProjector({ type: 'update', target: 'title', data: { conf: connectedConf } });
     },
