@@ -5,8 +5,9 @@ Vue.use(VueAnimatedList);
 const io = require('socket.io-client/socket.io.js');
 const Push = require('push.js');
 const polo = require('polo');
-const {ipcRenderer} = require('electron');
-const {clipboard} = require('electron').remote;
+const path = require('path');
+const { ipcRenderer } = require('electron');
+const { clipboard } = require('electron').remote;
 
 const GlobalConnection = require('./connection/global');
 const ConferenceConnection = require('./connection/conference');
@@ -16,7 +17,9 @@ const util = require('../shared/util.js');
 require('../shared/components/timer');
 require('../shared/components/timer-input');
 
-let globalConn, confConn;
+let globalConn;
+let confConn;
+
 let serverConfig;
 
 let connectedConf;
@@ -58,7 +61,7 @@ const desc = {
 
     presentCount: 0,
     seatCount: 0,
-    
+
     timers: [],
     seats: [],
     files: [],
@@ -79,6 +82,7 @@ const desc = {
     pendingListSync: null,
   },
 
+  /* eslint-disable global-require */
   components: {
     home: require('./views/home/home'),
     seats: require('./views/seats/seats'),
@@ -91,6 +95,7 @@ const desc = {
     vote: require('./views/vote/vote'),
     list: require('./views/list/list'),
   },
+  /* eslint-enable global-require */
 
   methods: {
     init() {
@@ -99,12 +104,12 @@ const desc = {
       this.projOn = ipcRenderer.sendSync('getProjector') !== null;
       this.sendToProjector({ type: 'reset' });
 
-      ipcRenderer.on('projectorReady', (data) => {
+      ipcRenderer.on('projectorReady', () => {
         this.projOn = true;
         this.setupProjector();
       });
 
-      ipcRenderer.on('projectorClosed', (data) => {
+      ipcRenderer.on('projectorClosed', () => {
         this.projOn = false;
       });
 
@@ -121,7 +126,7 @@ const desc = {
       });
 
       poloRepo.on('down', (name) => {
-        for(let s of this.services)
+        for(const s of this.services)
           if(s.name === name) {
             this.services.$remove(s);
             break;
@@ -139,10 +144,10 @@ const desc = {
       this.backendIDKey = serverConfig.idkey;
       this.backendUrl = serverConfig.url;
 
-      socket = io(serverConfig.url, {
+      const socket = io(serverConfig.url, {
         extraHeaders: {
-          'Console-Passkey': serverConfig.passkey
-        }
+          'Console-Passkey': serverConfig.passkey,
+        },
       });
 
       globalConn = new GlobalConnection(socket, ({ confs, authorized }) => {
@@ -156,7 +161,8 @@ const desc = {
 
     applyService(service) {
       this.backendUrl = `http://${service.host}:${service.port}`;
-      this.$els.connectOverlap.scrollTop = this.$els.connectOverlap.scrollHeight - this.$els.connectOverlap.offsetHeight;
+      this.$els.connectOverlap.scrollTop =
+        this.$els.connectOverlap.scrollHeight - this.$els.connectOverlap.offsetHeight;
     },
 
     connectBackend() {
@@ -183,7 +189,7 @@ const desc = {
     createBackend() {
       ipcRenderer.once('serverCallback', (event, data) => {
         if(data.error) {
-          alert("启动失败! 请检查是否已经启动另一个 Console Lite 实例");
+          alert('启动失败! 请检查是否已经启动另一个 Console Lite 实例');
           console.error(data);
           this.loading = false;
           return;
@@ -200,16 +206,16 @@ const desc = {
       this.loading = true;
     },
 
-    connectConf(id, name) {
+    connectConf(confId, confName) {
       if(confConn && confConn.connected)
         confConn.disconnect();
 
-      console.log(`Connecting to: ${serverConfig.url}/${id}`);
+      console.log(`Connecting to: ${serverConfig.url}/${confId}`);
 
-      socket = io(`${serverConfig.url}/${id}`, {
+      const socket = io(`${serverConfig.url}/${confId}`, {
         extraHeaders: {
-          'Console-Passkey': serverConfig.passkey
-        }
+          'Console-Passkey': serverConfig.passkey,
+        },
       });
 
       confConn = new ConferenceConnection(socket, ({ error, data }) => {
@@ -220,9 +226,9 @@ const desc = {
           return;
         }
 
-        connectedConf = name;
+        connectedConf = confName;
 
-        for(let f of data.files) f.highlight = false;
+        for(const f of data.files) f.highlight = false;
 
         for(const list of data.lists) {
           list.timerCurrent = null;
@@ -254,7 +260,7 @@ const desc = {
         this.recalcCount();
         util.registerTrie(util.buildTrie(this.seats.filter(e => e.present).map(e => e.name)));
 
-        this.title = name;
+        this.title = confName;
 
         this.activeView = 'home';
         this.frame = true;
@@ -289,7 +295,7 @@ const desc = {
 
           if(!flag) this.timerWaitingList.push(this.timers[0]);
         },
-        
+
         timerStarted: (id, value) => {
           this.executeOnTimer(id, timer => {
             timer.active = true;
@@ -297,12 +303,16 @@ const desc = {
           });
 
           if(this.projOn && this.proj.mode === 'timer' && this.proj.target === id)
-            this.sendToProjector({ type: 'update', target: 'timer', data: { left: value, active: true } });
+            this.sendToProjector({
+              type: 'update',
+              target: 'timer',
+              data: { left: value, active: true },
+            });
           else if(this.projOn && this.proj.mode === 'list') {
             const l = this.proj.target;
             if((l.timerCurrent && l.timerCurrent.id === id)
                || (l.timerTotal && l.timerTotal.id === id))
-             this.syncProjectorList();
+              this.syncProjectorList();
           }
         },
 
@@ -318,11 +328,11 @@ const desc = {
             const l = this.proj.target;
             if((l.timerCurrent && l.timerCurrent.id === id)
                || (l.timerTotal && l.timerTotal.id === id))
-             this.syncProjectorList();
+              this.syncProjectorList();
           }
         },
 
-        timerStopped: (id, value) => {
+        timerStopped: (id /* , value */) => {
           this.executeOnTimer(id, timer => {
             timer.active = false;
           });
@@ -333,7 +343,7 @@ const desc = {
             const l = this.proj.target;
             if((l.timerCurrent && l.timerCurrent.id === id)
                || (l.timerTotal && l.timerTotal.id === id))
-             this.syncProjectorList();
+              this.syncProjectorList();
           }
         },
 
@@ -349,7 +359,7 @@ const desc = {
             const l = this.proj.target;
             if((l.timerCurrent && l.timerCurrent.id === id)
                || (l.timerTotal && l.timerTotal.id === id))
-             this.syncProjectorList();
+              this.syncProjectorList();
           }
         },
 
@@ -359,7 +369,7 @@ const desc = {
             if(value === 0 && timer.type === 'standalone') Push.create(timer.name, {
               body: '计时结束',
               timeout: 4000,
-              icon: __dirname + '/../images/timer.png'
+              icon: path.join(__dirname, '..', 'images', 'timer.png'),
             });
           });
 
@@ -369,7 +379,7 @@ const desc = {
             const l = this.proj.target;
             if((l.timerCurrent && l.timerCurrent.id === id)
                || (l.timerTotal && l.timerTotal.id === id))
-             this.syncProjectorList();
+              this.syncProjectorList();
           }
         },
 
@@ -380,28 +390,27 @@ const desc = {
           Push.create(name, {
             body: '新文件',
             timeout: 4000,
-            icon: __dirname + '/../images/folder.png'
+            icon: path.join(__dirname, '..', 'images', 'folder.png'),
           });
         },
 
         fileEdited: (id) => {
           this.fileCache[id] = null;
 
-          for(let f of this.files)
+          for(const f of this.files)
             if(f.id === id)
               f.highlight = true;
 
-          if(this.activeView === 'file' && this.file && this.file.id === id) {
+          if(this.activeView === 'file' && this.file && this.file.id === id)
             this.activeView = 'files';
-          }
 
           Push.create(name, {
             body: '文件更新',
             timeout: 4000,
-            icon: __dirname + '/../images/folder.png'
+            icon: path.join(__dirname, '..', 'images', 'folder.png'),
           });
 
-          //TODO: refetch if on projector
+          // TODO: refetch if on projector
         },
 
         /* Votes */
@@ -422,28 +431,36 @@ const desc = {
         },
 
         voteUpdated: (id, index, vote) => {
-          for(let v of this.votes) if(v.id === id) {
+          for(const v of this.votes) if(v.id === id) {
             v.matrix[index].vote = vote;
 
             if(v === this.vote && !v.status.running)
               this.$broadcast('vote-rearrange');
 
             if(this.proj.mode === 'vote' && v === this.proj.target)
-              this.sendToProjector({ type: 'update', target: 'vote', data: { event: 'update', rearrange: !v.status.running, index, vote }});
+              this.sendToProjector({
+                type: 'update',
+                target: 'vote',
+                data: { event: 'update', rearrange: !v.status.running, index, vote },
+              });
 
             break;
           }
         },
 
         voteIterated: (id, status) => {
-          for(let v of this.votes) if(v.id === id) {
+          for(const v of this.votes) if(v.id === id) {
             v.status = status;
 
             if(v === this.vote && !status.running)
               this.$broadcast('vote-rearrange');
 
             if(this.proj.mode === 'vote' && v === this.proj.target)
-              this.sendToProjector({ type: 'update', target: 'vote', data: { event: 'iterate', rearrange: !status.running, status }});
+              this.sendToProjector({
+                type: 'update',
+                target: 'vote',
+                data: { event: 'iterate', rearrange: !status.running, status },
+              });
 
             break;
           }
@@ -451,21 +468,19 @@ const desc = {
 
         /* Lists */
         listAdded: (id, name, seats) => {
-          let timerTotal = undefined;
-          let timerCurrent = undefined;
-          
-          for(let timer of this.timerWaitingList) {
-            if(timer.name === id) {
+          let timerTotal;
+          let timerCurrent;
+
+          for(const timer of this.timerWaitingList)
+            if(timer.name === id)
               if(timer.type === 'list-total') timerTotal = timer;
               else if(timer.type === 'list-current') timerCurrent = timer;
-            }
-          }
 
           if(timerTotal) this.timerWaitingList.$remove(timerTotal);
           if(timerCurrent) this.timerWaitingList.$remove(timerCurrent);
 
           this.lists.unshift({
-            id, name, seats, timerTotal, timerCurrent, ptr: 0
+            id, name, seats, timerTotal, timerCurrent, ptr: 0,
           });
         },
 
@@ -489,11 +504,11 @@ const desc = {
 
             break;
           }
-        }
+        },
       });
     },
 
-    createConf(name) {
+    createConf() {
       this.confName = '';
       this.createConfFlag = true;
       setTimeout(() => this.$els.confNameInput.focus(), 0);
@@ -524,10 +539,8 @@ const desc = {
     navigate(dest, data) {
       this.activeView = dest;
       this.searchInput = '';
-      if(data) {
-        if(data.search)
-          this.searchInput = data.search;
-      }
+      if(data) if(data.search)
+        this.searchInput = data.search;
     },
 
     /* Seats */
@@ -544,17 +557,21 @@ const desc = {
 
     recalcCount() {
       this.seatCount = this.seats.length;
-      this.presentCount = this.seats.reduce((prev, e) => e.present ? prev+1 : prev, 0);
+      this.presentCount = this.seats.reduce((prev, e) => e.present ? prev + 1 : prev, 0);
     },
 
     sendSeatCount() {
-      this.sendToProjector({ type: 'update', target: 'seats', data: { seat: this.seatCount, present: this.presentCount } });
+      this.sendToProjector({
+        type: 'update',
+        target: 'seats',
+        data: { seat: this.seatCount, present: this.presentCount },
+      });
     },
 
     /* Timers */
 
     addTimer(name, sec) {
-      confConn.addTimer(name, 'standalone', sec, (err, id) => {
+      confConn.addTimer(name, 'standalone', sec, (err /* , id */) => {
         if(err) {
           console.error(err);
           alert('添加失败!');
@@ -563,7 +580,7 @@ const desc = {
     },
 
     manipulateTimer(action, id) {
-      confConn.manipulateTimer(action, id, (err, id) => {
+      confConn.manipulateTimer(action, id, (err) => {
         if(err) {
           console.error(err);
           alert('操作失败!');
@@ -572,7 +589,7 @@ const desc = {
     },
 
     updateTimer(id, value) {
-      confConn.updateTimer(id, value, (err, id) => {
+      confConn.updateTimer(id, value, (err) => {
         if(err) {
           console.error(err);
           alert('修改失败!');
@@ -615,8 +632,8 @@ const desc = {
     },
 
     getFile(id, cb) {
-      if(this.fileCache[id]) return cb(null, this.fileCache[id]);
-      confConn.getFile(id, (err, doc) => {
+      if(this.fileCache[id]) cb(null, this.fileCache[id]);
+      return confConn.getFile(id, (err, doc) => {
         if(err) return cb(err);
 
         this.fileCache[id] = doc;
@@ -640,13 +657,17 @@ const desc = {
 
         this.proj.mode = 'file';
 
-        this.sendToProjector({ type: 'layer', target: 'file', data: { meta: file, content: new Uint8Array(content) }});
+        return this.sendToProjector({
+          type: 'layer',
+          target: 'file',
+          data: { meta: file, content: new Uint8Array(content) },
+        });
       });
     },
 
     /* Vote */
     addVote(name, target, rounds, seats) {
-      confConn.addVote(name, target, rounds, seats, (err, id) => {
+      confConn.addVote(name, target, rounds, seats, (err /* , id */) => {
         if(err) {
           console.error(err);
           alert('添加失败!');
@@ -665,7 +686,7 @@ const desc = {
     },
 
     updateVote(id, index, vote) {
-      confConn.updateVote(id, index, vote, (err, id) => {
+      confConn.updateVote(id, index, vote, (err /* , id */) => {
         if(err) {
           console.error(err);
           alert('更新失败!');
@@ -674,7 +695,7 @@ const desc = {
     },
 
     iterateVote(id, status) {
-      confConn.iterateVote(id, status, (err, id) => {
+      confConn.iterateVote(id, status, (err /* , id */) => {
         if(err) {
           console.error(err);
           alert('更新失败!');
@@ -756,8 +777,11 @@ const desc = {
       if(this.projOn && this.proj.mode === 'list')
         this.pendingListSync = setTimeout(() => {
           this.pendingListSync = null;
-          console.log("SYNC");
-          this.sendToProjector({ type: 'update', target: 'list', data: { list: this.proj.target } });
+          this.sendToProjector({
+            type: 'update',
+            target: 'list',
+            data: { list: this.proj.target },
+          });
         }, 10);
     },
 
@@ -773,7 +797,7 @@ const desc = {
       else if(e.key === '`') this.backquoteHold = false;
     },
 
-    requestShowServer(e) {
+    requestShowServer() {
       if(globalConn) this.showServerFlag = true;
     },
 
@@ -805,12 +829,10 @@ const desc = {
 
     setupProjector() {
       if(confConn) {
-        this.sendToProjector({ type: 'update', target: 'status', data: { connected: true }});
+        this.sendToProjector({ type: 'update', target: 'status', data: { connected: true } });
         this.sendConfName();
         this.sendSeatCount();
-      } else {
-        this.sendToProjector({ type: 'reset' });
-      }
+      } else this.sendToProjector({ type: 'reset' });
     },
 
     sendToProjector(data) {
@@ -830,10 +852,11 @@ const desc = {
 
     twentyPercentCount() {
       return Math.ceil(this.presentCount / 5);
-    }
+    },
   },
-}
+};
 
+// eslint-disable-next-line no-unused-vars
 function setup() {
   const instance = new Vue(desc);
   instance.init();

@@ -16,22 +16,25 @@ const FilesView = Vue.extend({
   }),
 
   methods: {
-    dragover(e) {
-      //TODO: check file name
+    dragover() {
       this.dragging = true;
     },
 
-    dragleave(e) {
+    dragleave() {
       this.dragging = false;
     },
 
-    dragend(e) {
+    dragend() {
       this.dragging = false;
     },
 
     drop(e) {
       const dt = e.dataTransfer;
-      if(dt.files.length !== 1) return console.error("Invalid number of files");
+      if(dt.files.length !== 1) {
+        this.dragging = false;
+        alert('请每次只上传一个文件');
+        return;
+      }
 
       const name = dt.files[0].name;
       const type = dt.files[0].type;

@@ -1,10 +1,11 @@
 const levelup = require('levelup');
 const crypto = require('crypto');
+const path = require('path');
 
-const Conference = require('./conference')
+const Conference = require('./conference');
 
 const levelopt = {
-  valueEncoding: 'json'
+  valueEncoding: 'json',
 };
 
 let main;
@@ -12,26 +13,29 @@ const confs = new Map();
 let confList;
 
 function init(cb) {
-  main = levelup(__dirname + '/storage/main.db', levelopt);
+  main = levelup(path.resolve(__dirname, 'storage', 'main.db'), levelopt);
   main.get('list', (err, list) => {
-    if(err) {
+    if(err)
       if(err.notFound) {
         confList = [];
-        return main.put('list', [], cb);
-      } else return cb(err);
-    } else {
+        return void main.put('list', [], cb);
+      } else return void cb(err);
+    else {
       confList = list;
-      for(const conf of list)
-        confs.set(conf.id, new Conference(conf.name, levelup(`${__dirname}/storage/${conf.id}.db`, levelopt), `${__dirname}/storage/${conf.id}.files`));
-      return cb(null);
+      for(const conf of list) {
+        const db = levelup(`${__dirname}/storage/${conf.id}.db`, levelopt);
+        const filedir = `${__dirname}/storage/${conf.id}.files`;
+        confs.set(conf.id, new Conference(conf.name, db, filedir));
+      }
+      return void cb(null);
     }
   });
 }
 
 function shutdown(cb) {
   main.close((err) => {
-    if(err) cb(err);
-    else return Promise.all([...confs.keys()].map(e => (resolve, reject) =>
+    if(err) return void cb(err);
+    else return void Promise.all([...confs.keys()].map(e => (resolve, reject) =>
       e.db.close((err) => err ? reject(err) : resolve())
     )).then(() => cb()).catch(cb);
   });
@@ -39,9 +43,12 @@ function shutdown(cb) {
 
 function add(name, cb) {
   const id = crypto.randomBytes(16).toString('hex');
-  const instance = new Conference(name, levelup(`${__dirname}/storage/${id}.db`, levelopt), `${__dirname}/storage/${id}.files`);
+
+  const db = levelup(`${__dirname}/storage/${id}.db`, levelopt);
+  const filedir = `${__dirname}/storage/${id}.files`;
+  const instance = new Conference(name, db, filedir);
   instance.setup((err) => {
-    if(err) return cb(err);
+    if(err) return void cb(err);
     confs.set(id, instance);
     confList.push({ id, name });
 
@@ -51,10 +58,10 @@ function add(name, cb) {
 
 function get(name) {
   if(confs.has(name)) return confs.get(name);
-  return undefined;
+  return null;
 }
 
-function list() {
+function _list() {
   return confList;
 }
 
@@ -63,5 +70,5 @@ module.exports = {
   shutdown,
   add,
   get,
-  list,
-}
+  list: _list,
+};

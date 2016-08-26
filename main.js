@@ -1,5 +1,7 @@
 const electron = require('electron');
-const {ipcMain, app, globalShortcut, BrowserWindow} = electron;
+const { ipcMain, app, globalShortcut, BrowserWindow } = electron;
+const path = require('path');
+
 const server = require('./server/server');
 const util = require('./util');
 
@@ -8,14 +10,15 @@ const name = 'Console Lite';
 app.setName(name);
 
 // Windows, not the OS, but windows
-let controller, projector;
+let controller;
+let projector;
 
 const controllerOpt = {
   width: 800,
   height: 600,
   frame: false,
   background: '#FFF',
-  icon: __dirname + '/images/icon_256x256.png',
+  icon: path.join(__dirname, 'images', 'icon_256x256.png'),
 };
 
 const projectorOpt = {
@@ -23,8 +26,8 @@ const projectorOpt = {
   height: 600,
   frame: false,
   autoHideMenuBar: true,
-  icon: __dirname + '/images/icon_256x256.png',
-}
+  icon: path.join(__dirname, 'images', 'icon_256x256.png'),
+};
 
 if(util.supportsTitlebarStyle()) {
   controllerOpt.frame = true;
@@ -86,17 +89,23 @@ app.on('activate', () => {
 });
 
 let serverStarted = false;
-let passkey, idkey;
+
+let passkey;
+let idkey;
+
 let shutdown;
 
-ipcMain.on('startServer', (event, data) => {
-  if(serverStarted)
-    return event.sender.send('serverCallback', { url: 'http://localhost:4928', passkey, idkey });
+ipcMain.on('startServer', (event) => {
+  if(serverStarted) {
+    event.sender.send('serverCallback', { url: 'http://localhost:4928', passkey, idkey });
+    return;
+  }
 
   server((err, pk, ik, sd) => {
     if(err) {
       console.error(err);
-      return event.sender.send('serverCallback', { error: err });
+      event.sender.send('serverCallback', { error: err });
+      return;
     }
 
     serverStarted = true;
@@ -107,11 +116,11 @@ ipcMain.on('startServer', (event, data) => {
   });
 });
 
-ipcMain.on('openProjector', (event, data) => {
+ipcMain.on('openProjector', () => {
   initProjector();
 });
 
-ipcMain.on('closeProjector', (event, data) => {
+ipcMain.on('closeProjector', () => {
   if(projector) projector.close();
 });
 
@@ -119,12 +128,12 @@ ipcMain.on('toProjector', (event, data) => {
   if(projector) projector.webContents.send('fromController', data);
 });
 
-ipcMain.on('getProjector', (event, data) => {
+ipcMain.on('getProjector', (event) => {
   if(!projector) event.returnValue = null;
   else event.returnValue = projector.id;
 });
 
-ipcMain.on('projectorInitialized', (event, data) => {
+ipcMain.on('projectorInitialized', () => {
   if(controller) controller.webContents.send('projectorReady');
 });
 

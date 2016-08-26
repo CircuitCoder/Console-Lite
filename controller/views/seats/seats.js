@@ -20,7 +20,8 @@ const SeatsView = Vue.extend({
 
     performEditing() {
       const str = this.$els.seatsInput.innerHTML;
-      const seats = str.split('<br>').filter(e => e.length > 0).map(e => ({ name: e, present: false }));
+      const seats =
+        str.split('<br>').filter(e => e.length > 0).map(e => ({ name: e, present: false }));
       this.$dispatch('update-seats', seats);
       this.editFlag = false;
     },
@@ -31,7 +32,7 @@ const SeatsView = Vue.extend({
 
     toggleStatus(seat) {
       // TODO: immutables
-      seat.present = ! seat.present;
+      seat.present = !seat.present;
       this.$dispatch('update-seats', this.seats);
     },
 
@@ -44,17 +45,18 @@ const SeatsView = Vue.extend({
             pinyin: pinyin(e, {
               style: pinyin.STYLE_NORMAL,
               segment: true,
-            })
-          })).sort((a, b) => {
+            }),
+          }))
+          .sort((a, b) => {
             for(let i = 0; i <= a.original.length; ++i) {
               if(i === b.original.length)
                 return i === a.original.length ? 0 : 1;
               else if(i === a.original.length) return -1;
 
-              if(a.original.charCodeAt(i) > 127) {
+              if(a.original.charCodeAt(i) > 127)
                 if(b.original.charCodeAt(i) > 127) break;
                 else return 1; // b[i] is ascii, a[i] is not
-              } else if(b.original.charCodeAt(i) > 127)
+              else if(b.original.charCodeAt(i) > 127)
                 return -1; // a[i] is ascii, b[i] is not
 
               const lc = a.original.charAt(i).localeCompare(b.original.charAt(i));
@@ -69,10 +71,11 @@ const SeatsView = Vue.extend({
 
             if(a.pinyin.length < b.pinyin.length) return -1;
             else return 0;
-          }).map(e => e.original)
+          })
+          .map(e => e.original)
           .join('<br>');
     },
-  }
-})
+  },
+});
 
 module.exports = SeatsView;

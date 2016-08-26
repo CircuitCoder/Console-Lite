@@ -1,5 +1,5 @@
 const backend = require('./backend/main');
-const socket= require('./socket.js');
+const socket = require('./socket.js');
 
 const polo = require('polo');
 const poloRepo = polo();
@@ -17,7 +17,7 @@ module.exports = (cb, port = 4928) => {
   backend.init((err) => {
     if(err) {
       backend.shutdown();
-      return cb(err);
+      return void cb(err);
     }
 
     console.log('Backend initialization completed');
@@ -25,7 +25,7 @@ module.exports = (cb, port = 4928) => {
     const passkey = crypto.randomBytes(4).toString('hex');
     const idkey = crypto.randomBytes(4).toString('hex').toUpperCase();
 
-    // Setup sockets 
+    // Setup sockets
     const server = http.createServer((req, res) => {
       res.writeHead(404);
       res.end('Please use socket.io to connect.');
@@ -44,11 +44,11 @@ module.exports = (cb, port = 4928) => {
 
         poloRepo.put({
           name: `console-lite-${idkey}`,
-          port: port,
+          port,
         });
 
         cb(null, passkey, idkey, shutdown);
       }
     });
   });
-}
+};

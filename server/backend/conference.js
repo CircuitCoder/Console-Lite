@@ -35,7 +35,7 @@ class Conference {
         return;
       }
 
-      for(let t of timers) {
+      for(const t of timers) {
         if(t.type === 'list-total')
           this.listTotal.set(t.name, t.id);
         if(t.type === 'list-current')
@@ -57,14 +57,15 @@ class Conference {
   /* Timers */
 
   _startTimer(id, refkey, cb) {
-    if(this.runningTimers.has(id)) return cb('AlreadyStarted');
+    if(this.runningTimers.has(id)) return void cb('AlreadyStarted');
+
     this.runningTimers.set(id, 0); // To block following invokes
 
     this.db.get(refkey, (err, value) => {
       if(err) {
         this.runningTimers.delete(id);
-        return cb(err);
-      } 
+        return void cb(err);
+      }
 
       if(value === 0) return;
 
@@ -92,10 +93,10 @@ class Conference {
 
       if(this.listCurrent.has(id)) { // Never restart list-total timers
         const listId = this.listCurrent.get(id);
-        if(this.listTotal.has(listId)) return this.startTimer(this.listTotal.get(listId), cb);
+        if(this.listTotal.has(listId)) return void this.startTimer(this.listTotal.get(listId), cb);
       }
 
-      return cb(null);
+      cb(null);
     });
   }
 
@@ -113,20 +114,22 @@ class Conference {
   resetTimer(id, cb) {
     const _cb = () => {
       this.db.get(`timer:${id}`, (err, all) => {
-        if(err) return cb(err);
+        if(err) return void cb(err);
 
         this.db.put(`timer:${id}:left`, all, err => {
-          if(err) return cb(err);
+          if(err) return void cb(err);
 
           for(const l of this.listeners)
             if(l.timerReset) l.timerReset(id, all);
 
           cb();
         });
-      });
-    }
 
-    if(this.runningTimers.has(id)) stopTimer(id, _cb);
+        return;
+      });
+    };
+
+    if(this.runningTimers.has(id)) this.stopTimer(id, _cb);
     else _cb();
   }
 
@@ -134,13 +137,13 @@ class Conference {
    * You should never stop list-total timers
    */
   stopTimer(id, cb) {
-    if(!this.runningTimers.has(id)) return cb('AlreadyStopped');
+    if(!this.runningTimers.has(id)) return void cb('AlreadyStopped');
     const intId = this.runningTimers.get(id);
 
     // TODO: if stopTimer is called right after startTimer, this.timerValues[id] may be undefined
 
     this.db.put(`timer:${id}:left`, this.timerValues.get(id), (err) => {
-      if(err) return cb(err);
+      if(err) return void cb(err);
 
       clearInterval(intId);
       this.runningTimers.delete(id);
@@ -150,10 +153,11 @@ class Conference {
 
       if(this.listCurrent.has(id)) {
         const listId = this.listCurrent.get(id);
-        if(this.listTotal.has(listId)) return this.stopTimer(this.listTotal.get(listId), (err) => {
-          if(err === 'AlreadyStopped') return cb(null);
-          else return cb(err);
-        });
+        if(this.listTotal.has(listId))
+          return void this.stopTimer(this.listTotal.get(listId), (err) => {
+            if(err === 'AlreadyStopped') return void cb(null);
+            else return void cb(err);
+          });
       }
 
       cb(null);
@@ -161,7 +165,7 @@ class Conference {
   }
 
   updateTimer(id, value, cb) {
-    if(this.runningTimers.has(id)) return cb('TimerRunning');
+    if(this.runningTimers.has(id)) return void cb('TimerRunning');
 
     Promise.all([
       (resolve, reject) => this.db.put(`timer:${id}:left`, value, err => err ? reject(err) : resolve(err)),
@@ -176,14 +180,15 @@ class Conference {
   /**
    * Possible values for type:
    * - 'standalone': A standalone timer
-   * - 'list-current', 'list-total': A timer for a speaker list, whose name must be identical to the list's id
+   * - 'list-current', 'list-total': A timer for a speaker list,
+   *       whose name must be identical to the list's id
    */
 
   addTimer(name, type, value, cb) {
     const id = crypto.randomBytes(16).toString('hex');
 
     this.db.get('timers', (err, timers) => {
-      if(err) return cb(err);
+      if(err) return void cb(err);
       timers.unshift({ id, name, type });
       Promise.all([
         (resolve, reject) => this.db.put('timers', timers, err ? reject(err) : resolve(err)),
@@ -197,14 +202,14 @@ class Conference {
 
         for(const l of this.listeners)
           if(l.timerAdded) l.timerAdded(id, name, type, value);
-        return cb(null, id);
+        return void cb(null, id);
       }).catch(cb);
     });
   }
 
   listTimers() {
-    return new Promise((resolve, reject) => this.db.get(`timers`, (err, timers) => {
-      if(err) return reject(err);
+    return new Promise((resolve, reject) => this.db.get('timers', (err, timers) => {
+      if(err) return void reject(err);
 
       for(const timer of timers)
         if(this.runningTimers.has(timer.id)) {
@@ -214,16 +219,16 @@ class Conference {
 
       const promises = timers.map(timer => (resolve, reject) => {
         this.db.get(`timer:${timer.id}`, (err, value) => {
-          if(err) return reject(err);
+          if(err) return void reject(err);
 
           this.db.get(`timer:${timer.id}:left`, (err, left) => {
-            if(err) return reject(err);
+            if(err) return void reject(err);
 
             timer.value = value;
             if(!timer.left) timer.left = left; // Respect running timers
             if(!timer.active) timer.active = false;
 
-            return resolve(timer);
+            return void resolve(timer);
           });
         });
       }).map(e => new Promise(e));
@@ -236,39 +241,40 @@ class Conference {
 
   updateSeats(seats, cb) {
     this.db.put('seats', seats, (err) => {
-      if(err) return cb(err);
+      if(err) return void cb(err);
       for(const l of this.listeners)
         if(l.seatsUpdated) l.seatsUpdated(seats);
-      return cb();
+      return void cb();
     });
   }
 
   listSeats() {
     return new Promise((resolve, reject) => this.db.get('seats', (err, seats) => {
-      if(err) return reject(err);
-      else return resolve(seats);
+      if(err) return void reject(err);
+      else return void resolve(seats);
     }));
   }
 
   /* Files */
   // TODO: add cache
-  
+
   addFile(name, type, content, cb) {
     const id = crypto.randomBytes(16).toString('hex');
-    
+
     Promise.all([
       (resolve, reject) => {
         this.db.get('files', (err, files) => {
-          if(err) return reject(err);
+          if(err) return void reject(err);
           files.unshift({ id, name, type });
           this.db.put('files', files, err ? reject(err) : resolve(err));
         });
       },
-      (resolve, reject) => fs.writeFile(`${this.fileRoot}/${id}`, content, err => err ? reject(err) : resolve()),
+      (resolve, reject) =>
+        fs.writeFile(`${this.fileRoot}/${id}`, content, err => err ? reject(err) : resolve()),
     ].map(e => new Promise(e))).then(() => {
       for(const l of this.listeners)
         if(l.fileAdded) l.fileAdded(id, name, type);
-      return cb(null, id)
+      return void cb(null, id);
     }).catch((err) => {
       console.log(err);
       cb(err);
@@ -277,10 +283,10 @@ class Conference {
 
   editFile(id, content, cb) {
     return fs.writeFile(`${this.fileRoot}/${id}`, content, (err) => {
-      if(err) return cb(err);
+      if(err) return void cb(err);
       for(const l of this.listeners)
         if(l.fileEdited) l.fileEdited(id);
-      return cb();
+      return void cb();
     });
   }
 
@@ -290,8 +296,8 @@ class Conference {
 
   listFiles() {
     return new Promise((resolve, reject) => this.db.get('files', (err, files) => {
-      if(err) return reject(err);
-      else return resolve(files);
+      if(err) return void reject(err);
+      else return void resolve(files);
     }));
   }
 
@@ -312,53 +318,53 @@ class Conference {
 
     Promise.all([
       (resolve, reject) => this.db.get('votes', (err, votes) => {
-        if(err) return reject(err);
+        if(err) return void reject(err);
         votes.unshift({ id, name, target, rounds });
-        this.db.put(`votes`, votes, err => err ? reject(err) : resolve());
+        this.db.put('votes', votes, err => err ? reject(err) : resolve());
       }),
       (resolve, reject) => this.db.put(`vote:${id}:status`, { iteration: 0, running: false }, err => err ? reject(err) : resolve()),
       (resolve, reject) => this.db.put(`vote:${id}:matrix`, matrix, err => err ? reject(err) : resolve()),
     ].map(e => new Promise(e))).then(() => {
       for(const l of this.listeners)
         if(l.voteAdded) l.voteAdded(id, name, rounds, target, seats);
-      return cb(null, id);
+      return void cb(null, id);
     }).catch(cb);
   }
 
   updateVote(id, index, vote, cb) {
     this.db.get(`vote:${id}:matrix`, (err, matrix) => {
-      if(err) return cb(err);
+      if(err) return void cb(err);
 
       matrix[index].vote = vote;
       this.db.put(`vote:${id}:matrix`, matrix, (err) => {
-        if(err) return cb(err);
+        if(err) return void cb(err);
 
         for(const l of this.listeners)
           if(l.voteUpdated) l.voteUpdated(id, index, vote);
-        return cb(null);
+        return void cb(null);
       });
     });
   }
 
   iterateVote(id, status, cb) {
     this.db.put(`vote:${id}:status`, status, err => {
-      if(err) return cb(err);
+      if(err) return void cb(err);
 
       for(const l of this.listeners)
         if(l.voteIterated) l.voteIterated(id, status);
-      return cb(null);
+      return void cb(null);
     });
   }
-  
+
   listVotes() {
     return new Promise((resolve, reject) => {
       this.db.get('votes', (err, votes) => {
-        if(err) return reject(err);
+        if(err) return void reject(err);
 
         const promises = votes.map(vote => Promise.all([
           new Promise((resolve, reject) => this.db.get(`vote:${vote.id}:status`, (err, status) => err ? reject(err) : resolve(status))),
           new Promise((resolve, reject) => this.db.get(`vote:${vote.id}:matrix`, (err, matrix) => err ? reject(err) : resolve(matrix))),
-        ]).then(([ status, matrix ]) => ({
+        ]).then(([status, matrix]) => ({
           id: vote.id,
           name: vote.name,
           rounds: vote.rounds,
@@ -378,7 +384,7 @@ class Conference {
     const id = crypto.randomBytes(16).toString('hex');
 
     this.db.get('lists', (err, lists) => {
-      if(err) return cb(err);
+      if(err) return void cb(err);
 
       lists.unshift({ name, id });
 
@@ -397,7 +403,7 @@ class Conference {
 
   updateList(id, seats, cb) {
     this.db.put(`list:${id}:seats`, seats, err => {
-      if(err) return err;
+      if(err) return void cb(err);
 
       for(const l of this.listeners)
         if(l.listUpdated) l.listUpdated(id, seats);
@@ -408,7 +414,7 @@ class Conference {
 
   iterateList(id, ptr, cb) {
     this.db.put(`list:${id}:ptr`, ptr, err => {
-      if(err) return err;
+      if(err) return void cb(err);
 
       for(const l of this.listeners)
         if(l.listIterated) l.listIterated(id, ptr);
@@ -419,7 +425,7 @@ class Conference {
 
   listLists() {
     return new Promise((resolve, reject) => this.db.get('lists', (err, lists) => {
-      if(err) return reject(err);
+      if(err) return void reject(err);
       else resolve(lists);
     })).then(lists =>
       Promise.all(lists.map(list => new Promise((resolve, reject) => Promise.all([
@@ -428,8 +434,8 @@ class Conference {
       ].map(e => new Promise(e))).then(([seats, ptr]) => resolve({
         id: list.id,
         name: list.name,
-        seats: seats,
-        ptr: ptr,
+        seats,
+        ptr,
       })).catch(reject)))));
   }
 
@@ -441,7 +447,7 @@ class Conference {
       this.listVotes(),
       this.listLists(),
     ]).then(([timers, seats, files, votes, lists]) => {
-      cb(null, { timers, seats, files, votes, lists })
+      cb(null, { timers, seats, files, votes, lists });
     }).catch(cb);
   }
 

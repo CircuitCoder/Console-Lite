@@ -5,36 +5,36 @@ const Timer = Vue.extend({
   template: fs.readFileSync(`${__dirname}/timer.html`).toString('utf-8'),
   props: ['time', 'fixHour', 'fixMinute'],
   computed: {
-    hour: function() {
+    hour() {
       return Math.floor(this.time / 3600);
     },
 
-    minute: function() {
+    minute() {
       return Math.floor(this.time / 60) % 60;
     },
-    
-    second: function() {
+
+    second() {
       return this.time % 60;
     },
 
-    showHour: function() {
+    showHour() {
       return this.fixHour || this.hour > 0;
     },
 
-    showMinute: function() {
+    showMinute() {
       return this.showHour || this.fixMinute || this.minute > 0;
     },
 
-    minuteStr: function() {
+    minuteStr() {
       if(this.minute >= 10 || !this.showHour) return this.minute;
-      else return '0' + this.minute;
+      else return `0${this.minute}`;
     },
 
-    secondStr: function() {
+    secondStr() {
       if(this.second >= 10 || !this.showMinute) return this.second;
-      else return '0' + this.second;
-    }
-  }
+      else return `0${this.second}`;
+    },
+  },
 });
 
 Vue.component('timer', Timer);

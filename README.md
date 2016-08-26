@@ -25,6 +25,7 @@ npm run server
 生成可执行文件：
 
 ```bash
+npm prune --producation # 删除开发依赖
 npm run pack
 ```
 

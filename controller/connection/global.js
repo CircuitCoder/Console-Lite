@@ -1,11 +1,13 @@
 class GlobalConnection {
   constructor(socket, cb) {
     socket.once('pong', cb);
+
+    this.socket = socket;
   }
-  
+
   createConf(name, cb) {
-    socket.once('create', cb);
-    socket.emit('create', { name });
+    this.socket.once('create', cb);
+    this.socket.emit('create', { name });
   }
 }
 

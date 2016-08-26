@@ -1,9 +1,9 @@
 const os = require('os');
-const { Menu, app } = require('electron');
+const { Menu, app, shell } = require('electron');
 
 function supportsTitlebarStyle() {
-  if(os.platform() !== 'darwin') return;
-  const mainVer = parseInt(os.release().split('.')[0]);
+  if(os.platform() !== 'darwin') return false;
+  const mainVer = parseInt(os.release().split('.')[0], 10);
   return Number.isInteger(mainVer) && mainVer >= 14; // 14 -> Yosemite
 }
 
@@ -31,22 +31,22 @@ function getControllerMenu() {
           label: '刷新',
           accelerator: 'CmdOrCtrl+R',
           click(item, focusedWindow) {
-            if(focusedWindow) focusedWindow.reload()
-          }
+            if(focusedWindow) focusedWindow.reload();
+          },
         },
         {
           label: '我是开发者',
           accelerator: os.platform() === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
           click(item, focusedWindow) {
-            if(focusedWindow) focusedWindow.webContents.toggleDevTools()
-          }
+            if(focusedWindow) focusedWindow.webContents.toggleDevTools();
+          },
         },
         { type: 'separator' },
         { role: 'resetzoom' },
         { role: 'zoomin' },
         { role: 'zoomout' },
         { type: 'separator' },
-        { role: 'togglefullscreen' }
+        { role: 'togglefullscreen' },
       ],
     },
 
@@ -54,11 +54,11 @@ function getControllerMenu() {
       role: 'window',
       submenu: [
         {
-          role: 'minimize'
+          role: 'minimize',
         },
         {
-          role: 'close'
-        }
+          role: 'close',
+        },
       ],
     },
 
@@ -67,10 +67,10 @@ function getControllerMenu() {
       submenu: [
         {
           label: '关于 Electron',
-          click() { require('electron').shell.openExternal('http://electron.atom.io') }
-        }
-      ]
-    }
+          click() { shell.openExternal('http://electron.atom.io'); },
+        },
+      ],
+    },
   ];
 
   if(os.platform() === 'darwin') {
@@ -81,15 +81,15 @@ function getControllerMenu() {
         { type: 'separator' },
         {
           role: 'services',
-          submenu: []
+          submenu: [],
         },
         { type: 'separator' },
         { role: 'hide' },
         { role: 'hideothers' },
         { role: 'unhide' },
         { type: 'separator' },
-        { role: 'quit' }
-      ]
+        { role: 'quit' },
+      ],
     });
 
     tmpl[1].submenu.push(
@@ -98,38 +98,35 @@ function getControllerMenu() {
         label: '语音',
         submenu: [
           {
-            role: 'startspeaking'
+            role: 'startspeaking',
           },
           {
-            role: 'stopspeaking'
-          }
-        ]
+            role: 'stopspeaking',
+          },
+        ],
       }
     );
 
     tmpl[3].submenu = [
       {
         accelerator: 'CmdOrCtrl+W',
-        role: 'close'
+        role: 'close',
       },
       {
         accelerator: 'CmdOrCtrl+M',
-        role: 'minimize'
+        role: 'minimize',
       },
       {
-        role: 'zoom'
+        role: 'zoom',
       },
       {
-        type: 'separator'
+        type: 'separator',
       },
       {
-        role: 'front'
-      }
-    ]
-
-  } else {
-    tmpl[0].submenu.push({ role: 'quit' });
-  }
+        role: 'front',
+      },
+    ];
+  } else tmpl[0].submenu.push({ role: 'quit' });
 
   return Menu.buildFromTemplate(tmpl);
 }
@@ -151,22 +148,22 @@ function getProjectorMenu() {
           label: '刷新',
           accelerator: 'CmdOrCtrl+R',
           click(item, focusedWindow) {
-            if(focusedWindow) focusedWindow.reload()
-          }
+            if(focusedWindow) focusedWindow.reload();
+          },
         },
         {
           label: '我是开发者',
           accelerator: os.platform() === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
           click(item, focusedWindow) {
-            if(focusedWindow) focusedWindow.webContents.toggleDevTools()
-          }
+            if(focusedWindow) focusedWindow.webContents.toggleDevTools();
+          },
         },
         { type: 'separator' },
         { role: 'resetzoom' },
         { role: 'zoomin' },
         { role: 'zoomout' },
         { type: 'separator' },
-        { role: 'togglefullscreen' }
+        { role: 'togglefullscreen' },
       ],
     },
 
@@ -174,11 +171,11 @@ function getProjectorMenu() {
       role: 'window',
       submenu: [
         {
-          role: 'minimize'
+          role: 'minimize',
         },
         {
-          role: 'close'
-        }
+          role: 'close',
+        },
       ],
     },
   ];
@@ -188,6 +185,7 @@ function getProjectorMenu() {
 
 function applyProjectorMenu(win) {
   if(os.platform() === 'darwin') return;
+  win.setMenu(getProjectorMenu());
 }
 
 module.exports = {

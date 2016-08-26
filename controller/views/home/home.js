@@ -11,7 +11,7 @@ const HomeView = Vue.extend({
     },
 
     activeList(list) {
-      return list.timerCurrent && list.timerCurrent.active || list.ptr < list.seats.length;
+      return (list.timerCurrent && list.timerCurrent.active) || list.ptr < list.seats.length;
     },
 
     activeStandaloneTimer(timer) {
@@ -36,7 +36,7 @@ const HomeView = Vue.extend({
     viewVote(vote) {
       this.$dispatch('view-vote', vote);
     },
-  }
-})
+  },
+});
 
 module.exports = HomeView;

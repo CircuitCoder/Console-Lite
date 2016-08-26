@@ -1,16 +1,18 @@
 const boot = require('./server');
-if(!process) process = require('process');
+
+let _process = process;
+if(_process === undefined) _process = require('process'); // eslint-disable-line global-require
 
 let shutdownHook;
 
-boot((err, passkey, idkey, shutdown) => {
+boot((err, passkey, idkey, sd) => {
   if(err) throw err;
-  shutdownHook = shutdown;
+  shutdownHook = sd;
 });
 
 function shutdown() {
   if(shutdownHook) shutdownHook(() => process.exit(0));
 }
 
-process.on('SIGINT', shutdown);
-process.on('SIGTERM', shutdown);
+_process.on('SIGINT', shutdown);
+_process.on('SIGTERM', shutdown);

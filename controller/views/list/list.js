@@ -34,7 +34,7 @@ const ListView = Vue.extend({
     editTimerFlag: false,
     totTime: 0,
     eachTime: 0,
-    
+
     _overrideAdd: false,
     _overrideStart: false,
   }),
@@ -66,7 +66,8 @@ const ListView = Vue.extend({
         if(this.list.timerTotal && this.list.timerTotal.value > 0)
           if(this.list.timerCurrent) {
             const afterThisGuy = this.list.timerTotal.left - this.list.timerCurrent.left;
-            const afterAllGuys = afterThisGuy - this.list.timerCurrent.value * (this.list.seats.length - this.list.ptr - 1);
+            const afterAllGuys = afterThisGuy
+              - (this.list.timerCurrent.value * (this.list.seats.length - this.list.ptr - 1));
 
             if(afterAllGuys < this.list.timerCurrent.value) {
               if(!confirm('剩余总时间无法容纳添加的代表，是否继续?')) return;
@@ -77,7 +78,9 @@ const ListView = Vue.extend({
       this.editInput = '';
       this.addFlag = true;
       this.$nextTick(() => {
-        this.acBottomGap = this.$els.seats.offsetHeight - (this.$els.addItem.offsetTop + this.$els.addItem.offsetHeight); 
+        this.acBottomGap = this.$els.seats.offsetHeight
+          - (this.$els.addItem.offsetTop + this.$els.addItem.offsetHeight);
+
         this.acInput = this.$els.addInput;
         this.$els.addInput.focus();
       });
@@ -90,7 +93,7 @@ const ListView = Vue.extend({
       this.editTarget = seat.uid;
 
       const wrapper = this.$els.seats.children[index + 1];
-      this.acBottomGap = this.$els.seats.offsetHeight - (wrapper.offsetTop + wrapper.offsetHeight); 
+      this.acBottomGap = this.$els.seats.offsetHeight - (wrapper.offsetTop + wrapper.offsetHeight);
 
       this.$nextTick(() => {
         const el = this.$els.seats.children[index + 1].getElementsByTagName('input')[0];
@@ -104,7 +107,7 @@ const ListView = Vue.extend({
       this.addFlag = false;
     },
 
-    discardAll(e) {
+    discardAll() {
       this.addFlag = false;
       this.editTarget = null;
       this.acList = [];
@@ -140,9 +143,9 @@ const ListView = Vue.extend({
 
           foundFlag = true;
 
-          if(this.editInput === '') {
+          if(this.editInput === '')
             seats.splice(i, 1);
-          } else {
+          else {
             const oriSeat = seats[i];
             seats[i] = {
               uid: oriSeat.uid,
@@ -186,8 +189,8 @@ const ListView = Vue.extend({
       if(this.draggingCounter > 0)
         for(let i = 0; i < this.dragList.length; ++i) {
           const elem = this.$els.seats.children[i + 1];
-          const centerX = elem.offsetLeft + elem.offsetWidth / 2;
-          const centerY = elem.offsetTop + elem.offsetHeight / 2;
+          const centerX = elem.offsetLeft + (elem.offsetWidth / 2);
+          const centerY = elem.offsetTop + (elem.offsetHeight / 2);
 
           // Manhattan distance
           const dist = Math.abs(e.clientX - centerX) + Math.abs(e.clientY - centerY);
@@ -213,7 +216,7 @@ const ListView = Vue.extend({
       this.dragModeDiscarder = setTimeout(() => {
         this.dragModeDiscarder = null;
         this.dragMode = false;
-      }, 200)
+      }, 200);
     },
 
     dragenter() {
@@ -264,20 +267,18 @@ const ListView = Vue.extend({
 
     performTimerEdit() {
       if(this.eachTime === 0) return;
-      if(!this.list.timerCurrent || this.eachTime !== this.list.timerCurrent.value) {
+      if(!this.list.timerCurrent || this.eachTime !== this.list.timerCurrent.value)
         this.$dispatch('update-list-current', this.list, this.eachTime);
-      }
 
-      if(!this.list.timerTotal || this.totTime !== this.list.timerTotal.value) {
+      if(!this.list.timerTotal || this.totTime !== this.list.timerTotal.value)
         this.$dispatch('update-list-total', this.list, this.totTime);
-      }
 
       this.editTimerFlag = false;
     },
 
     project() {
       this.$dispatch('project-list', this.list);
-    }
+    },
   },
 
   computed: {

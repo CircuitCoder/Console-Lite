@@ -9,7 +9,7 @@ const TimerInput = Vue.extend({
       type: Number,
       validator: (val) => Number.isInteger(val),
       required: true,
-    }
+    },
   },
 
   computed: {
@@ -24,8 +24,8 @@ const TimerInput = Vue.extend({
         else if(val < 0) val = 0;
 
         const min = Math.floor(this.time / 60);
-        this.time = min * 60 + val;
-      }
+        this.time = (min * 60) + val;
+      },
     },
 
     minute: {
@@ -40,8 +40,8 @@ const TimerInput = Vue.extend({
 
         const sec = this.time % 60;
         const hour = Math.floor(this.time / 3600);
-        this.time = hour * 3600 + val * 60 + sec;
-      }
+        this.time = (hour * 3600) + (val * 60) + sec;
+      },
     },
 
     hour: {
@@ -54,12 +54,12 @@ const TimerInput = Vue.extend({
         if(val < 0) val = 0;
 
         const sec = this.time % 3600;
-        this.time = val * 3600 + sec;
-      }
+        this.time = (val * 3600) + sec;
+      },
     },
-  }
+  },
 });
 
 Vue.component('timer-input', TimerInput);
 
-module.exports=TimerInput;
+module.exports = TimerInput;

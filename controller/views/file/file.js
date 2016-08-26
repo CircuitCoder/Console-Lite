@@ -15,25 +15,22 @@ const FileView = Vue.extend({
     type: 'download',
     rendered: '',
   }),
-  
+
   activate(done) {
     this.$dispatch('get-file', this.file.id, (err, cont) => {
-      if(err) alert('加载失败!');
+      if(err) return alert('加载失败!');
       else {
         this.type = util.getFileType(this.file.type);
         this.fileCont = cont;
 
         if(this.type === 'pdf') {
-
           this.clearPDF();
           return this.renderPDF(1).then(done);
-
-        } else if(this.type === 'image') {
+        } else if(this.type === 'image')
           return done();
-        } else {
+        else
           // Display download link
           return done();
-        }
       }
     });
   },
@@ -72,7 +69,7 @@ const FileView = Vue.extend({
             defaultId: 1,
             cancelId: 1,
             message: '保存成功!',
-            detail: `保存到 ${filename}`
+            detail: `保存到 ${filename}`,
           }, (btn) => {
             if(btn === 0)
               shell.openItem(filename);
@@ -81,16 +78,15 @@ const FileView = Vue.extend({
       });
     },
 
-    dragover(e) {
-      //TODO: check file name
+    dragover() {
       this.dragging = true;
     },
 
-    dragleave(e) {
+    dragleave() {
       this.dragging = false;
     },
 
-    dragend(e) {
+    dragend() {
       this.dragging = false;
     },
 
@@ -98,13 +94,15 @@ const FileView = Vue.extend({
       const dt = e.dataTransfer;
       if(dt.files.length !== 1) {
         this.dragging = false;
-        return alert('请每次只上传一个文件');
+        alert('请每次只上传一个文件');
+        return;
       }
 
       const type = dt.files[0].type;
       if(type !== this.file.type) {
         this.dragging = false;
-        return alert(`请上传同样类型的文件: ${type}`);
+        alert(`请上传同样类型的文件: ${type}`);
+        return;
       }
 
       fs.readFile(dt.files[0].path, (err, data) => {
@@ -114,7 +112,8 @@ const FileView = Vue.extend({
       this.dragging = false;
     },
 
-    scroll(e) {
+    scroll() {
+      // TODO: sync scroll
     },
   },
 

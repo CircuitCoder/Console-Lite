@@ -34,13 +34,13 @@ const ListsView = Vue.extend({
     },
 
     project(list) {
-      this.$dispatch('project-list', list)
+      this.$dispatch('project-list', list);
     },
 
     navigateTo(list) {
       this.$dispatch('view-list', list);
-    }
-  }
+    },
+  },
 });
 
 module.exports = ListsView;

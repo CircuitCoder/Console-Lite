@@ -1,16 +1,8 @@
-function hexToUint8A(hex) {
-  const buf = new ArrayBuffer(hex.length / 2);
-  const view = new Uint8Array(buf);
-  for(let i = 0; i < hex.length / 2; ++i)
-    view[i] = parseInt(hex.charAt(i * 2), 16) * 16 + parseInt(hex.charAt(i * 2 + 1), 16);
-  return view;
-}
-
 class ConferenceConnection {
   constructor(socket, cb) {
     this.listeners = [];
 
-    socket.once('pong', cb)
+    socket.once('pong', cb);
     this.socket = socket;
 
     /* Seats */
@@ -59,22 +51,22 @@ class ConferenceConnection {
   /* Seats */
 
   updateSeats(seats, cb) {
-    socket.once('updateSeats', (data) => {
+    this.socket.once('updateSeats', (data) => {
       if(data.ok) cb(null);
       else cb(data.error);
     });
-    socket.emit('updateSeats', { seats });
+    this.socket.emit('updateSeats', { seats });
   }
 
   /* Timers */
 
   addTimer(name, type, value, cb) {
-    socket.once('addTimer', (data) => {
+    this.socket.once('addTimer', (data) => {
       if(data.ok) cb(null, data.id);
       else cb(data.error);
     });
 
-    socket.emit('addTimer', { name, value, type });
+    this.socket.emit('addTimer', { name, value, type });
   }
 
   /**
@@ -82,108 +74,108 @@ class ConferenceConnection {
    */
   manipulateTimer(action, id, cb) {
     const token = `${action}Timer`;
-    socket.once(token, (data) => {
+    this.socket.once(token, (data) => {
       if(data.ok) cb(null);
       else cb(data.error);
     });
 
-    socket.emit(token, { id });
+    this.socket.emit(token, { id });
   }
 
   updateTimer(id, value, cb) {
-    socket.once('updateTimer', (data) => {
+    this.socket.once('updateTimer', (data) => {
       if(data.ok) cb(null);
       else cb(data.error);
     });
 
-    socket.emit('updateTimer', { id, value });
+    this.socket.emit('updateTimer', { id, value });
   }
 
   /* Files */
 
   addFile(name, type, content, cb) {
-    socket.once('addFile', (data) => {
+    this.socket.once('addFile', (data) => {
       if(data.ok) cb(null, data.id);
       else cb(data.error);
     });
 
-    socket.emit('addFile', { name, type, content });
+    this.socket.emit('addFile', { name, type, content });
   }
 
   editFile(id, content, cb) {
-    socket.once('editFile', (data) => {
+    this.socket.once('editFile', (data) => {
       if(data.ok) cb(null);
       else cb(data.error);
     });
 
-    socket.emit('editFile', { id, content });
+    this.socket.emit('editFile', { id, content });
   }
 
   getFile(id, cb) {
     const respToken = `getFile:${id}`;
 
-    socket.once(respToken, (data) => {
-      if(data.ok) cb(null, data.content)
+    this.socket.once(respToken, (data) => {
+      if(data.ok) cb(null, data.content);
       else cb(data.error);
     });
 
-    socket.emit('getFile', { id });
+    this.socket.emit('getFile', { id });
   }
 
   /* Votes */
   addVote(name, target, rounds, seats, cb) {
-    socket.once('addVote', (data) => {
+    this.socket.once('addVote', (data) => {
       if(data.ok) cb(null, data.id);
       else cb(data.error);
     });
 
-    socket.emit('addVote', { name, target, rounds ,seats });
+    this.socket.emit('addVote', { name, target, rounds, seats });
   }
 
   updateVote(id, index, vote, cb) {
-    socket.once('updateVote', (data) => {
+    this.socket.once('updateVote', (data) => {
       if(data.ok) cb(null);
       else cb(data.error);
     });
-    
-    socket.emit('updateVote', { id, index, vote });
+
+    this.socket.emit('updateVote', { id, index, vote });
   }
 
   iterateVote(id, status, cb) {
-    socket.once('iterateVote', (data) => {
+    this.socket.once('iterateVote', (data) => {
       if(data.ok) cb(null);
       else cb(data.error);
     });
 
-    socket.emit('iterateVote', { id, status });
+    this.socket.emit('iterateVote', { id, status });
   }
 
   /* Lists */
   addList(name, seats, cb) {
-    socket.once('addList', (data) => {
+    this.socket.once('addList', (data) => {
       if(data.ok) cb(null, data.id);
       else cb(data.error);
     });
 
-    socket.emit('addList', { name, seats });
+    this.socket.emit('addList', { name, seats });
   }
 
   updateList(id, seats, cb) {
-    socket.once('updateList', (data) => {
+    this.socket.once('updateList', (data) => {
       if(data.ok) cb(null);
       else cb(data.error);
     });
-    
-    socket.emit('updateList', { id, seats });
+
+    this.socket.emit('updateList', { id, seats });
   }
 
   iterateList(id, ptr, cb) {
-    socket.once('iterateList', (data) => {
+    this.socket.once('iterateList', (data) => {
       if(data.ok) cb(null);
       else cb(data.error);
     });
 
-    socket.emit('iterateList', { id, ptr });
+    this.socket.emit('iterateList', { id, ptr });
   }
 }
 

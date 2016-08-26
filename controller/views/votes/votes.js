@@ -63,13 +63,13 @@ const VoteView = Vue.extend({
 
     getFileTwoThird(vote) {
       return Math.ceil((vote.matrix.length - this.countVotes(vote, -1)) * 2 / 3);
-    }
+    },
   },
 
   computed: {
     presentCount() {
       return this.seats.reduce((prev, e) => e.present ? prev + 1 : prev, 0);
-    }
+    },
   },
 });
 

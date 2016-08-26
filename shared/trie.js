@@ -17,7 +17,7 @@ class Node {
   get(string) {
     if(string.length === 0) return this;
 
-    const i= string.charCodeAt(0) - 97;
+    const i = string.charCodeAt(0) - 97;
     if(i < 0 || i > 25) return null;
     else if(!this.children[i]) return null;
     else return this.children[i].get(string.substring(1));
@@ -37,7 +37,7 @@ class Node {
   }
 
   forEachLeaf(fn) {
-    const isLeaf = true;
+    let isLeaf = true;
     for(const l of this.childrens) if(l) {
       l.forEachLeaf(fn);
       isLeaf = false;
@@ -53,7 +53,7 @@ class Node {
 
     let leaves = [];
 
-    for(let i = 0; i < 26; ++ i)
+    for(let i = 0; i < 26; ++i)
       if(this.children[i]) {
         const [node, subleaves] = this.children[i].deepCopy();
         result.children[i] = node;
@@ -68,7 +68,7 @@ class Node {
   // Apply entries to another tree, return leaves
   applyTo(ano) {
     const outer = this;
-    const ns = new Set(function*() {
+    const ns = new Set(function* nsgen() {
       yield* ano.entries;
       yield* outer.entries;
     }());
@@ -77,14 +77,13 @@ class Node {
 
     let leaves = [];
 
-    for(let i = 0; i < 26; ++ i)
-      if(this.children[i]) {
+    for(let i = 0; i < 26; ++i)
+      if(this.children[i])
         if(!ano.children[i]) {
           const [node, subleaves] = this.children[i].deepCopy();
           ano.children[i] = node;
           leaves = leaves.concat(subleaves);
         } else leaves = leaves.concat(this.children[i].applyTo(ano.children[i]));
-      }
 
     if(leaves.length === 0) leaves = [ano];
     return leaves;

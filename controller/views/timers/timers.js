@@ -54,13 +54,13 @@ const TimersView = Vue.extend({
     },
 
     project(timer) {
-      this.$dispatch('project-timer', timer)
+      this.$dispatch('project-timer', timer);
     },
 
     isStandaloneTimer(timer) {
       return timer.type === 'standalone';
-    }
-  }
+    },
+  },
 });
 
 module.exports = TimersView;

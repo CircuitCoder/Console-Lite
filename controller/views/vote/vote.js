@@ -1,6 +1,5 @@
 const Vue = require('vue');
 const fs = require('fs');
-const crypto = require('crypto');
 
 const util = require('../../../shared/util.js');
 
@@ -32,16 +31,15 @@ const VoteView = Vue.extend({
 
   activate(done) {
     // Generate id for voters
-    
+
     this.mat = [...this.vote.matrix];
 
     this.vote.matrix.forEach((e, i) => {
       e.originalId = i;
     });
 
-    if(!this.vote.status.running) {
+    if(!this.vote.status.running)
       this.rearrange();
-    }
 
     this.$on('vote-rearrange', () => {
       setTimeout(() => {
@@ -69,7 +67,7 @@ const VoteView = Vue.extend({
 
       this.$dispatch('iterate-vote', this.vote.id, {
         iteration: this.vote.status.iteration + 1,
-        running: true
+        running: true,
       });
 
       return true;
@@ -80,6 +78,7 @@ const VoteView = Vue.extend({
       this.autoIndex = -1;
       this.autoMode = true;
       this.autoManipulate(0);
+      return true;
     },
 
     autoManipulate(i) {
@@ -95,9 +94,9 @@ const VoteView = Vue.extend({
         this.stop(true);
         this.manipulateFlag = false;
         this.autoMode = false;
-      } else if(this.mat[i].vote !== 0) {
-        return this.autoManipulate(i+1);
-      } else {
+      } else if(this.mat[i].vote !== 0)
+        this.autoManipulate(i + 1);
+      else {
         this.autoIndex = i;
         this.manipulate(this.mat[i]);
       }
@@ -134,23 +133,21 @@ const VoteView = Vue.extend({
     },
 
     performManipulation() {
-
       if(!this._overrideSetVote
         && this.targetVote === 0
         && this.vote.running
-        && this.vote.status.iteration === this.vote.rounds) {
-          if(!confirm('这是最后一轮投票了，是否将投票结果设置为过?')) return;
-          else this._overrideSetVote = true;
-        }
+        && this.vote.status.iteration === this.vote.rounds)
+
+        if(!confirm('这是最后一轮投票了，是否将投票结果设置为过?')) return;
+        else this._overrideSetVote = true;
 
       if(this.targetVote !== this.targetVoter.vote) // Changed
         this.$dispatch('update-vote', this.vote.id, this.targetVoter.originalId, this.targetVote);
 
-      if(this.autoMode) {
+      if(this.autoMode)
         this.autoManipulate(this.autoIndex + 1);
-      } else {
+      else
         this.manipulateFlag = false;
-      }
     },
 
     project() {
@@ -177,8 +174,8 @@ const VoteView = Vue.extend({
 
     emptyCount() {
       return this.vote.matrix.reduce((prev, e) => e.vote === 0 ? prev + 1 : prev, 0);
-    }
-  }
+    },
+  },
 });
 
 module.exports = VoteView;
