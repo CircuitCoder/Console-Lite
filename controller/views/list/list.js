@@ -206,8 +206,8 @@ const ListView = Vue.extend({
 
       if(curIndex !== -1 && curIndex !== this.draggingIndex) {
         const tmp = this.dragList[this.draggingIndex];
-        this.dragList.$set(this.draggingIndex, this.dragList[curIndex]);
-        this.dragList.$set(curIndex, tmp);
+        this.dragList.splice(this.draggingIndex, 1);
+        this.dragList.splice(curIndex, 0, tmp);
 
         this.draggingIndex = curIndex;
       }
