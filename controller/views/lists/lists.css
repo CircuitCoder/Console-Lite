@@ -4,14 +4,33 @@
 }
 
 .list-name {
-  flex: 1;
   margin-right: 20px;
+}
+
+.list-speakers {
+  flex: 1;
+  margin-right: 10px;
+  min-width: max-content;
+  font-weight: 300;
+}
+
+.list-speakers .list-speakers-current {
+  display: inline-block;
+  font-size: 16px;
+  margin-right: 5px;
+}
+
+.list-speakers .list-speakers-next {
+  display: inline-block;
+  font-size: 16px;
+  opacity: .7;
 }
 
 .list-timer {
   margin-right: 10px;
   display: flex;
   align-items: baseline;
+  min-width: max-content;
 }
 
 .list-timer-icon {

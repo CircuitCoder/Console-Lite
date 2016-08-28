@@ -24,6 +24,11 @@
           {{ list.name }}
         </div>
 
+        <div class="list-speakers">
+          <div class="list-speakers-current" v-if="list.ptr < list.seats.length">{{ list.seats[list.ptr].name }}</div>
+          <div class="list-speakers-next" v-if="list.ptr < list.seats.length - 1">{{ list.seats[list.ptr + 1].name }}</div>
+        </div>
+
         <template v-if="list.timerCurrent">
           <div class="list-timer-icon">
             <i class="material-icons">person</i>
