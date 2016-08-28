@@ -14,7 +14,7 @@ function isWindows() {
 function getControllerMenu() {
   const tmpl = [
     {
-      label: '编辑',
+      label: 'Edit',
       submenu: [
         { role: 'cut' },
         { role: 'copy' },
@@ -25,17 +25,17 @@ function getControllerMenu() {
     },
 
     {
-      label: '视图',
+      label: 'View',
       submenu: [
         {
-          label: '刷新',
+          label: 'Reload',
           accelerator: 'CmdOrCtrl+R',
           click(item, focusedWindow) {
             if(focusedWindow) focusedWindow.reload();
           },
         },
         {
-          label: '我是开发者',
+          label: 'I am a developer',
           accelerator: os.platform() === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
           click(item, focusedWindow) {
             if(focusedWindow) focusedWindow.webContents.toggleDevTools();
@@ -66,11 +66,16 @@ function getControllerMenu() {
       role: 'help',
       submenu: [
         {
-          label: '指南',
+          label: 'Guide',
           click() { shell.openExternal('http://kb.bjmun.org/console-lite'); },
         },
         {
-          label: '关于 Electron',
+          label: 'Shortcut Cheatsheet',
+          click() { shell.openExternal('http://kb.bjmun.org/console-lite/cheatsheet.html'); },
+        },
+        { type: 'separator' },
+        {
+          label: 'About Electron',
           click() { shell.openExternal('http://electron.atom.io'); },
         },
       ],
@@ -146,17 +151,17 @@ function applyControllerMenu(win) {
 function getProjectorMenu() {
   const tmpl = [
     {
-      label: '视图',
+      label: 'View',
       submenu: [
         {
-          label: '刷新',
+          label: 'Reload',
           accelerator: 'CmdOrCtrl+R',
           click(item, focusedWindow) {
             if(focusedWindow) focusedWindow.reload();
           },
         },
         {
-          label: '我是开发者',
+          label: 'I am a developer',
           accelerator: os.platform() === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
           click(item, focusedWindow) {
             if(focusedWindow) focusedWindow.webContents.toggleDevTools();
