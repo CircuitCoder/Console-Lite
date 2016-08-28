@@ -42,8 +42,11 @@
         </div>
       </div>
     </div>
-    <div class="empty-hint" v-if="authorized">请点击添加创建计时器</div>
-    <div class="empty-hint" v-else>无计时器</div>
+    <template v-if="!searchInput">
+      <div class="empty-hint" v-if="authorized">请点击添加创建计时器</div>
+      <div class="empty-hint" v-else>无计时器</div>
+    </template>
+    <div class="empty-hint" v-else>无搜索结果</div>
   </div>
 
   <div class="dialog-overlap" transition="opacity" v-show="editFlag" @click="discardEdit">

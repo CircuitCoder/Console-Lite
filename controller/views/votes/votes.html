@@ -57,8 +57,11 @@
         </div>
       </div>
     </div>
-    <div class="empty-hint" v-if="authorized">请点击添加创建投票</div>
-    <div class="empty-hint" v-else>无投票</div>
+    <template v-if="!searchInput">
+      <div class="empty-hint" v-if="authorized">请点击添加创建投票</div>
+      <div class="empty-hint" v-else>无投票</div>
+    </template>
+    <div class="empty-hint" v-else>无搜索结果</div>
   </div>
 
   <div class="dialog-overlap" transition="opacity" v-show="addFlag" @click="discardAddition">

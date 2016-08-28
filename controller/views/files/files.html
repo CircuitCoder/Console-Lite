@@ -32,8 +32,11 @@
         </div>
       </div>
     </div>
-    <div class="empty-hint" v-if="authorized">请拖拽文件至此窗口以添加文件, PDF以及图片文件可以直接预览</div>
-    <div class="empty-hint" v-else>无文件</div>
+    <template v-if="!searchInput">
+      <div class="empty-hint" v-if="authorized">请拖拽文件至此窗口以添加文件, PDF以及图片文件可以直接预览</div>
+      <div class="empty-hint" v-else>无文件</div>
+    </template>
+    <div class="empty-hint" v-else>无搜索结果</div>
   </div>
 
   <div class="dnd-mask" transition="opacity" v-show="dragging">
