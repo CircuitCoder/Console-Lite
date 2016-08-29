@@ -3,7 +3,7 @@ const fs = require('fs');
 
 const HomeView = Vue.extend({
   template: fs.readFileSync(`${__dirname}/home.html`).toString('utf-8'),
-  props: ['timers', 'votes'],
+  props: ['timers', 'votes', 'lists', 'title'],
 
   methods: {
     navigateTo(dest) {
@@ -12,6 +12,10 @@ const HomeView = Vue.extend({
 
     activeList(list) {
       return (list.timerCurrent && list.timerCurrent.active) || list.ptr < list.seats.length;
+    },
+
+    viewList(list) {
+      this.$dispatch('view-list', list);
     },
 
     activeStandaloneTimer(timer) {

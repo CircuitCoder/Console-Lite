@@ -28,6 +28,7 @@
         :search-input="searchInput"
         :alt-hold="altHold"
         :authorized="authorized"
+        :title="title"
 
         @navigate="navigate"
 
@@ -65,7 +66,6 @@
       <!-- So we are using one way binding -->
 
       <div class="action-bar">
-        <div class="title" @click="navigate('home')">{{ title }}</div>
         <div class="counter-group">
           <i class="material-icons">person</i>
           <div class="counter">
@@ -87,6 +87,9 @@
           </div>
         </div>
         <div class="actions">
+          <div class="action" @click="navigate('home')">
+            <i class="material-icons">home</i>
+          </div>
           <div class="action" @click="navigate('seats')">
             <i class="material-icons">event_seat</i>
           </div>

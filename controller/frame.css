@@ -14,13 +14,17 @@
   height: 100px;
   border-top: 1px solid rgba(0,0,0,.12);
 
+  padding: 0 40px;
+
+  display: flex;
+  align-items: center;
+
   background: white;
 
   -webkit-user-select: none;
 }
 
 .title {
-  margin-left: 40px;
   font-size: 32px;
   height: 100%;
   line-height: 100px;
@@ -40,7 +44,6 @@
 }
 
 .actions {
-  margin-right: 40px;
   float: right;
   
   height: 100%;
@@ -161,7 +164,7 @@
 .counter-group {
   display: inline-flex;
   align-items: center;
-  margin-left: 20px;
+  flex: 1;
 }
 
 .counter-group .material-icons {

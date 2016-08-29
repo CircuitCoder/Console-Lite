@@ -1,10 +1,44 @@
 <div class="view">
-  <div class="view-title">主页</div>
+  <div class="view-title">{{ title }}</div>
   <div class="view-pagetitle clickable" @click="navigateTo('lists')">活跃发言名单</div>
   <div class="list inline">
     <div class="list-item clickable"
-      v-for="list of lists"
-      :class="{ bold: list.timerCurrent && list.timerCurrent.active }">
+      v-for="list of lists | filterBy activeList"
+      :class="{ bold: list.timerCurrent && list.timerCurrent.active }"
+      @click="viewList(list)">
+      <div class="list-item-indicator"></div>
+      <div class="list-item-content list-row">
+        <div class="list-name">
+          {{ list.name }}
+        </div>
+
+        <div class="list-speakers">
+          <div class="list-speakers-current" v-if="list.ptr < list.seats.length">{{ list.seats[list.ptr].name }}</div>
+          <div class="list-speakers-next" v-if="list.ptr < list.seats.length - 1">{{ list.seats[list.ptr + 1].name }}</div>
+        </div>
+
+        <template v-if="list.timerCurrent">
+          <div class="list-timer-icon">
+            <i class="material-icons">person</i>
+          </div>
+          <div class="timer-value-wrapper list-timer">
+            <timer class="timer-left" :time="list.timerCurrent.left"></timer>
+            <span class="timer-value-separator">/</span>
+            <timer class="timer-value" :time="list.timerCurrent.value"></timer>
+          </div>
+        </template>
+
+        <template v-if="list.timerTotal && list.timerTotal.value > 0">
+          <div class="list-timer-icon">
+            <i class="material-icons">access_time</i>
+          </div>
+          <div class="timer-value-wrapper list-timer">
+            <timer class="timer-left" :time="list.timerTotal.left"></timer>
+            <span class="timer-value-separator">/</span>
+            <timer class="timer-value" :time="list.timerTotal.value"></timer>
+          </div>
+        </template>
+      </div>
     </div>
     <div class="list-item empty-hint">无活跃发言名单</div>
   </div>
