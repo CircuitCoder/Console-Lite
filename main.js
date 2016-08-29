@@ -57,7 +57,7 @@ function initProjector() {
 
   projector = new BrowserWindow(projectorOpt);
   projector.loadURL(`file://${__dirname}/projector/index.html`);
-  util.applyProjectorMenu(controller);
+  util.applyProjectorMenu(projector);
 
   projector.on('closed', () => {
     projector = null;
