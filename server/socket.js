@@ -293,10 +293,18 @@ function init(app, idk, psk) {
   });
 
   io.on('connection', (socket) => {
-    socket.emit('pong', { authorized: socket.consoleAuthorized, confs: backend.list(), idkey: idk });
+    socket.emit('pong', {
+      authorized: socket.consoleAuthorized,
+      confs: backend.list(),
+      idkey: idk,
+    });
 
     socket.on('ping', () => {
-      socket.emit('pong', { authorized: socket.consoleAuthorized, confs: backend.list(), idkey: idk });
+      socket.emit('pong', {
+        authorized: socket.consoleAuthorized,
+        confs: backend.list(),
+        idkey: idk,
+      });
     });
 
     socket.on('create', (data) => {
