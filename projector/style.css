@@ -62,8 +62,18 @@ body {
 
 .bottom-title {
   font-size: 4vw;
-  display: flex;
-  align-items: center;
+  overflow: hidden;
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 1;
+}
+
+.bottom-title.small {
+  font-size: 3vw;
+  -webkit-line-clamp: 2;
 }
 
 .bottom-title .material-icons {
@@ -89,6 +99,7 @@ body {
   display: inline-flex;
   align-items: center;
   margin-left: 2.5vw;
+  min-width: max-content;
 }
 
 .counter-group .material-icons {
