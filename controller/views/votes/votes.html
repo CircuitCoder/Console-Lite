@@ -39,7 +39,7 @@
         </div>
         <div class="vote-spanner"></div>
         <div class="vote-type" v-if="vote.target === -1">
-          文件二分之三
+          不计弃权三分之二
         </div>
         <div class="vote-values">
           <span class="vote-value positive">{{ countVotes(vote, 1) }}</span>
@@ -86,7 +86,7 @@
         <div class="list">
           <div class="list-item clickable" :class="{ bold: isSubstantive }" @click="isSubstantive = !isSubstantive">
             <div class="list-item-indicator"></div>
-            <div class="list-item-content">使用文件三分之二多数</div>
+            <div class="list-item-content">使用不计弃权三分之二多数</div>
           </div>
         </div>
         <template v-if="!isSubstantive">
