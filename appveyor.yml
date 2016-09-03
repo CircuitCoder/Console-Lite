@@ -23,6 +23,7 @@ install:
 - npm install
 
 build_script:
+- ps: rm node_modules\nslog\build\Release\nslog.node
 - npm run rebuildNative
 
 test_script:
