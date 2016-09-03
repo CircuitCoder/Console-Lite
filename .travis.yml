@@ -5,14 +5,13 @@ os:
 addons:
   apt:
     packages:
-    - clang++3.4
+    - clang-3.4
 install:
 - export CXX="clang++3.4"
 - npm install
 language: node_js
 node_js:
 - '6'
-- '5'
 script:
 - npm run rebuildNative
 - npm test
