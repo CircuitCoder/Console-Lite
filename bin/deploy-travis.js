@@ -17,7 +17,7 @@ let tag;
 if(process.env.TRAVIS_TAG && /^v\d+\.\d+\.\d+/.test(process.env.TRAVIS_TAG))
   tag = process.env.TRAVIS_TAG;
 else if(process.env.TEST_UPLOAD)
-  tag = `c${process.env.TRAVIS_COMMIT}`;
+  tag = `COMMIT_${process.env.TRAVIS_COMMIT}`;
 else
   process.exit(0);
 
@@ -49,7 +49,7 @@ new Promise((resolve, reject) => pack((err, paths) => err ? reject(err) : resolv
   .pipe(tar.Pack())
   .pipe(zlib.createGzip(gzipOpt))
   .pipe(fs.createWriteStream(path.join(basedir, fname)))
-  .on('finish', () => resolve([path.join(basedir, fname)]))
+  .on('finish', () => resolve([[fname.split(/\./)[0], path.join(basedir, fname)]]))
   .on('error', reject);
 }))
 .then(artifacts => {
@@ -60,9 +60,9 @@ new Promise((resolve, reject) => pack((err, paths) => err ? reject(err) : resolv
     secretKey: process.env.MINIO_SECRET_KEY,
   });
 
-  return Promise.all(artifacts.map(artifact => new Promise((resolve, reject) => {
-    mc.fPutObject('console-lite', artifact.split(/\./)[0], artifact, 'application/tar+gzip',
-                  (err, etag) => err ? reject(err) : resolve([artifact, etag]));
+  return Promise.all(artifacts.map(([name, dir]) => new Promise((resolve, reject) => {
+    mc.fPutObject('console-lite', name, dir, 'application/tar+gzip',
+                  (err, etag) => err ? reject(err) : resolve([name, dir, etag]));
   })));
 })
 .then(() => {
