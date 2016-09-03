@@ -1,7 +1,7 @@
 /* eslint-disable new-cap */
 
 const pack = require('./pack');
-const { upload, trim } = require('./uploader');
+const { upload, trim } = require('./deploy-util');
 
 const assert = require('assert');
 const fs = require('fs');
