@@ -51,7 +51,8 @@ new Promise((resolve, reject) => pack((err, paths) => err ? reject(err) : resolv
     .pipe(fs.createWriteStream(path.join(basedir, fname)))
     .on('end', () => resolve([path.join(basedir, fname)]))
     .on('error', reject);
-  })).then(artifacts => {
+  }))
+  .then(artifacts => {
     const mc = new minio({
       endPoint: 'store.bjmun.org',
       secure: true,
@@ -63,9 +64,11 @@ new Promise((resolve, reject) => pack((err, paths) => err ? reject(err) : resolv
       mc.fPutObject('console-lite', artifact.split(/\./)[0], artifact, 'application/tar+gzip',
                     (err, etag) => err ? reject(err) : resolve([artifact, etag]));
     })));
-  }).then(() => {
+  })
+  .then(() => {
     console.log('Deployment completed');
-  }).catch(e => {
+  })
+  .catch(e => {
     console.error(e.stack);
     process.exit(1);
   });
