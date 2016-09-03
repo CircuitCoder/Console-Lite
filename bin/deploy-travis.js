@@ -49,7 +49,7 @@ new Promise((resolve, reject) => pack((err, paths) => err ? reject(err) : resolv
   .pipe(tar.Pack())
   .pipe(zlib.createGzip(gzipOpt))
   .pipe(fs.createWriteStream(path.join(basedir, fname)))
-  .on('end', () => resolve([path.join(basedir, fname)]))
+  .on('finish', () => resolve([path.join(basedir, fname)]))
   .on('error', reject);
 }))
 .then(artifacts => {
