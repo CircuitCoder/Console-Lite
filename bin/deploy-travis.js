@@ -1,10 +1,11 @@
 /* eslint-disable new-cap */
+
 const pack = require('./pack');
+const uploader = require('./uploader');
 
 const assert = require('assert');
 const fs = require('fs');
 const fstream = require('fstream');
-const minio = require('minio');
 const os = require('os');
 const path = require('path');
 const process = require('process');
@@ -49,22 +50,10 @@ new Promise((resolve, reject) => pack((err, paths) => err ? reject(err) : resolv
   .pipe(tar.Pack())
   .pipe(zlib.createGzip(gzipOpt))
   .pipe(fs.createWriteStream(path.join(basedir, fname)))
-  .on('finish', () => resolve([[fname.split(/\./)[0], path.join(basedir, fname)]]))
+  .on('finish', () => resolve([[fname, path.join(basedir, fname), 'application/tar+gzip']]))
   .on('error', reject);
 }))
-.then(artifacts => {
-  const mc = new minio({
-    endPoint: 'store.bjmun.org',
-    secure: true,
-    accessKey: process.env.MINIO_ACCESS_KEY,
-    secretKey: process.env.MINIO_SECRET_KEY,
-  });
-
-  return Promise.all(artifacts.map(([name, dir]) => new Promise((resolve, reject) => {
-    mc.fPutObject('console-lite', name, dir, 'application/tar+gzip',
-                  (err, etag) => err ? reject(err) : resolve([name, dir, etag]));
-  })));
-})
+.then(artifacts => uploader(artifacts))
 .then(() => {
   console.log('Deployment completed');
 })

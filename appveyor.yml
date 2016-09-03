@@ -2,8 +2,12 @@ platform:
 - x86
 - x64
 
-configuration:
-- Debug
+environment:
+  minio_access_key:
+    secure: qaoKe9n5/JbUFaZ1umtftPdsP98Di4Id407+8uJBMiA=
+  minio_secret_key:
+    secure: H5CSqrFX61uF9/8lZwF7SZLW+pBxzUaVe32Mq/XBZwyb5c1El1SnPMizxJk6rLEO
+  test_upload: true
 
 matrix:
   fast_finish: true
@@ -14,7 +18,7 @@ init:
 shallow_clone: true
 
 install:
-- ps: Install-Product node 0
+- ps: Install-Product node 6
 - npm install
 
 build_script:
