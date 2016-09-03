@@ -1,7 +1,7 @@
 /* eslint-disable new-cap */
 
 const pack = require('./pack');
-const uploader = require('./uploader');
+const { upload, trim } = require('./uploader');
 
 const assert = require('assert');
 const fs = require('fs');
@@ -53,7 +53,31 @@ new Promise((resolve, reject) => pack((err, paths) => err ? reject(err) : resolv
   .on('finish', () => resolve([[fname, path.join(basedir, fname), 'application/tar+gzip']]))
   .on('error', reject);
 }))
-.then(artifacts => uploader(artifacts))
+.then(artifacts => trim(targetdir, artifacts))
+.then(artifacts => new Promise((resolve, reject) => {
+  const fname = `Console-Lite-${tag}-${os.platform()}-${os.arch()}-nofont.tar.gz`;
+
+  console.log(`Packing: ${fname}`);
+
+  fstream.Reader({
+    path: targetdir,
+    type: 'Directory',
+  })
+  .pipe(tar.Pack())
+  .pipe(zlib.createGzip(gzipOpt))
+  .pipe(fs.createWriteStream(path.join(basedir, fname)))
+  .on('finish', () => resolve(artifacts.concat([[
+    fname, path.join(basedir, fname),
+    'application/tar+gzip',
+  ]])))
+  .on('error', reject);
+}))
+.then(artifacts => {
+  console.log('Uploading:');
+  for(const a of artifacts) console.log(`\t${a[0]}`);
+  return artifacts;
+})
+.then(artifacts => upload(artifacts))
 .then(() => {
   console.log('Deployment completed');
 })

@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 
 const pack = require('./pack');
-const uploader = require('./uploader');
+const { upload, trim } = require('./deploy-util');
 
 const assert = require('assert');
 const child_process = require('child_process');
@@ -36,9 +36,25 @@ new Promise((resolve, reject) => pack((err, paths) => err ? reject(err) : resolv
 
   child_process
     .spawnSync('7z', ['a', '-t7z', '-m0=lzma', '-mx=9', path.join(basedir, fname), targetdir]);
-  resolve([fname, path.join(basedir, fname), 'application/7z']);
+  resolve([[fname, path.join(basedir, fname), 'application/7z']]);
 }))
-.then(artifacts => uploader(artifacts))
+.then(artifacts => trim(targetdir, artifacts))
+.then(artifacts => {
+  const fname = `Console-Lite-${tag}-${os.platform()}-${os.arch()}-nofont.7z`;
+
+  console.log(`Packing: ${fname}`);
+
+  child_process
+    .spawnSync('7z', ['a', '-t7z', '-m0=lzma', '-mx=9', path.join(basedir, fname), targetdir]);
+
+  return artifacts.concat([[fname, path.join(basedir, fname), 'application/7z']]);
+})
+.then(artifacts => {
+  console.log('Uploading:');
+  for(const a of artifacts) console.log(`\t${a[0]}`);
+  return artifacts;
+})
+.then(artifacts => upload(artifacts))
 .then(() => {
   console.log('Deployment completed');
 })
