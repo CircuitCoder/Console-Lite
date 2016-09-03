@@ -23,7 +23,7 @@ install:
 - npm install
 
 build_script:
-- npm rebuildNative
+- npm run rebuildNative
 
 test_script:
 - npm test

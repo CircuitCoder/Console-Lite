@@ -19,7 +19,7 @@ script:
 deploy:
 - provider: script
   skip_cleanup: true
-  script: node bin/deploy-travis.js
+  script: travis-wait node bin/deploy-travis.js
   on:
     repo: CircuitCoder/Console-Lite
     all_branches: true
