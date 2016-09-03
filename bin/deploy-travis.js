@@ -32,43 +32,43 @@ const basedir = path.dirname(__dirname);
 const targetdir = path.join(basedir, 'Console Lite');
 
 new Promise((resolve, reject) => pack((err, paths) => err ? reject(err) : resolve(paths)))
-  .then(paths => new Promise((resolve, reject) => {
-    assert(paths.length === 1);
-    const p = paths[0];
+.then(paths => new Promise((resolve, reject) => {
+  assert(paths.length === 1);
+  const p = paths[0];
 
-    rimraf(targetdir);
-    fs.renameSync(p, targetdir);
-    const fname = `Console-Lite-${tag}-${os.platform()}-${os.arch()}.tar.gz`;
+  return rimraf.sync(targetdir);
+  fs.renameSync(p, targetdir);
+  const fname = `Console-Lite-${tag}-${os.platform()}-${os.arch()}.tar.gz`;
 
-    console.log(`Packing: ${fname}`);
+  console.log(`Packing: ${fname}`);
 
-    fstream.Reader({
-      path: targetdir,
-      type: 'Directory',
-    })
-    .pipe(tar.Pack())
-    .pipe(zlib.createGzip(gzipOpt))
-    .pipe(fs.createWriteStream(path.join(basedir, fname)))
-    .on('end', () => resolve([path.join(basedir, fname)]))
-    .on('error', reject);
-  }))
-  .then(artifacts => {
-    const mc = new minio({
-      endPoint: 'store.bjmun.org',
-      secure: true,
-      accessKey: process.env.MINIO_ACCESS_KEY,
-      secretKey: process.env.MINIO_SECRET_KEY,
-    });
-
-    return Promise.all(artifacts.map(artifact => new Promise((resolve, reject) => {
-      mc.fPutObject('console-lite', artifact.split(/\./)[0], artifact, 'application/tar+gzip',
-                    (err, etag) => err ? reject(err) : resolve([artifact, etag]));
-    })));
+  fstream.Reader({
+    path: targetdir,
+    type: 'Directory',
   })
-  .then(() => {
-    console.log('Deployment completed');
-  })
-  .catch(e => {
-    console.error(e.stack);
-    process.exit(1);
+  .pipe(tar.Pack())
+  .pipe(zlib.createGzip(gzipOpt))
+  .pipe(fs.createWriteStream(path.join(basedir, fname)))
+  .on('end', () => resolve([path.join(basedir, fname)]))
+  .on('error', reject);
+}))
+.then(artifacts => {
+  const mc = new minio({
+    endPoint: 'store.bjmun.org',
+    secure: true,
+    accessKey: process.env.MINIO_ACCESS_KEY,
+    secretKey: process.env.MINIO_SECRET_KEY,
   });
+
+  return Promise.all(artifacts.map(artifact => new Promise((resolve, reject) => {
+    mc.fPutObject('console-lite', artifact.split(/\./)[0], artifact, 'application/tar+gzip',
+                  (err, etag) => err ? reject(err) : resolve([artifact, etag]));
+  })));
+})
+.then(() => {
+  console.log('Deployment completed');
+})
+.catch(e => {
+  console.error(e.stack);
+  process.exit(1);
+});
