@@ -1,13 +1,20 @@
 os:
 - linux
 - osx
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+    - gcc-4.8
+    - g++-4.8
+    - clang
+install:
+- if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
 language: node_js
 node_js:
 - '6'
 - '5'
-addons:
-  ssh_known_hosts:
-  - console.bjmun.org
 script:
 - npm run rebuildNative
 - npm test

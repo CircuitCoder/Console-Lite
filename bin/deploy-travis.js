@@ -47,7 +47,7 @@ new Promise((resolve, reject) => pack((err, paths) => err ? reject(err) : resolv
     .pipe(tar.Pack())
     .pipe(zlib.createGzip(gzipOpt))
     .pipe(fs.createWriteStream(path.join(basedir, fname)))
-    .on('end', () => resolve([ path.join(basedir, fname) ]))
+    .on('end', () => resolve([path.join(basedir, fname)]))
     .on('error', reject);
   })).then(artifacts => {
     const mc = new minio({
@@ -61,7 +61,7 @@ new Promise((resolve, reject) => pack((err, paths) => err ? reject(err) : resolv
       mc.fPutObject('console-lite', artifact.split(/\./)[0], artifact, 'application/tar+gzip',
                     (err, etag) => err ? reject(err) : resolve([artifact, etag]));
     })));
-  })).catch(e => {
+  }).catch(e => {
     console.error(e.stack);
     process.exit(1);
   });
