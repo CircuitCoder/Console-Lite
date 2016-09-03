@@ -1,0 +1,27 @@
+platform:
+- x86
+- x64
+
+configuration:
+- Debug
+
+matrix:
+  fast_finish: true
+
+init:
+- git config --global core.autocrlf true
+
+shallow_clone: true
+
+install:
+- ps: Install-Product node 0
+- npm install
+
+build_script:
+- npm rebuildNative
+
+test_script:
+- npm test
+
+deploy_script:
+- node bin/deploy-appveyor.js
