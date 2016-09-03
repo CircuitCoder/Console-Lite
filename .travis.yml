@@ -1,0 +1,26 @@
+os:
+- linux
+- osx
+language: node_js
+node_js:
+- '6'
+- '5'
+addons:
+  ssh_known_hosts:
+  - console.bjmun.org
+script:
+- npm run rebuildNative
+- npm test
+- npm run pack
+deploy:
+- provider: script
+  skip_cleanup: true
+  script: node bin/deploy-travis.js
+  on:
+    repo: CircuitCoder/Console-Lite
+    tags: true
+    node: '6'
+env:
+  global:
+  - secure: jy+QRxijFCWcBjCU8C511TMjpUB049oeF/LDqjWkLW31M3hXWuurW9aPYNJK/ZfmRKtZDlxULPhdEqvGjyeCjpRDdEbzTkAlfMQV29atbzNS/12LnVXSfT6uRj/6yVbmuEdvN0NqnCNFbXDabh3WSExzHwjq/lSn9qr/w315wY4i/6unby5J8gt4nYqquxjcolFclxobWfJqdOfUyQuIHFrQH48Lv3s5xSQtG9uoxZlxQ5JiG+Cub+MKeNMATNTr4LGEBolT8MyZkWysKiGk4Str97TVkxQ0mP8rd6WzxHiFwT/0o1GblKpZFxFn67JmQG1rhRntAKfIr1JfgQqxA3U+6QaKdTRsdxwAl3OxEz1y/IbpkbXSE5oEoFZhtTlz6x+sZy3YA7Zmac/0GYpBSPkj2bq0SlvYjzr9dPH3QSB583JmT1P52UY6N7nG5vfGF1ARv9DvfKHnp8sgcqcuG7VRPUgeiqyfdySWh9fyg6aS6CBlS7PKZ3ff4sijehGirqzmttI+kJhCIgUL8oPgepuOKrr0ssTiaEPUbia2zwLVi2AsM7FoWqRPwjQfAK67jMjTWn3GzxH5Cj6+8+AFZL3VDDDzG38dBHSzV0o5Y7DsMxEX5mi/EbX5x5XfO+uc80Ev+1QdafAaX7k+kfrJzxe6nwoSfYF9OVWfbb1XgjI=
+  - secure: ifFOENvQ2oeZiLmdboBH2PwGg39jVWWYk8672hf/KrU96gUiA7luOOkQUE070ruPZca1xFoDUms3NZP+f/aYZH7zUukLVVaN4ufHNbF6y9XQBo7Qw8ERyasH8exaGUan4h34jztdQQkXQ3A16s79dC6xUL+gqFeWBnRxIywL6JV6jXGeXApMOYtQJYYGLNexcVatN1754oAK42N9305mERuO7uoq/jqARwKrPOonHTFROeXHb3RkI+xXbnDwWAM7r5og4NDmc06vz6WYSNRlo7WOf2vE14QGz4IhLqhO2pkS1m7Nk4xF+8IIk682gAqLWUv7gzr3VO6ObHhvQ5tEw+OAJcF4pBkaRWjJWZ9K6j234OPkNEpSIEqJqatgzZnFKP5eYxGbNLhwkCZ10b6xauI6yAJ7d7xVhLWNu4sEvs4cx0+zvRIly3lE5mvJmHf6WNg8SB3UP788zaNfUaiG/I21g98omvAMwFMd375s5g1Uef8wr9qpHurD7YTrU8GsXlSwcD5EbZ1N3jaFIOsa/jUh6o0Vu3kuq4y5+AOxZRUMyAWW/sNOOqMZ3Vp/6ALBED2IqoMldviO8H74Cw/oqNcAXOlHmLnyDk+yNYkyo0r5TQexLcJ3bde6el2pOlPvOLSxIUx98BVs0WQm8N+EiCN0rQrYhqCDLsik+quIUoU=

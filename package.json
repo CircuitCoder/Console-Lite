@@ -21,7 +21,11 @@
     "electron-rebuild": "^1.2.0",
     "eslint": "^3.3.1",
     "eslint-config-airbnb-base": "^5.0.3",
-    "eslint-plugin-import": "^1.14.0"
+    "eslint-plugin-import": "^1.14.0",
+    "fstream": "^1.0.10",
+    "minio": "^2.0.1",
+    "rimraf": "^2.5.4",
+    "tar": "^2.2.1"
   },
   "dependencies": {
     "bezier-easing": "^2.0.3",
