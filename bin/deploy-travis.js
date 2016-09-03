@@ -21,6 +21,8 @@ else if(process.env.TEST_UPLOAD)
 else
   process.exit(0);
 
+console.log(`Deploying as ${tag}`);
+
 const gzipOpt = {
   memLevel: 9,
   level: 9,
@@ -61,6 +63,8 @@ new Promise((resolve, reject) => pack((err, paths) => err ? reject(err) : resolv
       mc.fPutObject('console-lite', artifact.split(/\./)[0], artifact, 'application/tar+gzip',
                     (err, etag) => err ? reject(err) : resolve([artifact, etag]));
     })));
+  }).then(() => {
+    console.log('Deployment completed');
   }).catch(e => {
     console.error(e.stack);
     process.exit(1);
