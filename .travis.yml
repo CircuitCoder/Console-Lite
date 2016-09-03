@@ -22,6 +22,7 @@ deploy:
   script: node bin/deploy-travis.js
   on:
     repo: CircuitCoder/Console-Lite
+    all_branches: true
     node: '6'
 env:
   global:

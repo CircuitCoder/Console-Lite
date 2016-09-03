@@ -44,7 +44,7 @@ shouldRebuildNativeModules(electronExe)
       return Promise.resolve();
     }
 
-    console.log(electronVer);
+    console.log(`Electron version detected: ${electronVer}`);
     return installNodeHeaders(electronVer, 'https://atom.io/download/atom-shell')
     .then(() => rebuildNativeModules(electronVer, `${__dirname}/../node_modules`,
                                      '--build-from-source'));
