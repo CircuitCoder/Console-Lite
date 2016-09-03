@@ -36,7 +36,7 @@ new Promise((resolve, reject) => pack((err, paths) => err ? reject(err) : resolv
   assert(paths.length === 1);
   const p = paths[0];
 
-  return rimraf.sync(targetdir);
+  rimraf.sync(targetdir);
   fs.renameSync(p, targetdir);
   const fname = `Console-Lite-${tag}-${os.platform()}-${os.arch()}.tar.gz`;
 
