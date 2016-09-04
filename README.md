@@ -1,5 +1,8 @@
 # Console Lite
 
+[![Travis](https://img.shields.io/travis/CircuitCoder/Console-Lite.svg?style=flat-square)](https://travis-ci.org/CircuitCoder/Console-Lite)
+[![AppVeyor](https://img.shields.io/appveyor/ci/CircuitCoder/console-lite.svg?style=flat-square)](https://ci.appveyor.com/project/CircuitCoder/console-lite)
+
 可以，这很现代化
 
 ## 开发
