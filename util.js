@@ -1,4 +1,8 @@
 const os = require('os');
+const fs = require('fs');
+const path = require('path');
+
+const minio = require('minio');
 const { Menu, app, shell } = require('electron');
 
 function supportsTitlebarStyle() {
@@ -200,6 +204,57 @@ function applyProjectorMenu(win) {
   win.setMenu(getProjectorMenu());
 }
 
+let _mc;
+
+function _verCmp(a,b) {
+  for(let i = 0; i < 3; ++i)
+    if(a[i] > b[i]) return 1;
+    else if(a[i] < b[i]) return -1;
+
+  return 0;
+}
+
+function checkForUpdate() {
+  return new Promise((resolve, reject) => {
+    if(!_mc) _mc = new minio({
+      endPoint: 'store.bjmun.org',
+      secure: true,
+    });
+
+    fs.readFile(path.join(__dirname, 'VERSION'), (err, buf) => {
+      if(err) return reject(err);
+      
+      const info = buf.toString('utf-8').split('\n')[0]
+        .match(/^Console-Lite-v(\d+)\.(\d+)\.(\d+)-([^-]*)-([^-\.]*)(-nofont)?(.*)$/);
+
+      if(!info) return resolve(false);
+
+      const [ _, ver1, ver2, ver3, platform, arch, font, tail ] = info;
+      
+      const re = /^Console-Lite-v(\d+)\.(\d+)\.(\d+)-/.source
+                 + platform + '-' + arch + (font ? font: '') + tail + '$';
+
+      let newest = [ver1, ver2, ver3];
+      let newestData = null;
+
+      _mc.listObjects('console-lite')
+      .on('data', (obj) => {
+        const objinfo = obj.name.match(re);
+
+        if(!objinfo) return;
+        
+        objinfo.shift();
+        if(_verCmp(objinfo, newest) < 1) return;
+
+        newest = objinfo;
+        newestData = obj;
+      })
+      .on('error', (err) => reject(err))
+      .on('end', () => resolve([newestData, newest]));
+    });
+  });
+}
+
 module.exports = {
   supportsTitlebarStyle,
   isWindows,
@@ -207,4 +262,5 @@ module.exports = {
   applyControllerMenu,
   getProjectorMenu,
   applyProjectorMenu,
+  checkForUpdate,
 };

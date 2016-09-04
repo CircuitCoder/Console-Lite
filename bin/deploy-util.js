@@ -20,12 +20,15 @@ function upload(artifacts) {
   }));
 }
 
-function trim(targetdir) {
-  let fontbase;
+function getAppDir(targetdir) {
   if(os.platform() === 'darwin')
-    fontbase = path.join(targetdir, 'Console Lite.app', 'Contents', 'Resources', 'app', 'fonts');
+    return path.join(targetdir, 'Console Lite.app', 'Contents', 'Resources', 'app');
   else
-    fontbase = path.join(targetdir, 'resources', 'app', 'fonts');
+    return path.join(targetdir, 'resources', 'app');
+}
+
+function trim(targetdir) {
+  let fontbase = path.join(getAppDir(targetdir), 'fonts');
 
   rimraf.sync(path.join(fontbase, 'NotoSansCJKsc-*'));
   rimraf.sync(path.join(fontbase, 'Roboto-*'));
@@ -82,4 +85,5 @@ module.exports = {
   trim,
   runTasks,
   Ping,
+  getAppDir,
 };

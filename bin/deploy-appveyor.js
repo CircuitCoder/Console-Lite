@@ -57,6 +57,8 @@ const mainTasks = [
             fs.renameSync(p, targetdir);
 
             const fname = `Console-Lite-${tag}-${os.platform()}-${os.arch()}.7z`;
+            fs.writeFileSync(getAppDir(targetdir), fname);
+
             ob.next(`Writing to: ${fname}`);
 
             child_process
@@ -73,6 +75,7 @@ const mainTasks = [
           title: 'Creating archive without fonts',
           task: () => new Observable(ob => {
             const fname = `Console-Lite-${tag}-${os.platform()}-${os.arch()}-nofont.7z`;
+            fs.writeFileSync(getAppDir(targetdir), fname);
 
             ob.next(`Writing to: ${fname}`);
 

@@ -8,3 +8,5 @@ npm-debug.log
 /server/backend/storage/**/*.files/
 /Console\ Lite*/
 /Console-Lite-*
+
+/VERSION
