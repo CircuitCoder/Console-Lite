@@ -14,23 +14,21 @@ const mc = new minio({
 });
 
 function upload(artifacts) {
-  return Promise.all(artifacts.map(([name, dir, mime]) => new Promise((resolve, reject) => {
+  return artifacts.map(([name, dir, mime]) => new Promise((resolve, reject) => {
     mc.fPutObject('console-lite', name, dir, mime,
                   (err, etag) => err ? reject(err) : resolve([name, dir, etag]));
-  })));
+  }));
 }
 
-function trim(targetdir, artifacts) {
+function trim(targetdir) {
   let fontbase;
-  if(os.platform === 'darwin')
+  if(os.platform() === 'darwin')
     fontbase = path.join(targetdir, 'Console Lite.app', 'Contents', 'Resources', 'app', 'fonts');
   else
     fontbase = path.join(targetdir, 'resources', 'app', 'fonts');
 
   rimraf.sync(path.join(fontbase, 'NotoSansCJKsc-*'));
   rimraf.sync(path.join(fontbase, 'Roboto-*'));
-
-  return artifacts;
 }
 
 module.exports = {

@@ -23,8 +23,11 @@
     "eslint-config-airbnb-base": "^5.0.3",
     "eslint-plugin-import": "^1.14.0",
     "fstream": "^1.0.10",
+    "listr": "^0.5.0",
     "minio": "^2.0.1",
+    "ora": "^0.3.0",
     "rimraf": "^2.5.4",
+    "rxjs": "^5.0.0-beta.11",
     "tar": "^2.2.1"
   },
   "dependencies": {

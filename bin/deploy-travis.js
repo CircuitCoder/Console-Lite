@@ -6,12 +6,15 @@ const { upload, trim } = require('./deploy-util');
 const assert = require('assert');
 const fs = require('fs');
 const fstream = require('fstream');
+const listr = require('listr');
 const os = require('os');
 const path = require('path');
 const process = require('process');
 const rimraf = require('rimraf');
 const tar = require('tar');
 const zlib = require('zlib');
+
+const { Observable } = require('rxjs/Observable');
 
 let tag;
 
@@ -22,7 +25,9 @@ else if(process.env.TEST_UPLOAD)
 else
   process.exit(0);
 
-console.log(`Deploying as ${tag}`);
+// Context
+let paths = [path.join(__dirname, '..', 'Console Lite')];
+const artifacts = [];
 
 const gzipOpt = {
   memLevel: 9,
@@ -32,56 +37,88 @@ const gzipOpt = {
 const basedir = path.dirname(__dirname);
 const targetdir = path.join(basedir, 'Console Lite');
 
-new Promise((resolve, reject) => pack((err, paths) => err ? reject(err) : resolve(paths)))
-.then(paths => new Promise((resolve, reject) => {
-  assert(paths.length === 1);
-  const p = paths[0];
+const tasks = [
+  {
+    title: 'Packaging',
+    task: () => new Promise((resolve, reject) => pack((err, _paths) => {
+      if(err) return reject(err);
 
-  rimraf.sync(targetdir);
-  fs.renameSync(p, targetdir);
-  const fname = `Console-Lite-${tag}-${os.platform()}-${os.arch()}.tar.gz`;
+      paths = _paths;
+      return resolve();
+    }, true)),
+    skip: () => process.env.SKIP_PACKAGING === 'true',
+  }, {
+    title: 'Zipping',
+    task: () => new listr([
+      {
+        title: 'Creating archive with fonts',
+        task: () => new Observable(ob => {
+          assert(paths.length === 1);
+          const p = paths[0];
 
-  console.log(`Packing: ${fname}`);
+          if(p !== targetdir) {
+            rimraf.sync(targetdir);
+            fs.renameSync(p, targetdir);
+          }
 
-  fstream.Reader({
-    path: targetdir,
-    type: 'Directory',
-  })
-  .pipe(tar.Pack())
-  .pipe(zlib.createGzip(gzipOpt))
-  .pipe(fs.createWriteStream(path.join(basedir, fname)))
-  .on('finish', () => resolve([[fname, path.join(basedir, fname), 'application/tar+gzip']]))
-  .on('error', reject);
-}))
-.then(artifacts => trim(targetdir, artifacts))
-.then(artifacts => new Promise((resolve, reject) => {
-  const fname = `Console-Lite-${tag}-${os.platform()}-${os.arch()}-nofont.tar.gz`;
+          const fname = `Console-Lite-${tag}-${os.platform()}-${os.arch()}.tar.gz`;
 
-  console.log(`Packing: ${fname}`);
+          ob.next(`Writing to: ${fname}`);
 
-  fstream.Reader({
-    path: targetdir,
-    type: 'Directory',
-  })
-  .pipe(tar.Pack())
-  .pipe(zlib.createGzip(gzipOpt))
-  .pipe(fs.createWriteStream(path.join(basedir, fname)))
-  .on('finish', () => resolve(artifacts.concat([[
-    fname, path.join(basedir, fname),
-    'application/tar+gzip',
-  ]])))
-  .on('error', reject);
-}))
-.then(artifacts => {
-  console.log('Uploading:');
-  for(const a of artifacts) console.log(`\t${a[0]}`);
-  return artifacts;
-})
-.then(artifacts => upload(artifacts))
-.then(() => {
-  console.log('Deployment completed');
-})
-.catch(e => {
+          fstream.Reader({
+            path: targetdir,
+            type: 'Directory',
+          })
+          .pipe(tar.Pack())
+          .pipe(zlib.createGzip(gzipOpt))
+          .pipe(fs.createWriteStream(path.join(basedir, fname)))
+          .on('finish', () => {
+            artifacts.push([fname, path.join(basedir, fname), 'application/7z']);
+            ob.complete();
+          })
+          .on('error', err => ob.error(err));
+        }),
+      }, {
+        title: 'Trimming fonts',
+        task: () => trim(targetdir, artifacts),
+      }, {
+        title: 'Creating archive without fonts',
+        task: () => new Observable(ob => {
+          const fname = `Console-Lite-${tag}-${os.platform()}-${os.arch()}-nofont.tar.gz`;
+
+          ob.next(`Writing to: ${fname}`);
+
+          fstream.Reader({
+            path: targetdir,
+            type: 'Directory',
+          })
+          .pipe(tar.Pack())
+          .pipe(zlib.createGzip(gzipOpt))
+          .pipe(fs.createWriteStream(path.join(basedir, fname)))
+          .on('finish', () => {
+            artifacts.push([
+              fname, path.join(basedir, fname),
+              'application/tar+gzip',
+            ]);
+            ob.complete();
+          })
+          .on('error', err => ob.error(err));
+        }),
+      },
+    ]),
+    skip: () => process.env.SKIP_ZIPPING === 'true',
+  }, {
+    title: 'Uploading',
+    task: () => new listr(upload(artifacts).map((p, i) => ({
+      title: artifacts[i][0],
+      task: () => p,
+    })), {
+      concurrent: true,
+    }).run(),
+  },
+];
+
+new listr(tasks).run().catch(e => {
   console.error(e.stack);
   process.exit(1);
 });

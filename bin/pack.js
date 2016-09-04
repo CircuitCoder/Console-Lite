@@ -17,7 +17,9 @@ function pack(cb, silent) {
     ignore: [
       /^\/server\/.*\.db($|\/)/,
       /^\/server\/.*\.files($|\/)/,
-    ], // Ignores databases and files
+      /^Console Lite/,
+      /^Console-Lite-/,
+    ], // Ignores databases, files and artifacts
     tmpdir: false,
     icon: path.join(__dirname, '../images/icon'),
   };
@@ -42,6 +44,21 @@ function pack(cb, silent) {
   });
 }
 
-if(require.main === module) pack();
+/* eslint-disable global-require */
+
+if(require.main === module) {
+  const ora = require('ora');
+  const ind = ora('Packaging').start();
+
+  pack((err, paths) => {
+    if(err) {
+      ind.fail();
+      console.error(err.stack);
+    } else {
+      ind.text = `Package outputted to: ${paths}`;
+      ind.succeed();
+    }
+  }, true);
+}
 
 module.exports = pack;
