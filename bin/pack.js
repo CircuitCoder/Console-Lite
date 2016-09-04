@@ -17,8 +17,8 @@ function pack(cb, silent) {
     ignore: [
       /^\/server\/.*\.db($|\/)/,
       /^\/server\/.*\.files($|\/)/,
-      /^Console Lite/,
-      /^Console-Lite-/,
+      /^\/Console Lite/,
+      /^\/Console-Lite-/,
     ], // Ignores databases, files and artifacts
     tmpdir: false,
     icon: path.join(__dirname, '../images/icon'),
