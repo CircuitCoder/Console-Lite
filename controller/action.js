@@ -6,7 +6,7 @@ const io = require('socket.io-client/socket.io.js');
 const Push = require('push.js');
 const polo = require('polo');
 const path = require('path');
-const { ipcRenderer } = require('electron');
+const { ipcRenderer, shell } = require('electron');
 const { clipboard } = require('electron').remote;
 
 const GlobalConnection = require('./connection/global');
@@ -881,4 +881,17 @@ function setup() {
     e.preventDefault();
     e.stopPropagation();
   });
+
+  ipcRenderer.once('updateAvailable', (event, { detail, version }) => {
+    Push.create(name, {
+      title: `软件更新: ${version}`,
+      body: '点击开始下载',
+      timeout: 10000,
+      onClick: () => {
+        shell.openExternal(`https://store.bjmun.org/console-lite/${detail.name}`);
+      },
+    });
+  });
+
+  ipcRenderer.send('checkForUpdate');
 }

@@ -1,0 +1,29 @@
+sudo: false
+os:
+- linux
+- osx
+addons:
+  apt:
+    packages:
+    - clang
+install:
+- export CXX="clang++"
+- npm install
+language: node_js
+node_js:
+- '6'
+script:
+- npm run rebuildNative
+- npm test
+deploy:
+- provider: script
+  skip_cleanup: true
+  script: node bin/deploy-travis.js
+  on:
+    repo: CircuitCoder/Console-Lite
+    all_branches: true
+    node: '6'
+env:
+  global:
+  - secure: XzLfl3mseLYHBT2EanSoOQwQDBPNY9Mn9+L8eptirOrhvHy6prkAgGDvEKrNU8M1RBHmPRb0TNgPcUqSgf8Ac3aYcYbgYftFoLjqwrEp53+jnXRrzUVM4u5wBNZvD4YoyYd/rY2FTq/XQmBS4GyVvV4lwiCOdD5B5ykayjoZNo6o9XZ3MilybBoKOBbybhP19uu6HM2TwXXry602xQE4yzN4MgO6TBlhDIRi5mXRMXHc2rm8yUmqiPzjVRDCeHbK5ceCDGLL3z2emL97kfoT5P4HO9Ttz9NZRne1JFcqIcUAsCu2isxL+jDvKI+4yYRXCX/Jtc3xhGUHi+eRHWNkZG3I7D8KXYbiXg7Fi3Cz27df9WxxLj4Vrgi5bPYzC7sDC72fR7Dv5I9cPlY6SVXA8qv47J6QF8V95cFRzd3B3E6tIKQ3a4tD6XkY1OzXQql3KaZ+1yw+l99MllHwnsrl/ykQ8VC49hYYtUe5Ldb2zDpmRsuLE2vfWpFBDSGqochlDXAh3alpYiwWhhLxq3OhQ1BDJIfZP1pcLT3ZGy2+iR7Ye/bqS7SqK7j73D+MywUrwWUf6phFoXju6z1UKqxr/hhAi5KkyEpseD3vpV7yL6dlt8srZw5EZ2a8b/tVqEXxtAWcJD/f+5Qz456L4uAzjBdLBD+KUnkcrSmpetFWPeI=
+  - secure: UTtWHkG+Mo0naglt+AGbSYUe0cABqqsP3WC6W6BN+TiORCDc4+y2PCULpeBrGgRBwaKN18GwJ9jgQ9PfApYzvyvOFPPANTnnymGITWkeQqEnT/p5wjJBgWn7Z+KwzBL6pofqysZnVpfIsRLnLbJ7M3o4cSjWiiShP1/qvsi+nOfruiVNysBn7VTIiAQuD0XhVURWsY84EhGxpkUap3h/S0ES7IveKLlzyQh36Yi3p8TU1KvSZdFXUBXxp95KrUpqP5bb2Gtng5JRRPVT8bRh0P/E7K+CHmy+qNRNgQOfMZ7UiKyuB9KDFIU7fVEQ/hmZ+Ky7C5uhuC5b62/k0WwUqd60duTA0PFNJK29w72o0OeDxvTrroe3kZXT7MFBUugzLdyNZ9rtGOI023/CuH2SmJAN81kUZKmEdo+uhSJkqtzY3g9w+dPps9PeJT5zrQ9q6esQsRqEDI+Sz+jbHRJqMfCI++vwIzsfkNwXuQqpyxL+vvmXTTmzfPYRNNkW8KK+31weNeqOChOe+hiIAcyNGBp5nIYUaksPq2IS2wuPEWcaq4NaQKtYXopq6cGheXM67eKlISssf+V1Wu97DBxIYvw5z8+xzHWRR864ZP3vqki7gGZOjND8eD4JfW/A9tcOHNq6IfJqXEyohQjC9x7VCfOnxhZmwwO8oma92fet/ew=

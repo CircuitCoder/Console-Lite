@@ -1,6 +1,7 @@
 const Vue = require('vue');
 const fs = require('fs');
-const { dialog, shell } = require('electron').remote;
+const { dialog } = require('electron').remote;
+const { shell } = require('electron');
 
 const util = require('../../../shared/util.js');
 

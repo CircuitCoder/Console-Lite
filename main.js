@@ -137,6 +137,13 @@ ipcMain.on('projectorInitialized', () => {
   if(controller) controller.webContents.send('projectorReady');
 });
 
+ipcMain.on('checkForUpdate', (ev) => {
+  util.checkForUpdate().then(([data, ver]) => {
+    if(!data) return;
+    ev.sender.send('updateAvailable', { detail: data, version: `v${ver[0]}-${ver[1]}-${ver[2]}` });
+  }).catch(e => console.error(e.stack));
+});
+
 app.on('quit', () => {
   if(serverStarted) shutdown();
 });
