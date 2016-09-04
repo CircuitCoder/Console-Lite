@@ -15,11 +15,10 @@ node_js:
 script:
 - npm run rebuildNative
 - npm test
-- npm run pack
 deploy:
 - provider: script
   skip_cleanup: true
-  script: travis_wait node bin/deploy-travis.js
+  script: node bin/deploy-travis.js
   on:
     repo: CircuitCoder/Console-Lite
     all_branches: true
