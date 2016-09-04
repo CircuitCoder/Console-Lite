@@ -23,7 +23,7 @@ const runListr = process.env.RUN_LISTR === 'true';
 let tag;
 
 if(process.env.APPVEYOR_REPO_TAG && /^v\d+\.\d+\.\d+/.test(process.env.APPVEYOR_REPO_TAG_NAME))
-  tag = process.env.APPVEYOR_TAG_NAME;
+  tag = process.env.APPVEYOR_REPO_TAG_NAME;
 else if(process.env.TEST_UPLOAD)
   tag = `COMMIT_${process.env.APPVEYOR_REPO_COMMIT}`;
 else
