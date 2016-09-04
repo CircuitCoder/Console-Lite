@@ -18,6 +18,8 @@ shallow_clone: true
 
 install:
 - ps: Install-Product node 6
+- node -e "console.log(process.platform + '-' + process.arch)"
+- node -e "console.log(require('os').platform() + '-' + require('os').arch())"
 - npm -g install npm@latest
 - npm install
 
