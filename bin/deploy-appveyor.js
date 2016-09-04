@@ -2,7 +2,7 @@
 /* eslint-disable new-cap */
 
 const pack = require('./pack');
-const { upload, trim, runTasks, Ping } = require('./deploy-util');
+const { upload, trim, runTasks, Ping, getAppDir } = require('./deploy-util');
 
 const assert = require('assert');
 const child_process = require('child_process');

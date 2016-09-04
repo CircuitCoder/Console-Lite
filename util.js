@@ -2,7 +2,7 @@ const os = require('os');
 const fs = require('fs');
 const path = require('path');
 
-const minio = require('minio');
+const Minio = require('minio');
 const { Menu, app, shell } = require('electron');
 
 function supportsTitlebarStyle() {
@@ -206,7 +206,7 @@ function applyProjectorMenu(win) {
 
 let _mc;
 
-function _verCmp(a,b) {
+function _verCmp(a, b) {
   for(let i = 0; i < 3; ++i)
     if(a[i] > b[i]) return 1;
     else if(a[i] < b[i]) return -1;
@@ -216,23 +216,24 @@ function _verCmp(a,b) {
 
 function checkForUpdate() {
   return new Promise((resolve, reject) => {
-    if(!_mc) _mc = new minio({
+    if(!_mc) _mc = new Minio({
       endPoint: 'store.bjmun.org',
       secure: true,
     });
 
     fs.readFile(path.join(__dirname, 'VERSION'), (err, buf) => {
-      if(err) return reject(err);
-      
+      if(err) return void reject(err);
+
       const info = buf.toString('utf-8').split('\n')[0]
         .match(/^Console-Lite-v(\d+)\.(\d+)\.(\d+)-([^-]*)-([^-\.]*)(-nofont)?(.*)$/);
 
-      if(!info) return resolve(false);
+      if(!info) return void resolve(false);
 
-      const [ _, ver1, ver2, ver3, platform, arch, font, tail ] = info;
-      
+      const [, ver1, ver2, ver3, platform, arch, font, tail] = info;
+
+      // eslint-disable-next-line prefer-template
       const re = /^Console-Lite-v(\d+)\.(\d+)\.(\d+)-/.source
-                 + platform + '-' + arch + (font ? font: '') + tail + '$';
+                 + platform + '-' + arch + (font === undefined ? '' : font) + tail + '$';
 
       let newest = [ver1, ver2, ver3];
       let newestData = null;
@@ -242,7 +243,7 @@ function checkForUpdate() {
         const objinfo = obj.name.match(re);
 
         if(!objinfo) return;
-        
+
         objinfo.shift();
         if(_verCmp(objinfo, newest) < 1) return;
 

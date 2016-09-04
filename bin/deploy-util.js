@@ -28,7 +28,7 @@ function getAppDir(targetdir) {
 }
 
 function trim(targetdir) {
-  let fontbase = path.join(getAppDir(targetdir), 'fonts');
+  const fontbase = path.join(getAppDir(targetdir), 'fonts');
 
   rimraf.sync(path.join(fontbase, 'NotoSansCJKsc-*'));
   rimraf.sync(path.join(fontbase, 'Roboto-*'));

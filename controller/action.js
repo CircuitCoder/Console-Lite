@@ -889,7 +889,7 @@ function setup() {
       timeout: 10000,
       onClick: () => {
         shell.openExternal(`https://store.bjmun.org/console-lite/${detail.name}`);
-      }
+      },
     });
   });
 
