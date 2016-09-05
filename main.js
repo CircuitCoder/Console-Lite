@@ -140,7 +140,7 @@ ipcMain.on('projectorInitialized', () => {
 ipcMain.on('checkForUpdate', (ev) => {
   util.checkForUpdate().then(([data, ver]) => {
     if(!data) return;
-    ev.sender.send('updateAvailable', { detail: data, version: `v${ver[0]}-${ver[1]}-${ver[2]}` });
+    ev.sender.send('updateAvailable', { detail: data, version: `v${ver[0]}.${ver[1]}.${ver[2]}` });
   }).catch(e => console.error(e.stack));
 });
 

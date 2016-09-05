@@ -883,8 +883,7 @@ function setup() {
   });
 
   ipcRenderer.once('updateAvailable', (event, { detail, version }) => {
-    Push.create(name, {
-      title: `软件更新: ${version}`,
+    Push.create(`软件更新: ${version}`, {
       body: '点击开始下载',
       timeout: 10000,
       onClick: () => {
