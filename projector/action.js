@@ -226,8 +226,8 @@ const desc = {
     },
 
     imgRendered() {
-      const b64str = btoa(String.fromCharCode(...new Uint8Array(this.fileCont)));
-      return `data:${this.fileMIME};base64,${b64str}`;
+      const blob = new Blob([this.fileCont], { type: this.fileType });
+      return URL.createObjectURL(blob);
     },
 
     fileTwoThird() {

@@ -126,8 +126,8 @@ const FileView = Vue.extend({
     },
 
     imgRendered() {
-      const b64str = btoa(String.fromCharCode(...new Uint8Array(this.fileCont)));
-      return `data:${this.file.type};base64,${b64str}`;
+      const blob = new Blob([this.fileCont], { type: this.file.type });
+      return URL.createObjectURL(blob);
     },
   },
 });
