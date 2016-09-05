@@ -1,6 +1,10 @@
 const electron = require('electron');
-const { ipcMain, app, globalShortcut, BrowserWindow } = electron;
+const { ipcMain, app, protocol, globalShortcut, BrowserWindow } = electron;
 const path = require('path');
+const tar = require('tar');
+const fs = require('fs');
+const fstream = require('fstream');
+const rimraf = require('rimraf');
 
 const server = require('./server/server');
 const util = require('./util');
@@ -65,7 +69,30 @@ function initProjector() {
   });
 }
 
+function setupExportHandler() {
+  protocol.registerBufferProtocol('clexport', (request, callback) => {
+    if(this.serverStarted) return void callback({ error: 'Server is running' });
+
+    const dir = path.join(__dirname, 'server', 'backend', 'storage');
+
+    const buffers = [];
+    fstream.Reader({
+      path: dir,
+      type: 'Directory',
+    })
+    .pipe(tar.Pack())
+    .on('data', (data) => {
+      buffers.push(data);
+    })
+    .on('end', () => {
+      callback(Buffer.concat(buffers));
+    })
+    .on('error', err => callback({ error: err }));
+  });
+}
+
 app.on('ready', () => {
+  setupExportHandler();
   initController();
   globalShortcut.register('CommandOrControl+\\', () => {
     if(controller) controller.focus();
@@ -116,6 +143,10 @@ ipcMain.on('startServer', (event) => {
   });
 });
 
+ipcMain.on('isServerRunning', (event) => {
+  event.returnValue = serverStarted;
+});
+
 ipcMain.on('openProjector', () => {
   initProjector();
 });
@@ -142,6 +173,21 @@ ipcMain.on('checkForUpdate', (ev) => {
     if(!data) return;
     ev.sender.send('updateAvailable', { detail: data, version: `v${ver[0]}.${ver[1]}.${ver[2]}` });
   }).catch(e => console.error(e.stack));
+});
+
+ipcMain.on('doImport', (ev, data) => {
+  const targetDir = path.join(__dirname, 'server', 'backend', 'storage');
+
+  rimraf(path.join(targetDir, '*'), (err) => {
+    if(err) return void ev.sender.send('importCb', err);
+    fs.createReadStream(data)
+    .pipe(tar.Extract({
+      path: targetDir,
+      strip: 1,
+    }))
+    .on('end', () => ev.sender.send('importCb', null))
+    .on('error', err => ev.sender.send('importCb', err));
+  });
 });
 
 app.on('quit', () => {

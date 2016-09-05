@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const Minio = require('minio');
-const { Menu, app, shell } = require('electron');
+const { BrowserWindow, Menu, app, shell } = require('electron');
 
 function supportsTitlebarStyle() {
   if(os.platform() !== 'darwin') return false;
@@ -15,7 +15,9 @@ function isWindows() {
   return os.platform() === 'win32';
 }
 
-function getControllerMenu() {
+let _importerWin;
+
+function getControllerMenu(controller) {
   const tmpl = [
     {
       label: 'Edit',
@@ -28,6 +30,25 @@ function getControllerMenu() {
         { role: 'paste' },
         { role: 'delete' },
         { role: 'selectall' },
+        { type: 'separator' },
+        {
+          label: 'Import or Export Data',
+          click(item, focusedWindow) {
+            _importerWin = new BrowserWindow({
+              width: 400,
+              height: 250,
+              frame: true,
+              minimizable: false,
+              modal: true,
+              background: '#FFF',
+              parent: controller,
+            });
+            _importerWin.loadURL(`file://${__dirname}/importer/index.html`);
+            _importerWin.on('close', () => {
+              _importerWin = null;
+            });
+          }
+        },
       ],
     },
 
@@ -148,7 +169,7 @@ function getControllerMenu() {
 }
 
 function applyControllerMenu(win) {
-  const menu = getControllerMenu();
+  const menu = getControllerMenu(win);
   if(os.platform() === 'darwin')
     Menu.setApplicationMenu(menu);
   else
