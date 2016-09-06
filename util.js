@@ -41,13 +41,13 @@ function getControllerMenu(controller) {
               minimizable: false,
               modal: true,
               background: '#FFF',
-              parent: controller,
+              parent: focusedWindow || controller,
             });
             _importerWin.loadURL(`file://${__dirname}/importer/index.html`);
             _importerWin.on('close', () => {
               _importerWin = null;
             });
-          }
+          },
         },
       ],
     },

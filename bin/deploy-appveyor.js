@@ -1,5 +1,4 @@
 /* eslint-disable camelcase */
-/* eslint-disable new-cap */
 
 const pack = require('./pack');
 const { upload, trim, runTasks, Ping, getAppDir } = require('./deploy-util');

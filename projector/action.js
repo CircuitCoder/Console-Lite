@@ -55,7 +55,7 @@ const desc = {
     _scrollSmooth(el, to) {
       const current = el.scrollLeft;
       const startTime = performance.now();
-      const easing = BezierEasing(0.25, 0.1, 0.25, 1.0); // eslint-disable-line new-cap
+      const easing = BezierEasing(0.25, 0.1, 0.25, 1.0);
 
       function step(now) {
         if(now - startTime < 200) {

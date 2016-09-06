@@ -1,5 +1,3 @@
-/* eslint-disable new-cap */
-
 const minio = require('minio');
 const os = require('os');
 const path = require('path');

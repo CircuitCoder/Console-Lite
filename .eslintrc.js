@@ -48,5 +48,6 @@ module.exports = {
       'code': 100,
       'ignorePattern': '\\(resolve, reject\\) =>',
     }],
+    'new-cap': 'off',
   }
 };

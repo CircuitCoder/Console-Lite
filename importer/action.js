@@ -23,7 +23,7 @@ const desc = {
       if(this.status === 1) this.status = 0;
     },
 
-    odrag(e) {
+    odrag() {
       if(this.disabled) return;
 
       this.status = -1;
@@ -34,13 +34,13 @@ const desc = {
 
       const now = new Date();
       e.dataTransfer.setData('DownloadURL',
-        `application/x-tar:clexport.${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}.tar:clexport://down`); // eslint-disable-line: max-len
+        `application/x-tar:clexport.${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}.tar:clexport://down`); // eslint-disable-line max-len
     },
 
     oundrag() {
       if(this.status === -1) this.status = 0;
     },
-    
+
     drop(e) {
       if(this.disabled) return;
       if(this.status !== 1) return;
@@ -55,7 +55,6 @@ const desc = {
 
       console.log(dt);
       const type = dt.files[0].type;
-      const segs = dt.files[0].path.split('.');
       if(type !== 'application/x-tar') {
         alert('请添加一个 tar 文件');
         return;
@@ -66,7 +65,7 @@ const desc = {
         if(err) {
           alert('导入失败');
           console.error(err);
-        } else 
+        } else
           alert('导入成功!');
       });
     },
@@ -74,9 +73,10 @@ const desc = {
     exit() {
       remote.getCurrentWindow().close();
     },
-  }
-}
+  },
+};
 
+// eslint-disable-next-line no-unused-vars
 function setup() {
   const inst = new Vue(desc);
   inst.init();
