@@ -2,7 +2,7 @@
 }
 
 .selector-item {
-  height: 40px;
+  min-height: 40px;
   min-width: 300px;
   padding: 20px;
   display: flex;
@@ -17,6 +17,8 @@
 
   opacity: 0.7;
   transition: opacity 0.2s ease;
+
+  word-break: break-word;
 
   -webkit-app-region: no-drag;
   -webkit-user-select: none;
