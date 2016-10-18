@@ -8,6 +8,8 @@
 
 .list-item-content {
   padding: 1.25vw 2.5vw;
+  font-size: 2vw;
+  line-height: 2.5vw;
 }
 
 .empty-hint {
