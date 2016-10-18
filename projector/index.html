@@ -175,7 +175,7 @@
           transition="item"
           :class="{ bold: list.ptr === $index }">
 
-          <div class="list-item-indicator"></div>
+          <div class="list-item-indicator" @transitionend.stop.prevent></div>
           <div class="list-item-content">{{ speaker.name }}</div>
         </div>
       </div>
