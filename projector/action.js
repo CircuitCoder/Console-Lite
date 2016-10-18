@@ -38,6 +38,19 @@ const desc = {
     list: null,
     stashedlist: null,
   },
+
+  transitions: {
+    item: {
+      enter(el, done) {
+        done();
+      },
+
+      leave(el, done) {
+        done();
+      },
+    },
+  },
+
   methods: {
     init() {
       this.ready = true;

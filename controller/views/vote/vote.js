@@ -30,6 +30,19 @@ const VoteView = Vue.extend({
     ],
   }),
 
+  transitions: {
+    item: {
+      enter(el, done) {
+        done();
+      },
+
+      leave(el, done) {
+        done();
+      },
+    },
+  },
+
+
   activate(done) {
     // Generate id for voters
 

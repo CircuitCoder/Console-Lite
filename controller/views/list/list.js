@@ -40,6 +40,18 @@ const ListView = Vue.extend({
     _overrideStart: false,
   }),
 
+  transitions: {
+    item: {
+      enter(el, done) {
+        done();
+      },
+
+      leave(el, done) {
+        done();
+      },
+    },
+  },
+
   methods: {
     updateAC() {
       this.acList = util.resolveAC(this.editInput).splice(0, 5);
