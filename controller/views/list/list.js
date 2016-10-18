@@ -144,7 +144,7 @@ const ListView = Vue.extend({
       const watcher = this.$watch('list.seats', () => {
         this.$nextTick(() => watcher());
         this.add();
-      })
+      });
     },
 
     performEdit() {
