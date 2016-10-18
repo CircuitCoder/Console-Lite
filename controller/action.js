@@ -224,9 +224,7 @@ const desc = {
       console.log(`Connecting to: ${serverConfig.url}/${confId}`);
 
       const socket = io(`${serverConfig.url}/${confId}`, {
-        extraHeaders: {
-          'Console-Passkey': serverConfig.passkey,
-        },
+        query: `console-passkey=${serverConfig.passkey}`,
       });
 
       confConn = new ConferenceConnection(socket, ({ error, data }) => {
