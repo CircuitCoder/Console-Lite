@@ -63,17 +63,19 @@ body {
 .bottom-title {
   font-size: 4vw;
   overflow: hidden;
-
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-
+  display: flex;
+  align-items: center;
   text-overflow: ellipsis;
-  -webkit-line-clamp: 1;
+  white-space: nowrap;
+}
+
+.bottom-title > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .bottom-title.small {
   font-size: 3vw;
-  -webkit-line-clamp: 2;
 }
 
 .bottom-title .material-icons {
