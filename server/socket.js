@@ -32,7 +32,7 @@ function add(nsid) {
     /* Timers */
 
     socket.on('addTimer', ({ name, value, type }) => {
-      if(!name || !value || !type)
+      if(!name || !Number.isInteger(value) || !type)
         return void socket.emit('addTimer', { ok: false, error: 'BadRequest' });
       else if(!socket.consoleAuthorized)
         return void socket.emit('addTimer', { ok: false, error: 'NotAuthorized' });

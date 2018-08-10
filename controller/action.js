@@ -722,7 +722,7 @@ const desc = {
     addList(name, seats, totTime, eachTime) {
       new Promise((resolve, reject) => confConn.addList(name, seats, (err, id) => err ? reject(err) : resolve(id)))
         .then(id => Promise.all([
-          new Promise((resolve, reject) => totTime === 0 ? resolve() : confConn.addTimer(id, 'list-total', totTime, err => err ? reject(err) : resolve())),
+          new Promise((resolve, reject) => confConn.addTimer(id, 'list-total', totTime, err => err ? reject(err) : resolve())),
           new Promise((resolve, reject) => confConn.addTimer(id, 'list-current', eachTime, err => err ? reject(err) : resolve())),
         ])).catch(e => {
           console.error(e);
