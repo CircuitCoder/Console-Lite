@@ -38,10 +38,10 @@ const VoteView = Vue.extend({
       if(this.inputName.length === 0) return;
 
       this.$dispatch('add-vote',
-                     this.inputName,
-                     this.isSubstantive ? -1 : this.inputTarget,
-                     this.inputRounds,
-                     this.seats.filter(e => e.present).map(e => e.name));
+        this.inputName,
+        this.isSubstantive ? -1 : this.inputTarget,
+        this.inputRounds,
+        this.seats.filter(e => e.present).map(e => e.name));
 
       this.addFlag = false;
     },

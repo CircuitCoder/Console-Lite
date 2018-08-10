@@ -54,7 +54,7 @@ const desc = {
       }
 
       console.log(dt);
-      const type = dt.files[0].type;
+      const { type } = dt.files[0];
       if(type !== 'application/x-tar') {
         alert('请添加一个 tar 文件');
         return;

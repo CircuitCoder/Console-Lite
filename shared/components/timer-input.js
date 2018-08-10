@@ -7,7 +7,7 @@ const TimerInput = Vue.extend({
     time: {
       twoWay: true,
       type: Number,
-      validator: (val) => Number.isInteger(val),
+      validator: val => Number.isInteger(val),
       required: true,
     },
   },

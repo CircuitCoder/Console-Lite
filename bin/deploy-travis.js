@@ -71,14 +71,14 @@ const mainTasks = [
               path: targetdir,
               type: 'Directory',
             })
-            .pipe(tar.Pack())
-            .pipe(zlib.createGzip(gzipOpt))
-            .pipe(fs.createWriteStream(path.join(basedir, fname)))
-            .on('finish', () => {
-              artifacts.push([fname, path.join(basedir, fname), 'application/7z']);
-              ob.complete();
-            })
-            .on('error', err => ob.error(err));
+              .pipe(tar.Pack())
+              .pipe(zlib.createGzip(gzipOpt))
+              .pipe(fs.createWriteStream(path.join(basedir, fname)))
+              .on('finish', () => {
+                artifacts.push([fname, path.join(basedir, fname), 'application/7z']);
+                ob.complete();
+              })
+              .on('error', err => ob.error(err));
           }),
         }, {
           title: 'Trimming fonts',
@@ -95,17 +95,17 @@ const mainTasks = [
               path: targetdir,
               type: 'Directory',
             })
-            .pipe(tar.Pack())
-            .pipe(zlib.createGzip(gzipOpt))
-            .pipe(fs.createWriteStream(path.join(basedir, fname)))
-            .on('finish', () => {
-              artifacts.push([
-                fname, path.join(basedir, fname),
-                'application/tar+gzip',
-              ]);
-              ob.complete();
-            })
-            .on('error', err => ob.error(err));
+              .pipe(tar.Pack())
+              .pipe(zlib.createGzip(gzipOpt))
+              .pipe(fs.createWriteStream(path.join(basedir, fname)))
+              .on('finish', () => {
+                artifacts.push([
+                  fname, path.join(basedir, fname),
+                  'application/tar+gzip',
+                ]);
+                ob.complete();
+              })
+              .on('error', err => ob.error(err));
           }),
         },
       ];

@@ -145,7 +145,7 @@ function getControllerMenu(controller) {
             role: 'stopspeaking',
           },
         ],
-      }
+      },
     );
 
     tmpl[3].submenu = [
@@ -250,7 +250,7 @@ function checkForUpdate() {
       if(err) return void reject(err);
 
       const info = buf.toString('utf-8').split('\n')[0]
-        .match(/^Console-Lite-v(\d+)\.(\d+)\.(\d+)-([^-]*)-([^-\.]*)(-nofont)?(.*)$/);
+        .match(/^Console-Lite-v(\d+)\.(\d+)\.(\d+)-([^-]*)-([^-.]*)(-nofont)?(.*)$/);
 
       if(!info) return void resolve(false);
 
@@ -264,19 +264,19 @@ function checkForUpdate() {
       let newestData = null;
 
       _mc.listObjects('console-lite')
-      .on('data', (obj) => {
-        const objinfo = obj.name.match(re);
+        .on('data', obj => {
+          const objinfo = obj.name.match(re);
 
-        if(!objinfo) return;
+          if(!objinfo) return;
 
-        objinfo.shift();
-        if(_verCmp(objinfo, newest) < 1) return;
+          objinfo.shift();
+          if(_verCmp(objinfo, newest) < 1) return;
 
-        newest = objinfo;
-        newestData = obj;
-      })
-      .on('error', (err) => reject(err))
-      .on('end', () => resolve([newestData, newest]));
+          newest = objinfo;
+          newestData = obj;
+        })
+        .on('error', err => reject(err))
+        .on('end', () => resolve([newestData, newest]));
     });
   });
 }

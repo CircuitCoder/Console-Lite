@@ -14,7 +14,7 @@ function shutdown(cb) {
 
 module.exports = (cb, port = 4928) => {
   // Initial backend object
-  backend.init((err) => {
+  backend.init(err => {
     if(err) {
       backend.shutdown();
       return void cb(err);
@@ -46,7 +46,7 @@ module.exports = (cb, port = 4928) => {
       cb(null, passkey, idkey, shutdown);
     });
 
-    server.on('error', (err) => {
+    server.on('error', err => {
       backend.shutdown();
       cb(err);
     });

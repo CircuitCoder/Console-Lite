@@ -55,15 +55,15 @@ const FileView = Vue.extend({
       dialog.showSaveDialog({
         title: '保存文件',
         defaultPath: this.file.name,
-      }, (filename) => {
+      }, filename => {
         if(!filename) return;
-        const buf = new Buffer(this.fileCont.byteLength);
+        const buf = Buffer.alloc(this.fileCont.byteLength);
         const view = new Uint8Array(this.fileCont);
 
         for(let i = 0; i < buf.length; ++i)
           buf[i] = view[i];
 
-        fs.writeFile(filename, buf, (err) => {
+        fs.writeFile(filename, buf, err => {
           if(err) dialog.showErrorBox('保存失败', err.stack);
           else dialog.showMessageBox({
             type: 'info',
@@ -72,7 +72,7 @@ const FileView = Vue.extend({
             cancelId: 1,
             message: '保存成功!',
             detail: `保存到 ${filename}`,
-          }, (btn) => {
+          }, btn => {
             if(btn === 0)
               shell.openItem(filename);
           });
@@ -101,7 +101,7 @@ const FileView = Vue.extend({
         return;
       }
 
-      const type = dt.files[0].type;
+      const { type } = dt.files[0];
       if(type !== this.file.type) {
         this.dragging = false;
         alert(`请上传同样类型的文件: ${type}`);

@@ -62,7 +62,7 @@ const mainTasks = [
 
             child_process
               .spawnSync('7z', ['a', '-t7z', '-m0=lzma', '-mx=9',
-                                path.join(basedir, fname), targetdir]);
+                path.join(basedir, fname), targetdir]);
 
             artifacts.push([fname, path.join(basedir, fname), 'application/7z']);
             ob.complete();
@@ -80,7 +80,7 @@ const mainTasks = [
 
             child_process
               .spawnSync('7z', ['a', '-t7z', '-m0=lzma', '-mx=9',
-                                path.join(basedir, fname), targetdir]);
+                path.join(basedir, fname), targetdir]);
 
             artifacts.push([fname, path.join(basedir, fname), 'application/7z']);
             ob.complete();

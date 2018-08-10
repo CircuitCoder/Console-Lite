@@ -16,7 +16,7 @@ function add(nsid) {
     next();
   });
 
-  nsp.on('connection', (socket) => {
+  nsp.on('connection', socket => {
     socket.conf.fetchAll((error, data) => {
       if(error) socket.emit('pong', { error });
       socket.emit('pong', { data });
@@ -48,7 +48,7 @@ function add(nsid) {
       else if(!socket.consoleAuthorized)
         return void socket.emit('startTimer', { ok: false, error: 'NotAuthorized' });
 
-      socket.conf.startTimer(id, (err) => {
+      socket.conf.startTimer(id, err => {
         if(err) return void socket.emit('startTimer', { ok: false, error: err });
         else return void socket.emit('startTimer', { ok: true, id });
       });
@@ -59,7 +59,7 @@ function add(nsid) {
       else if(!socket.consoleAuthorized)
         return void socket.emit('restartTimer', { ok: false, error: 'NotAuthorized' });
 
-      socket.conf.restartTimer(id, (err) => {
+      socket.conf.restartTimer(id, err => {
         if(err) return void socket.emit('restartTimer', { ok: false, error: err });
         else return void socket.emit('restartTimer', { ok: true, id });
       });
@@ -70,7 +70,7 @@ function add(nsid) {
       else if(!socket.consoleAuthorized)
         return void socket.emit('resetTimer', { ok: false, error: 'NotAuthorized' });
 
-      socket.conf.resetTimer(id, (err) => {
+      socket.conf.resetTimer(id, err => {
         if(err) return void socket.emit('resetTimer', { ok: false, error: err });
         else return void socket.emit('resetTimer', { ok: true, id });
       });
@@ -81,7 +81,7 @@ function add(nsid) {
       else if(!socket.consoleAuthorized)
         return void socket.emit('stopTimer', { ok: false, error: 'NotAuthorized' });
 
-      socket.conf.stopTimer(id, (err) => {
+      socket.conf.stopTimer(id, err => {
         if(err) return void socket.emit('stopTimer', { ok: false, error: err });
         else return void socket.emit('stopTimer', { ok: true, id });
       });
@@ -93,7 +93,7 @@ function add(nsid) {
       else if(!socket.consoleAuthorized)
         return void socket.emit('updateTimer', { ok: false, error: 'NotAuthorized' });
 
-      socket.conf.updateTimer(id, value, (err) => {
+      socket.conf.updateTimer(id, value, err => {
         if(err) return void socket.emit('updateTimer', { ok: false, error: err });
         else return void socket.emit('updateTimer', { ok: true });
       });
@@ -292,7 +292,7 @@ function init(app, idk, psk) {
     next();
   });
 
-  io.on('connection', (socket) => {
+  io.on('connection', socket => {
     socket.emit('pong', {
       authorized: socket.consoleAuthorized,
       confs: backend.list(),
@@ -307,7 +307,7 @@ function init(app, idk, psk) {
       });
     });
 
-    socket.on('create', (data) => {
+    socket.on('create', data => {
       if(!data.name) return void socket.emit('create', { ok: false, error: 'BadRequest' });
       else if(!socket.consoleAuthorized)
         return void socket.emit('create', { ok: false, error: 'NotAuthorized' });

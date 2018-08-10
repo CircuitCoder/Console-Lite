@@ -14,7 +14,7 @@ const mc = new minio({
 function upload(artifacts) {
   return artifacts.map(([name, dir, mime]) => new Promise((resolve, reject) => {
     mc.fPutObject('console-lite', name, dir, mime,
-                  (err, etag) => err ? reject(err) : resolve([name, dir, etag]));
+      (err, etag) => err ? reject(err) : resolve([name, dir, etag]));
   }));
 }
 
@@ -37,7 +37,7 @@ function _taskToPromise(task) {
   if(!inst) return Promise.resolve();
   else if(inst.subscribe) return new Promise((resolve, reject) => {
     inst.subscribe({
-      next: (data) => console.log(data),
+      next: data => console.log(data),
       error: reject,
       complete: resolve,
     });

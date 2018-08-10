@@ -125,7 +125,7 @@ const desc = {
         });
       });
 
-      poloRepo.on('down', (name) => {
+      poloRepo.on('down', name => {
         for(const s of this.services)
           if(s.name === name) {
             this.services.$remove(s);
@@ -172,6 +172,8 @@ const desc = {
 
     applyService(service) {
       this.backendUrl = `http://${service.host}:${service.port}`;
+
+      /* eslint-disable-next-line */ // Overflows
       this.$els.connectOverlap.scrollTop =
         this.$els.connectOverlap.scrollHeight - this.$els.connectOverlap.offsetHeight;
     },
@@ -280,7 +282,7 @@ const desc = {
       confConn.addListener({
         /* Seats */
 
-        seatsUpdated: (seats) => {
+        seatsUpdated: seats => {
           this.seats = seats;
           this.recalcCount();
           this.sendSeatCount();
@@ -341,7 +343,7 @@ const desc = {
           }
         },
 
-        timerStopped: (id /* , value */) => {
+        timerStopped: id => {
           this.executeOnTimer(id, timer => {
             timer.active = false;
           });
@@ -403,7 +405,7 @@ const desc = {
           });
         },
 
-        fileEdited: (id) => {
+        fileEdited: id => {
           this.fileCache[id] = null;
 
           for(const f of this.files)
@@ -525,7 +527,7 @@ const desc = {
 
     performConfCreation() {
       if(this.confName === '') return;
-      globalConn.createConf(this.confName, (data) => {
+      globalConn.createConf(this.confName, data => {
         if(!data.ok) {
           console.error(data.error);
           alert('创建失败');
@@ -580,7 +582,7 @@ const desc = {
     /* Timers */
 
     addTimer(name, sec) {
-      confConn.addTimer(name, 'standalone', sec, (err /* , id */) => {
+      confConn.addTimer(name, 'standalone', sec, err => {
         if(err) {
           console.error(err);
           alert('添加失败!');
@@ -589,7 +591,7 @@ const desc = {
     },
 
     manipulateTimer(action, id) {
-      confConn.manipulateTimer(action, id, (err) => {
+      confConn.manipulateTimer(action, id, err => {
         if(err) {
           console.error(err);
           alert('操作失败!');
@@ -598,7 +600,7 @@ const desc = {
     },
 
     updateTimer(id, value) {
-      confConn.updateTimer(id, value, (err) => {
+      confConn.updateTimer(id, value, err => {
         if(err) {
           console.error(err);
           alert('修改失败!');
@@ -676,7 +678,7 @@ const desc = {
 
     /* Vote */
     addVote(name, target, rounds, seats) {
-      confConn.addVote(name, target, rounds, seats, (err /* , id */) => {
+      confConn.addVote(name, target, rounds, seats, err => {
         if(err) {
           console.error(err);
           alert('添加失败!');
@@ -695,7 +697,7 @@ const desc = {
     },
 
     updateVote(id, index, vote) {
-      confConn.updateVote(id, index, vote, (err /* , id */) => {
+      confConn.updateVote(id, index, vote, err => {
         if(err) {
           console.error(err);
           alert('更新失败!');
@@ -704,7 +706,7 @@ const desc = {
     },
 
     iterateVote(id, status) {
-      confConn.iterateVote(id, status, (err /* , id */) => {
+      confConn.iterateVote(id, status, err => {
         if(err) {
           console.error(err);
           alert('更新失败!');
@@ -873,12 +875,12 @@ function setup() {
     instance.init();
   });
 
-  document.addEventListener('drop', (e) => {
+  document.addEventListener('drop', e => {
     e.preventDefault();
     e.stopPropagation();
   });
 
-  document.addEventListener('dragover', (e) => {
+  document.addEventListener('dragover', e => {
     e.preventDefault();
     e.stopPropagation();
   });

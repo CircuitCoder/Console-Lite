@@ -38,8 +38,7 @@ const FilesView = Vue.extend({
         return;
       }
 
-      const name = dt.files[0].name;
-      const type = dt.files[0].type;
+      const { name, type } = dt.files[0];
 
       fs.readFile(dt.files[0].path, (err, data) => {
         this.$dispatch('add-file', name, type, data);

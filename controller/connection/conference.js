@@ -29,7 +29,7 @@ class ConferenceConnection {
     this.pushSocketListener('voteUpdated', ['id', 'index', 'vote']);
     this.pushSocketListener('voteIterated', ['id', 'status']);
 
-    /* Lists*/
+    /* Lists */
 
     this.pushSocketListener('listAdded', ['id', 'name', 'seats']);
     this.pushSocketListener('listUpdated', ['id', 'seats']);
@@ -37,7 +37,7 @@ class ConferenceConnection {
   }
 
   pushSocketListener(name, fields) {
-    this.socket.on(name, (data) => {
+    this.socket.on(name, data => {
       for(const l of this.listeners)
         if(name in l) l[name](...fields.map(e => data[e]));
     });
@@ -51,7 +51,7 @@ class ConferenceConnection {
   /* Seats */
 
   updateSeats(seats, cb) {
-    this.socket.once('updateSeats', (data) => {
+    this.socket.once('updateSeats', data => {
       if(data.ok) cb(null);
       else cb(data.error);
     });
@@ -61,7 +61,7 @@ class ConferenceConnection {
   /* Timers */
 
   addTimer(name, type, value, cb) {
-    this.socket.once('addTimer', (data) => {
+    this.socket.once('addTimer', data => {
       if(data.ok) cb(null, data.id);
       else cb(data.error);
     });
@@ -74,7 +74,7 @@ class ConferenceConnection {
    */
   manipulateTimer(action, id, cb) {
     const token = `${action}Timer`;
-    this.socket.once(token, (data) => {
+    this.socket.once(token, data => {
       if(data.ok) cb(null);
       else cb(data.error);
     });
@@ -83,7 +83,7 @@ class ConferenceConnection {
   }
 
   updateTimer(id, value, cb) {
-    this.socket.once('updateTimer', (data) => {
+    this.socket.once('updateTimer', data => {
       if(data.ok) cb(null);
       else cb(data.error);
     });
@@ -94,7 +94,7 @@ class ConferenceConnection {
   /* Files */
 
   addFile(name, type, content, cb) {
-    this.socket.once('addFile', (data) => {
+    this.socket.once('addFile', data => {
       if(data.ok) cb(null, data.id);
       else cb(data.error);
     });
@@ -103,7 +103,7 @@ class ConferenceConnection {
   }
 
   editFile(id, content, cb) {
-    this.socket.once('editFile', (data) => {
+    this.socket.once('editFile', data => {
       if(data.ok) cb(null);
       else cb(data.error);
     });
@@ -114,7 +114,7 @@ class ConferenceConnection {
   getFile(id, cb) {
     const respToken = `getFile:${id}`;
 
-    this.socket.once(respToken, (data) => {
+    this.socket.once(respToken, data => {
       if(data.ok) cb(null, data.content);
       else cb(data.error);
     });
@@ -124,7 +124,7 @@ class ConferenceConnection {
 
   /* Votes */
   addVote(name, target, rounds, seats, cb) {
-    this.socket.once('addVote', (data) => {
+    this.socket.once('addVote', data => {
       if(data.ok) cb(null, data.id);
       else cb(data.error);
     });
@@ -133,7 +133,7 @@ class ConferenceConnection {
   }
 
   updateVote(id, index, vote, cb) {
-    this.socket.once('updateVote', (data) => {
+    this.socket.once('updateVote', data => {
       if(data.ok) cb(null);
       else cb(data.error);
     });
@@ -142,7 +142,7 @@ class ConferenceConnection {
   }
 
   iterateVote(id, status, cb) {
-    this.socket.once('iterateVote', (data) => {
+    this.socket.once('iterateVote', data => {
       if(data.ok) cb(null);
       else cb(data.error);
     });
@@ -152,7 +152,7 @@ class ConferenceConnection {
 
   /* Lists */
   addList(name, seats, cb) {
-    this.socket.once('addList', (data) => {
+    this.socket.once('addList', data => {
       if(data.ok) cb(null, data.id);
       else cb(data.error);
     });
@@ -161,7 +161,7 @@ class ConferenceConnection {
   }
 
   updateList(id, seats, cb) {
-    this.socket.once('updateList', (data) => {
+    this.socket.once('updateList', data => {
       if(data.ok) cb(null);
       else cb(data.error);
     });
@@ -170,7 +170,7 @@ class ConferenceConnection {
   }
 
   iterateList(id, ptr, cb) {
-    this.socket.once('iterateList', (data) => {
+    this.socket.once('iterateList', data => {
       if(data.ok) cb(null);
       else cb(data.error);
     });

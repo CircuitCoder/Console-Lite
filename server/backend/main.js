@@ -17,11 +17,11 @@ function startDB(dir, cb) {
     { valueEncoding: 'json' },
   );
 
-  return levelup(levelBackend, null, cb)
+  return levelup(levelBackend, null, cb);
 }
 
 function init(cb) {
-  main = startDB(path.resolve(__dirname, 'storage', 'main.db'), (err) => {
+  main = startDB(path.resolve(__dirname, 'storage', 'main.db'), err => {
     if(err) return void cb(err);
 
     main.get('list', (err, list) => {
@@ -44,11 +44,10 @@ function init(cb) {
 }
 
 function shutdown(cb) {
-  main.close((err) => {
+  main.close(err => {
     if(err) return void cb(err);
     else return void Promise.all([...confs.values()].map(e => new Promise((resolve, reject) =>
-      e.db.close((err) => err ? reject(err) : resolve())
-    ))).then(() => cb()).catch(cb);
+      e.db.close(err => err ? reject(err) : resolve())))).then(() => cb()).catch(cb);
   });
 }
 
@@ -58,12 +57,12 @@ function add(name, cb) {
   const db = startDB(`${__dirname}/storage/${id}.db`);
   const filedir = `${__dirname}/storage/${id}.files`;
   const instance = new Conference(name, db, filedir);
-  instance.setup((err) => {
+  instance.setup(err => {
     if(err) return void cb(err);
     confs.set(id, instance);
     confList.push({ id, name });
 
-    main.put('list', confList, (err) => err ? cb(err) : cb(null, id));
+    main.put('list', confList, err => err ? cb(err) : cb(null, id));
   });
 }
 

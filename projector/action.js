@@ -210,8 +210,8 @@ const desc = {
     },
 
     voteCount(status) {
-      return this.vote ?
-        this.vote.matrix.reduce((prev, e) => e.vote === status ? prev + 1 : prev, 0)
+      return this.vote
+        ? this.vote.matrix.reduce((prev, e) => e.vote === status ? prev + 1 : prev, 0)
         : 0;
     },
   },

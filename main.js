@@ -80,14 +80,14 @@ function setupExportHandler() {
       path: dir,
       type: 'Directory',
     })
-    .pipe(tar.Pack())
-    .on('data', (data) => {
-      buffers.push(data);
-    })
-    .on('end', () => {
-      callback(Buffer.concat(buffers));
-    })
-    .on('error', err => callback({ error: err }));
+      .pipe(tar.Pack())
+      .on('data', data => {
+        buffers.push(data);
+      })
+      .on('end', () => {
+        callback(Buffer.concat(buffers));
+      })
+      .on('error', err => callback({ error: err }));
   });
 }
 
@@ -122,7 +122,7 @@ let idkey;
 
 let shutdown;
 
-ipcMain.on('startServer', (event) => {
+ipcMain.on('startServer', event => {
   if(serverStarted) {
     event.sender.send('serverCallback', { url: 'http://localhost:4928', passkey, idkey });
     return;
@@ -143,7 +143,7 @@ ipcMain.on('startServer', (event) => {
   });
 });
 
-ipcMain.on('isServerRunning', (event) => {
+ipcMain.on('isServerRunning', event => {
   event.returnValue = serverStarted;
 });
 
@@ -159,7 +159,7 @@ ipcMain.on('toProjector', (event, data) => {
   if(projector) projector.webContents.send('fromController', data);
 });
 
-ipcMain.on('getProjector', (event) => {
+ipcMain.on('getProjector', event => {
   if(!projector) event.returnValue = null;
   else event.returnValue = projector.id;
 });
@@ -168,7 +168,7 @@ ipcMain.on('projectorInitialized', () => {
   if(controller) controller.webContents.send('projectorReady');
 });
 
-ipcMain.on('checkForUpdate', (ev) => {
+ipcMain.on('checkForUpdate', ev => {
   util.checkForUpdate().then(([data, ver]) => {
     if(!data) return;
     ev.sender.send('updateAvailable', { detail: data, version: `v${ver[0]}.${ver[1]}.${ver[2]}` });
@@ -178,15 +178,15 @@ ipcMain.on('checkForUpdate', (ev) => {
 ipcMain.on('doImport', (ev, data) => {
   const targetDir = path.join(__dirname, 'server', 'backend', 'storage');
 
-  rimraf(path.join(targetDir, '*'), (err) => {
+  rimraf(path.join(targetDir, '*'), err => {
     if(err) return void ev.sender.send('importCb', err);
     fs.createReadStream(data)
-    .pipe(tar.Extract({
-      path: targetDir,
-      strip: 1,
-    }))
-    .on('end', () => ev.sender.send('importCb', null))
-    .on('error', err => ev.sender.send('importCb', err));
+      .pipe(tar.Extract({
+        path: targetDir,
+        strip: 1,
+      }))
+      .on('end', () => ev.sender.send('importCb', null))
+      .on('error', err => ev.sender.send('importCb', err));
   });
 });
 

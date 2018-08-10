@@ -1,6 +1,5 @@
 const { rebuild } = require('electron-rebuild');
 
-const electronExe = require('electron');
 const process = require('process');
 const fs = require('fs');
 const path = require('path');
@@ -31,12 +30,12 @@ function locateElectronBase() {
 console.log('Rebuilding native modules...');
 
 const electronBase = locateElectronBase();
-const electronPkg = require(path.join(electronBase, 'package.json'));
+const electronPkg = JSON.parse(fs.readFileSync(path.join(electronBase, 'package.json')));
 const electronVer = electronPkg.version;
 
 console.log(`Electron version: ${electronVer}`);
 
-let headerURL = process.env.ELECTRON_HEADER;
+const headerURL = process.env.ELECTRON_HEADER;
 
 rebuild({
   buildPath: path.resolve(__dirname, '..'),

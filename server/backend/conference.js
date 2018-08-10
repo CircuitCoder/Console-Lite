@@ -124,8 +124,6 @@ class Conference {
 
           cb();
         });
-
-        return;
       });
     };
 
@@ -142,7 +140,7 @@ class Conference {
 
     // TODO: if stopTimer is called right after startTimer, this.timerValues[id] may be undefined
 
-    this.db.put(`timer:${id}:left`, this.timerValues.get(id), (err) => {
+    this.db.put(`timer:${id}:left`, this.timerValues.get(id), err => {
       if(err) return void cb(err);
 
       clearInterval(intId);
@@ -154,7 +152,7 @@ class Conference {
       if(this.listCurrent.has(id)) {
         const listId = this.listCurrent.get(id);
         if(this.listTotal.has(listId))
-          return void this.stopTimer(this.listTotal.get(listId), (err) => {
+          return void this.stopTimer(this.listTotal.get(listId), err => {
             if(err === 'AlreadyStopped') return void cb(null);
             else return void cb(err);
           });
@@ -240,7 +238,7 @@ class Conference {
   /* Seats */
 
   updateSeats(seats, cb) {
-    this.db.put('seats', seats, (err) => {
+    this.db.put('seats', seats, err => {
       if(err) return void cb(err);
       for(const l of this.listeners)
         if(l.seatsUpdated) l.seatsUpdated(seats);
@@ -275,14 +273,14 @@ class Conference {
       for(const l of this.listeners)
         if(l.fileAdded) l.fileAdded(id, name, type);
       return void cb(null, id);
-    }).catch((err) => {
+    }).catch(err => {
       console.log(err);
       cb(err);
     });
   }
 
   editFile(id, content, cb) {
-    return fs.writeFile(`${this.fileRoot}/${id}`, content, (err) => {
+    return fs.writeFile(`${this.fileRoot}/${id}`, content, err => {
       if(err) return void cb(err);
       for(const l of this.listeners)
         if(l.fileEdited) l.fileEdited(id);
@@ -336,7 +334,7 @@ class Conference {
       if(err) return void cb(err);
 
       matrix[index].vote = vote;
-      this.db.put(`vote:${id}:matrix`, matrix, (err) => {
+      this.db.put(`vote:${id}:matrix`, matrix, err => {
         if(err) return void cb(err);
 
         for(const l of this.listeners)

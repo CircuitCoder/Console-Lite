@@ -49,5 +49,18 @@ module.exports = {
       'ignorePattern': '\\(resolve, reject\\) =>',
     }],
     'new-cap': 'off',
+    'object-curly-newline': ['error', { consistent: true }],
+    'nonblock-statement-body-position': ['off', 'any'],
+    'no-plusplus': 'off',
+    'import/order': 'off',
+    'arrow-parens': ['error', 'as-needed'],
+    'no-restricted-syntax': 'off',
+    'implicit-arrow-linebreak': 'off',
+    'function-paren-newline': ['error', 'consistent'],
+    'no-restricted-globals': 'off',
+    'prefer-destructuring': ['error', {
+      array: false,
+      object: true,
+    }],
   }
 };
