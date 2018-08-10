@@ -8,13 +8,14 @@ addons:
     - clang
 install:
 - export CXX="clang++"
-- npm install
+- npm install yarn --global
+- yarn install
 language: node_js
 node_js:
 - '6'
 script:
-- npm run rebuildNative
-- npm test
+- yarn run rebuildNative
+- yarn test
 deploy:
 - provider: script
   skip_cleanup: true

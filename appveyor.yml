@@ -14,20 +14,22 @@ matrix:
 init:
 - git config --global core.autocrlf true
 
+- npm install yarn --global
+
 shallow_clone: true
 
 install:
 - ps: Install-Product node 6 $env:platform
 - node -e "console.log(process.platform + '-' + process.arch)"
 - node -e "console.log(require('os').platform() + '-' + require('os').arch())"
-- npm install
+- yarn
 
 build_script:
 - ps: rm node_modules\nslog\build\Release\nslog.node
-- npm run rebuildNative
+- yarn run rebuildNative
 
 test_script:
-- npm test
+- yarn test
 
 deploy_script:
 - node bin/deploy-appveyor.js
