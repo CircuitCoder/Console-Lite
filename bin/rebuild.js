@@ -1,7 +1,4 @@
-const {
-  installNodeHeaders,
-  rebuildNativeModules,
-  shouldRebuildNativeModules } = require('electron-rebuild');
+const { rebuild } = require('electron-rebuild');
 
 const electronExe = require('electron');
 const process = require('process');
@@ -37,23 +34,16 @@ const electronBase = locateElectronBase();
 const electronPkg = require(path.join(electronBase, 'package.json'));
 const electronVer = electronPkg.version;
 
-shouldRebuildNativeModules(electronExe)
-  .then(shouldRebuild => {
-    if(!shouldRebuild) {
-      console.log('Native modules ready.');
-      return Promise.resolve();
-    }
+console.log(`Electron version: ${electronVer}`);
 
-    console.log(`Electron version detected: ${electronVer}`);
-    return installNodeHeaders(electronVer, 'https://atom.io/download/atom-shell')
-    .then(() => rebuildNativeModules(electronVer, `${__dirname}/../node_modules`,
-                                     '--build-from-source'));
-  })
-  .then(() => {
-    console.log('Rebuilding finished.');
-  })
+let headerURL = process.env.ELECTRON_HEADER;
+
+rebuild({
+  buildPath: path.resolve(__dirname, '..'),
+  electronVersion: electronVer,
+  headerURL,
+})
+  .then(() => console.info('Rebuild successful'))
   .catch(e => {
-    console.error('Rebuilding failed:');
-    console.error(e.stack);
-    process.exit(1);
+    console.error(e);
   });

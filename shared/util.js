@@ -1,4 +1,4 @@
-const pdfjs = require('pdfjs-dist/build/pdf.combined');
+const pdfjs = require('pdfjs-dist/build/pdf.js');
 const Trie = require('./trie');
 const pinyin = require('pinyin');
 

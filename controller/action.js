@@ -2,7 +2,7 @@ const Vue = require('vue');
 const VueAnimatedList = require('vue-animated-list');
 Vue.use(VueAnimatedList);
 
-const io = require('socket.io-client/socket.io.js');
+const io = require('socket.io-client');
 const Push = require('push.js');
 const polo = require('polo');
 const path = require('path');
@@ -868,7 +868,10 @@ const desc = {
 // eslint-disable-next-line no-unused-vars
 function setup() {
   const instance = new Vue(desc);
-  instance.init();
+
+  setTimeout(() => {
+    instance.init();
+  });
 
   document.addEventListener('drop', (e) => {
     e.preventDefault();

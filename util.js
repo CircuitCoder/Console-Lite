@@ -12,7 +12,11 @@ function supportsTitlebarStyle() {
 }
 
 function isWindows() {
-  return os.platform() === 'win32';
+  const platform = os.platform();
+  if(platform === 'win32') return true;
+
+  // WSL
+  return os.release().includes('Microsoft');
 }
 
 let _importerWin;
@@ -237,7 +241,7 @@ function _verCmp(a, b) {
 
 function checkForUpdate() {
   return new Promise((resolve, reject) => {
-    if(!_mc) _mc = new Minio({
+    if(!_mc) _mc = new Minio.Client({
       endPoint: 'store.bjmun.org',
       secure: true,
     });
