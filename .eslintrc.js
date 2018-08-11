@@ -59,8 +59,14 @@ module.exports = {
     'function-paren-newline': ['error', 'consistent'],
     'no-restricted-globals': 'off',
     'prefer-destructuring': ['error', {
-      array: false,
-      object: true,
+      VariableDeclarator: {
+        array: false,
+        object: true,
+      },
+      AssignmentExpression: {
+        array: false,
+        object: false,
+      },
     }],
   }
 };

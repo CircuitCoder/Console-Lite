@@ -32,6 +32,7 @@ const desc = {
     loading: false,
     picker: false,
     frame: false,
+    server: false,
 
     projOn: false,
     proj: {
@@ -44,6 +45,10 @@ const desc = {
 
     services: [],
     showServerFlag: false,
+
+    advancedBackendFlag: false,
+    backendPort: 4928,
+    backendHint: null,
 
     connectBackendFlag: false,
     backendIDKey: '',
@@ -101,6 +106,7 @@ const desc = {
     init() {
       this.started = true;
 
+      this.server = ipcRenderer.sendSync('isServerRunning');
       this.projOn = ipcRenderer.sendSync('getProjector') !== null;
       this.sendToProjector({ type: 'reset' });
 
@@ -117,9 +123,19 @@ const desc = {
       poloRepo.on('up', (name, service) => {
         if(name.indexOf('console-lite') !== 0) return;
 
+        const ident = name.substring(13);
+        const matched = ident.match(/^([1-9A-F]+):(.*)$/);
+        let hint = null;
+        let idkey = ident;
+        if(matched) {
+          idkey = matched[1];
+          hint = matched[2];
+        }
+
         this.services.push({
           name,
-          idkey: name.substring(13),
+          hint,
+          idkey,
           host: service.host,
           port: service.port,
         });
@@ -214,9 +230,24 @@ const desc = {
         this._createGlobalConn();
       });
 
-      ipcRenderer.send('startServer');
+      const port = parseInt(this.backendPort, 10);
+      if(Number.isNaN(port)) return;
+      const hint = this.backendHint || null;
+
+      this.advancedBackendFlag = false;
+      ipcRenderer.send('startServer', { port, hint });
 
       this.loading = true;
+    },
+
+    advancedBackend() {
+      this.advancedBackendFlag = true;
+      this.loading = true;
+    },
+
+    discardAdvancedBackend() {
+      this.advancedBackendFlag = false;
+      this.loading = false;
     },
 
     connectConf(confId, confName) {

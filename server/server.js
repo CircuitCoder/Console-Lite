@@ -12,7 +12,7 @@ function shutdown(cb) {
   return backend.shutdown(cb);
 }
 
-module.exports = (cb, port = 4928) => {
+module.exports = (cb, port = 4928, hint) => {
   // Initial backend object
   backend.init(err => {
     if(err) {
@@ -36,10 +36,13 @@ module.exports = (cb, port = 4928) => {
     for(const conf of confs) socket.add(conf.id);
 
     server.listen(port, () => {
-      console.log(`Server ${idkey} up at port ${port} with passkey ${passkey}.`);
+      let ident = idkey;
+      if(hint) ident = `${idkey}:${hint}`;
+
+      console.log(`Server ${ident} up at port ${port} with passkey ${passkey}.`);
 
       poloRepo.put({
-        name: `console-lite-${idkey}`,
+        name: `console-lite-${ident}`,
         port,
       });
 

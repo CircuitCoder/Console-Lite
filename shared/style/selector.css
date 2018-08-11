@@ -18,10 +18,23 @@
   opacity: 0.7;
   transition: opacity 0.2s ease;
 
-  word-break: break-word;
+  white-space: nowrap;
 
   -webkit-app-region: no-drag;
   -webkit-user-select: none;
+}
+
+.selector-item-spanning {
+  flex: 1; /* To push other contents to the right */
+}
+
+.selector-item-hint {
+  font-size: 12px;
+  margin-left: 10px;
+  color: rgba(0,0,0,.54);
+
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .selector-hint {
@@ -45,4 +58,13 @@
 
 .dialog .selector-item {
   min-width: 0;
+}
+
+.selector-optional-btn {
+  transition: opacity .2s ease;
+  opacity: .54;
+}
+
+.selector-optional-btn:hover {
+  opacity: 1;
 }

@@ -138,11 +138,16 @@
         <div class="loading-hint" transition="opacity" v-show="loading">
           喵喵喵...
         </div>
+        <div class="selector-item" @click="createBackend" v-if="!server">
+          <i class="material-icons">wifi_tethering</i>
+          <div class="selector-item-spanning">在本地创建一个新会话</div>
+          <i class="material-icons selector-optional-btn" @click.stop="advancedBackend">more_vert</i>
+        </div>
+        <div class="selector-item" @click="createBackend" v-if="server">
+          <i class="material-icons">home</i>连接到本地已启动的会话
+        </div>
         <div class="selector-item" @click="connectBackend">
           <i class="material-icons">settings_ethernet</i>连接到会话...
-        </div>
-        <div class="selector-item" @click="createBackend">
-          <i class="material-icons">wifi_tethering</i>在本地创建一个新会话...
         </div>
       </div>
     </div>
@@ -178,7 +183,7 @@
           <div class="selector">
             <div class="selector-hint" v-show="services.length > 0">局域网内的服务</div>
             <div class="selector-item" v-for="service of services" @click="applyService(service)">
-              <i class="material-icons">router</i>{{ service.idkey }}
+              <i class="material-icons">router</i>{{ service.idkey }} <span v-if="service.hint" class="selector-item-hint">{{ service.hint }}</span>
             </div>
           </div>
 
@@ -196,6 +201,33 @@
 
           <button @click="performBackendConnection" class="confirmation-btn">
             连接
+            <i class="material-icons">keyboard_arrow_right</i>
+          </button>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dialog-overlap" transition="opacity" v-show="advancedBackendFlag" @click="discardAdvancedBackend" v-el:connect-overlap>
+      <div class="dialog" @click.stop.prevent>
+        <div class="dialog-title">
+          本地会话设置
+        </div>
+        <div class="dialog-content">
+          <div class="input-group">
+            <div class="hint">注释</div>
+            <input v-model="backendHint">
+            <div class="border-line"></div>
+          </div>
+
+          <div class="input-group">
+            <div class="hint">端口</div>
+            <input v-model="backendPort">
+            <div class="border-line"></div>
+          </div>
+
+          <button @click="createBackend" class="confirmation-btn">
+            创建会话
             <i class="material-icons">keyboard_arrow_right</i>
           </button>
           <div class="clearfix"></div>

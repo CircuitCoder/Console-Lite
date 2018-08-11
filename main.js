@@ -3,6 +3,7 @@ const { ipcMain, app, protocol, globalShortcut, BrowserWindow } = electron;
 const path = require('path');
 const tar = require('tar');
 const fs = require('fs');
+const os = require('os');
 const fstream = require('fstream');
 const rimraf = require('rimraf');
 
@@ -119,14 +120,43 @@ let serverStarted = false;
 
 let passkey;
 let idkey;
+let backendPort = 4928;
 
 let shutdown;
 
-ipcMain.on('startServer', event => {
+/**
+ * Get a random external IPv4 address
+ */
+
+function getExtIPv4Addr() {
+  const ifaces = os.networkInterfaces();
+
+  // This is an plain object. Prototype properties shouldn't be a problem
+  // eslint-disable-next-line guard-for-in
+  for(const ifname in ifaces)
+    for(const alias of ifaces[ifname])
+      if(alias.family === 'IPv4' && !alias.internal)
+        return alias.address;
+
+  // No external address. So no host other than localhost can connect to this server.
+  // Hence loopback is safe to be returned here.
+
+  return '127.0.0.1';
+}
+
+ipcMain.on('startServer', (event, opt) => {
   if(serverStarted) {
-    event.sender.send('serverCallback', { url: 'http://localhost:4928', passkey, idkey });
+    event.sender.send(
+      'serverCallback',
+      { url: `http://${getExtIPv4Addr()}:${backendPort}`, passkey, idkey },
+    );
+
     return;
   }
+
+  let hint = null;
+  if(opt && opt.hint) hint = opt.hint;
+  if(opt && opt.port) backendPort = opt.port;
 
   server((err, pk, ik, sd) => {
     if(err) {
@@ -139,8 +169,11 @@ ipcMain.on('startServer', event => {
     passkey = pk;
     idkey = ik;
     shutdown = sd;
-    event.sender.send('serverCallback', { url: 'http://localhost:4928', passkey, idkey });
-  });
+    event.sender.send(
+      'serverCallback',
+      { url: `http://${getExtIPv4Addr()}:${backendPort}`, passkey, idkey },
+    );
+  }, backendPort, hint); // FIXME: remove test
 });
 
 ipcMain.on('isServerRunning', event => {
