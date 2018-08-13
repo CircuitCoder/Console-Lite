@@ -1,9 +1,11 @@
 const path = require('path');
+const mkdirp = require('mkdirp');
 
 let dataDir = path.resolve(__dirname, 'backend');
 
 function setDataDir(dir) {
   dataDir = dir;
+  mkdirp.sync(storagePath());
 }
 
 function storagePath() {
@@ -19,6 +21,7 @@ function filePath(name) {
 }
 
 module.exports = {
+  setDataDir,
   storagePath,
   dbPath,
   filePath,

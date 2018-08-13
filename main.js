@@ -14,6 +14,9 @@ const name = 'Console Lite';
 
 app.setName(name);
 
+console.log(`userData locates at ${app.getPath('userData')}`);
+serverUtil.setDataDir(app.getPath('userData'));
+
 // Windows, not the OS, but windows
 let controller;
 let projector;
@@ -76,7 +79,10 @@ function createExportStream() {
   if(serverStarted) throw new Error('Server is running');
   const dir = serverUtil.storagePath()
 
-  return tar.c({}, [dir]);
+  return tar.c({
+    C: dir,
+    prefix: 'storage',
+  }, fs.readdirSync(dir));
 }
 
 function setupExportHandler() {
@@ -213,8 +219,8 @@ ipcMain.on('doImport', (ev, data) => {
   rimraf(path.join(targetDir, '*'), err => {
     if(err) return void ev.sender.send('importCb', err);
     fs.createReadStream(data)
-      .pipe(tar.Extract({
-        path: targetDir,
+      .pipe(tar.x({
+        C: targetDir,
         strip: 1,
       }))
       .on('end', () => ev.sender.send('importCb', null))
