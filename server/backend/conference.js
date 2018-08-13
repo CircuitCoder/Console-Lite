@@ -10,7 +10,7 @@ function _createDir(dir) {
 
   const parentDir = path.dirname(dir);
   _createDir(parentDir);
-  fs.mkdir(dir);
+  fs.mkdirSync(dir);
 }
 
 class Conference {
