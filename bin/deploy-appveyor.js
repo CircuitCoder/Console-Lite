@@ -12,7 +12,7 @@ const path = require('path');
 const process = require('process');
 const rimraf = require('rimraf');
 
-const { Observable } = require('rxjs/Observable');
+const { Observable } = require('rxjs');
 
 const basedir = path.dirname(__dirname);
 const targetdir = path.join(basedir, 'Console Lite');

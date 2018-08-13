@@ -12,7 +12,7 @@ const rimraf = require('rimraf');
 const tar = require('tar');
 const zlib = require('zlib');
 
-const { Observable } = require('rxjs/Observable');
+const { Observable } = require('rxjs');
 
 let tag;
 

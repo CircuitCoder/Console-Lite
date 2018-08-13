@@ -25,7 +25,6 @@ install:
 - yarn
 
 build_script:
-- ps: rm node_modules\nslog\build\Release\nslog.node
 - yarn run rebuildNative
 
 test_script:
