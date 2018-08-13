@@ -12,7 +12,7 @@ function shutdown(cb) {
   return backend.shutdown(cb);
 }
 
-module.exports = (cb, port = 4928, hint) => {
+module.exports = (cb, opts) => {
   // Initial backend object
   backend.init(err => {
     if(err) {
@@ -22,7 +22,18 @@ module.exports = (cb, port = 4928, hint) => {
 
     console.log('Backend initialization completed');
 
-    const passkey = crypto.randomBytes(4).toString('hex');
+    let port;
+    let hint;
+    let passkey;
+    if(opts) {
+      port = opts.port;
+      hint = opts.hint;
+      passkey = opts.passkey;
+    }
+
+    if(!port) port = 4928;
+    if(!passkey) passkey = crypto.randomBytes(4).toString('hex');
+
     const idkey = crypto.randomBytes(4).toString('hex').toUpperCase();
 
     // Setup sockets
@@ -46,7 +57,7 @@ module.exports = (cb, port = 4928, hint) => {
         port,
       });
 
-      cb(null, passkey, idkey, shutdown);
+      cb(null, passkey, idkey, port, shutdown);
     });
 
     server.on('error', err => {

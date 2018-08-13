@@ -5,7 +5,7 @@ if(_process === undefined) _process = require('process'); // eslint-disable-line
 
 let shutdownHook;
 
-boot((err, passkey, idkey, sd) => {
+boot((err, passkey, idkey, port, sd) => {
   if(err) throw err;
   shutdownHook = sd;
 });

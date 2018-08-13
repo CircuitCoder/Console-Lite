@@ -49,6 +49,7 @@ const desc = {
     advancedBackendFlag: false,
     backendPort: 4928,
     backendHint: null,
+    backendPasskeySetting: null,
 
     connectBackendFlag: false,
     backendIDKey: '',
@@ -124,7 +125,7 @@ const desc = {
         if(name.indexOf('console-lite') !== 0) return;
 
         const ident = name.substring(13);
-        const matched = ident.match(/^([1-9A-F]+):(.*)$/);
+        const matched = ident.match(/^([0-9A-F]+):(.*)$/);
         let hint = null;
         let idkey = ident;
         if(matched) {
@@ -169,7 +170,7 @@ const desc = {
         this.authorized = authorized;
 
         if(!this.authorized)
-          if(!confirm('密码错误，是否在只读模式连接?')) {
+          if(serverConfig.passkey && !confirm('密码错误，是否在只读模式连接?')) {
             this.confs = null;
             this.authorized = false;
             this.connectBackendFlag = true;
@@ -201,7 +202,7 @@ const desc = {
     },
 
     performBackendConnection() {
-      if(this.backendUrl === '' || this.backendPasskey === '') return;
+      if(this.backendUrl === '') return;
       serverConfig = {
         url: this.backendUrl,
         passkey: this.backendPasskey,
@@ -233,9 +234,10 @@ const desc = {
       const port = parseInt(this.backendPort, 10);
       if(Number.isNaN(port)) return;
       const hint = this.backendHint || null;
+      const passkey = this.backendPasskeySetting || null;
 
       this.advancedBackendFlag = false;
-      ipcRenderer.send('startServer', { port, hint });
+      ipcRenderer.send('startServer', { port, hint, passkey });
 
       this.loading = true;
     },

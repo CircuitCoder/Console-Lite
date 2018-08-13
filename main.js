@@ -144,7 +144,7 @@ function getExtIPv4Addr() {
   return '127.0.0.1';
 }
 
-ipcMain.on('startServer', (event, opt) => {
+ipcMain.on('startServer', (event, opts) => {
   if(serverStarted) {
     event.sender.send(
       'serverCallback',
@@ -154,11 +154,7 @@ ipcMain.on('startServer', (event, opt) => {
     return;
   }
 
-  let hint = null;
-  if(opt && opt.hint) hint = opt.hint;
-  if(opt && opt.port) backendPort = opt.port;
-
-  server((err, pk, ik, sd) => {
+  server((err, pk, ik, port, sd) => {
     if(err) {
       console.error(err);
       event.sender.send('serverCallback', { error: err });
@@ -169,11 +165,13 @@ ipcMain.on('startServer', (event, opt) => {
     passkey = pk;
     idkey = ik;
     shutdown = sd;
+    backendPort = port;
+
     event.sender.send(
       'serverCallback',
-      { url: `http://${getExtIPv4Addr()}:${backendPort}`, passkey, idkey },
+      { url: `http://${getExtIPv4Addr()}:${port}`, passkey, idkey },
     );
-  }, backendPort, hint); // FIXME: remove test
+  }, opts);
 });
 
 ipcMain.on('isServerRunning', event => {
@@ -224,5 +222,5 @@ ipcMain.on('doImport', (ev, data) => {
 });
 
 app.on('quit', () => {
-  if(serverStarted) shutdown();
+  if(serverStarted) shutdown(e => console.error(e));
 });

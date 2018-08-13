@@ -194,7 +194,7 @@
           </div>
 
           <div class="input-group">
-            <div class="hint">密码</div>
+            <div class="hint">密码 ( 留空只读登陆 )</div>
             <input v-model="backendPasskey">
             <div class="border-line"></div>
           </div>
@@ -223,6 +223,12 @@
           <div class="input-group">
             <div class="hint">端口</div>
             <input v-model="backendPort">
+            <div class="border-line"></div>
+          </div>
+
+          <div class="input-group">
+            <div class="hint">密码 ( 留空以自动生成 )</div>
+            <input v-model="backendPasskeySetting">
             <div class="border-line"></div>
           </div>
 

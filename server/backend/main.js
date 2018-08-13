@@ -45,9 +45,16 @@ function init(cb) {
 
 function shutdown(cb) {
   main.close(err => {
-    if(err) return void cb(err);
-    else return void Promise.all([...confs.values()].map(e => new Promise((resolve, reject) =>
-      e.db.close(err => err ? reject(err) : resolve())))).then(() => cb()).catch(cb);
+    if(err && cb) return void cb(err);
+    else return void Promise.all([...confs.values()].map(
+      e => new Promise((resolve, reject) => e.db.close(err => err ? reject(err) : resolve())),
+    ))
+      .then(() => {
+        if(cb) cb();
+      })
+      .catch(e => {
+        if(cb) cb(e);
+      });
   });
 }
 
