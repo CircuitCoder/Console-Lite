@@ -177,7 +177,7 @@ const desc = {
 
         if(this.fileType === 'pdf') {
           this.clearPages();
-          return util.renderPDF(this.fileCont, -1, this.$els.pages, window.innerWidth * 0.8);
+          return util.renderPDF(new Uint8Array(this.fileCont), -1, this.$els.pages, window.innerWidth * 0.8);
         } else if(this.fileType === 'image') {
           // Does nothing
         }

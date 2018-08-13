@@ -35,6 +35,8 @@
 
   padding: 10vw 0;
   overflow: auto;
+
+  background: rgba(0,0,0,.06);
 }
 
 .file-image img {

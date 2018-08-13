@@ -2,6 +2,8 @@ const pdfjs = require('pdfjs-dist/build/pdf.js');
 const Trie = require('./trie');
 const pinyin = require('pinyin');
 
+pdfjs.GlobalWorkerOptions.workerSrc = require.resolve('pdfjs-dist/build/pdf.worker.js');
+
 /* Set scale = -1 to auto-scale */
 
 function renderPDF(content, scale, elem, targetWidth) {

@@ -704,7 +704,7 @@ const desc = {
         return this.sendToProjector({
           type: 'layer',
           target: 'file',
-          data: { meta: file, content: new Uint8Array(content) },
+          data: { meta: file, content },
         });
       });
     },

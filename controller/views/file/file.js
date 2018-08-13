@@ -44,7 +44,7 @@ const FileView = Vue.extend({
     },
 
     renderPDF(scale) {
-      return util.renderPDF(this.fileCont, scale, this.$els.pages);
+      return util.renderPDF(new Uint8Array(this.fileCont), scale, this.$els.pages);
     },
 
     project() {
@@ -57,11 +57,7 @@ const FileView = Vue.extend({
         defaultPath: this.file.name,
       }, filename => {
         if(!filename) return;
-        const buf = Buffer.alloc(this.fileCont.byteLength);
-        const view = new Uint8Array(this.fileCont);
-
-        for(let i = 0; i < buf.length; ++i)
-          buf[i] = view[i];
+        const buf = Buffer.from(this.fileCont);
 
         fs.writeFile(filename, buf, err => {
           if(err) dialog.showErrorBox('保存失败', err.stack);
