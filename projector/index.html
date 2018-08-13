@@ -7,183 +7,188 @@
     <script src="./action.js"></script>
   </head>
   <body onload="setup()">
-    <div class="layer full background">
-      <div class="brand">
-        Console Lite
+    <div id="app">
+      <div class="layer full background">
+        <div class="brand">
+          Console Lite
+        </div>
       </div>
+
+      <transition name="opacity">
+        <div class="bottom-bar" v-show="connected">
+          <div class="bottom-title small">
+            <span>{{ conf }}</span>
+          </div>
+          <div class="counter-group">
+            <i class="material-icons">person</i>
+            <div class="counter">
+              <div class="present">{{ present }}</div>
+              <div class="separator">/</div>
+              <div class="all">{{ seat }}</div>
+            </div>
+            <div class="counter-indicator">
+              <div class="counter-indicator-hint">简单多数</div>
+              <div class="counter-indicator-value">{{ simpleHalfCount }}</div>
+            </div>
+            <div class="counter-indicator">
+              <div class="counter-indicator-hint">三分之二多数</div>
+              <div class="counter-indicator-value">{{ twoThirdCount }}</div>
+            </div>
+            <div class="counter-indicator">
+              <div class="counter-indicator-hint">20%多数</div>
+              <div class="counter-indicator-value">{{ twentyPercentCount }}</div>
+            </div>
+          </div>
+        </div>
+      </transition>
+
+      <div class="layer timer-layer" v-show="mode === 'timer'">
+        <div class="timer-name">{{ timerName }}</div>
+        <timer class="timer-left" :time="timerLeft" :fix-minute="true"></timer>
+        <div class="timer-progress" :class="{ active: timerActive }">
+          <div class="timer-progress-inner"
+            :style="{ transform: timerProgressOffset }">
+          </div>
+        </div>
+      </div>
+
+      <div class="layer file-layer full" v-show="mode === 'file'">
+        <div class="bottom-bar">
+          <div class="bottom-title">
+            <i class="material-icons">insert_drive_file</i><span>{{ shortName }}</span>
+          </div>
+        </div>
+        <div class="file-pdf" ref="pages" v-show="fileType === 'pdf'"></div>
+        <div class="file-image" v-if="fileType === 'image'">
+          <img :src="imgRendered">
+        </div>
+        <div class="file-markdown" v-if="fileType === 'markdown'">
+          <div v-html="mdRendered"></div>
+        </div>
+        <div class="file-shadow"></div>
+      </div>
+
+      <div class="layer full vote-layer" v-if="mode === 'vote' && vote">
+        <div class="bottom-bar">
+          <div class="bottom-title">
+            <i class="material-icons">thumbs_up_down</i><span>{{ vote.name }}</span>
+          </div>
+          <div class="vote-iteration" v-if="vote.status.iteration > 0">
+            第{{ vote.status.iteration }}轮
+          </div>
+          <div class="vote-iteration" v-else>
+            未启动
+          </div>
+          <div class="vote-seats">
+            <i class="material-icons">person</i>
+            {{ vote.matrix.length }}
+          </div>
+
+          <div class="vote-counters">
+            <div class="vote-counter vote-counter-positive">
+              <span class="vote-counter-hint">
+                赞成
+              </span>
+              <span class="vote-counter-value">
+                {{ positiveCount }}
+              </span>
+            </div>
+            <div class="vote-counter vote-counter-negative">
+              <span class="vote-counter-hint">
+                反对
+              </span>
+              <span class="vote-counter-value">
+                {{ negativeCount }}
+              </span>
+            </div>
+            <div class="vote-counter vote-counter-abstained">
+              <span class="vote-counter-hint">
+                弃权
+              </span>
+              <span class="vote-counter-value">
+                {{ abstainedCount }}
+              </span>
+            </div>
+            <div class="vote-counter vote-counter-target" v-if="vote.target > 0">
+              <span class="vote-counter-hint">
+                目标
+              </span>
+              <span class="vote-counter-value">
+                {{ vote.target }}
+              </span>
+            </div>
+            <div class="vote-counter vote-counter-target" v-if="vote.target === -1">
+              <span class="vote-counter-hint">
+                目标
+              </span>
+              <span class="vote-counter-value">
+                {{ fileTwoThird }}
+              </span>
+            </div>
+          </div>
+        </div>
+        <transition-group name="item" tag="div" class="voters list" ref="voters">
+          <div class="voter list-item" v-for="voter of voteMat" :class="{ positive: voter.vote === 1, abstained: voter.vote === -1, negative: voter.vote === -2 }" :key="voter.originalId">
+            <div class="list-item-indicator"></div>
+            <div class="list-item-content">{{ voter.name }}</div>
+            <div class="voter-bg"></div>
+          </div>
+        </transition-group>
+        <div class="voter-progress-container">
+          <div class="voter-progress">
+            <div class="voter-progress-inner positive"
+              :style="{ transform: positiveProgressOffset }">
+            </div>
+            <div class="voter-progress-inner negative"
+              :style="{ transform: negativeProgressOffset }">
+            </div>
+            <div class="voter-progress-inner abstained"
+              :style="{ transform: abstainedProgressOffset }">
+            </div>
+          </div>
+          <div class="voter-progress-target"
+            :style="{ transform: targetOffset }">
+          </div>
+        </div>
+      </div>
+
+      <div class="layer list-layer full" v-if="mode === 'list'">
+        <div class="bottom-bar">
+          <div class="bottom-title small">
+            <i class="material-icons">record_voice_over</i><span>{{ list.name }}</span>
+          </div>
+          <div class="speaker-indicator" v-if="list.ptr < list.seats.length">
+            <span class="speaker-current">
+              {{ list.seats[list.ptr].name }}
+            </span>
+            <span class="speaker-next" v-if="list.ptr < list.seats.length - 1">
+              {{ list.seats[list.ptr + 1].name }}
+            </span>
+          </div>
+          <div class="timer-current" v-if="list.timerCurrent">
+            <i class="material-icons">person</i>
+            <timer :time="list.timerCurrent.left" :fix-minute="true"></timer>
+          </div>
+          <div class="timer-total" v-if="list.timerTotal && list.timerTotal.value > 0">
+            <i class="material-icons">access_time</i>
+            <timer :time="list.timerTotal.left" :fix-minute="true"></timer>
+          </div>
+        </div>
+        <transition-group name="item" tag="div" class="list speakers" ref="speakers">
+          <div class="list-item speaker"
+            v-for="(speaker, index) of list.seats"
+            :key="speaker.uid"
+            :class="{ bold: list.ptr === index }">
+
+            <div class="list-item-indicator" @transitionend.stop.prevent></div>
+            <div class="list-item-content">{{ speaker.name }}</div>
+          </div>
+        </transition-group>
+      </div>
+
+      <transition name="opacity">
+        <div class="layer full mask" v-show="switching || !ready"></div>
+      </transition>
     </div>
-
-    <div class="bottom-bar" v-show="connected" transition="opacity">
-      <div class="bottom-title small">
-        <span>{{ conf }}</span>
-      </div>
-      <div class="counter-group">
-        <i class="material-icons">person</i>
-        <div class="counter">
-          <div class="present">{{ present }}</div>
-          <div class="separator">/</div>
-          <div class="all">{{ seat }}</div>
-        </div>
-        <div class="counter-indicator">
-          <div class="counter-indicator-hint">简单多数</div>
-          <div class="counter-indicator-value">{{ simpleHalfCount }}</div>
-        </div>
-        <div class="counter-indicator">
-          <div class="counter-indicator-hint">三分之二多数</div>
-          <div class="counter-indicator-value">{{ twoThirdCount }}</div>
-        </div>
-        <div class="counter-indicator">
-          <div class="counter-indicator-hint">20%多数</div>
-          <div class="counter-indicator-value">{{ twentyPercentCount }}</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="layer timer-layer" v-show="mode === 'timer'">
-      <div class="timer-name">{{ timerName }}</div>
-      <timer class="timer-left" :time="timerLeft" :fix-minute="true"></timer>
-      <div class="timer-progress" :class="{ active: timerActive }">
-        <div class="timer-progress-inner"
-          :style="{ transform: timerProgressOffset }">
-        </div>
-      </div>
-    </div>
-
-    <div class="layer file-layer full" v-show="mode === 'file'">
-      <div class="bottom-bar">
-        <div class="bottom-title">
-          <i class="material-icons">insert_drive_file</i><span>{{ shortName }}</span>
-        </div>
-      </div>
-      <div class="file-pdf" v-el:pages v-show="fileType === 'pdf'"></div>
-      <div class="file-image" v-if="fileType === 'image'">
-        <img :src="imgRendered">
-      </div>
-      <div class="file-markdown" v-if="fileType === 'markdown'">
-        <div v-html="mdRendered"></div>
-      </div>
-      <div class="file-shadow"></div>
-    </div>
-
-    <div class="layer full vote-layer" v-if="mode === 'vote' && vote">
-      <div class="bottom-bar">
-        <div class="bottom-title">
-          <i class="material-icons">thumbs_up_down</i><span>{{ vote.name }}</span>
-        </div>
-        <div class="vote-iteration" v-if="vote.status.iteration > 0">
-          第{{ vote.status.iteration }}轮
-        </div>
-        <div class="vote-iteration" v-else>
-          未启动
-        </div>
-        <div class="vote-seats">
-          <i class="material-icons">person</i>
-          {{ vote.matrix.length }}
-        </div>
-
-        <div class="vote-counters">
-          <div class="vote-counter vote-counter-positive">
-            <span class="vote-counter-hint">
-              赞成
-            </span>
-            <span class="vote-counter-value">
-              {{ positiveCount }}
-            </span>
-          </div>
-          <div class="vote-counter vote-counter-negative">
-            <span class="vote-counter-hint">
-              反对
-            </span>
-            <span class="vote-counter-value">
-              {{ negativeCount }}
-            </span>
-          </div>
-          <div class="vote-counter vote-counter-abstained">
-            <span class="vote-counter-hint">
-              弃权
-            </span>
-            <span class="vote-counter-value">
-              {{ abstainedCount }}
-            </span>
-          </div>
-          <div class="vote-counter vote-counter-target" v-if="vote.target > 0">
-            <span class="vote-counter-hint">
-              目标
-            </span>
-            <span class="vote-counter-value">
-              {{ vote.target }}
-            </span>
-          </div>
-          <div class="vote-counter vote-counter-target" v-if="vote.target === -1">
-            <span class="vote-counter-hint">
-              目标
-            </span>
-            <span class="vote-counter-value">
-              {{ fileTwoThird }}
-            </span>
-          </div>
-        </div>
-      </div>
-      <div class="voters list" v-el:voters>
-        <div class="voter list-item" v-for="voter of voteMat" transition="item" :class="{ positive: voter.vote === 1, abstained: voter.vote === -1, negative: voter.vote === -2 }">
-          <div class="list-item-indicator"></div>
-          <div class="list-item-content">{{ voter.name }}</div>
-          <div class="voter-bg"></div>
-        </div>
-      </div>
-      <div class="voter-progress-container">
-        <div class="voter-progress">
-          <div class="voter-progress-inner positive"
-            :style="{ transform: positiveProgressOffset }">
-          </div>
-          <div class="voter-progress-inner negative"
-            :style="{ transform: negativeProgressOffset }">
-          </div>
-          <div class="voter-progress-inner abstained"
-            :style="{ transform: abstainedProgressOffset }">
-          </div>
-        </div>
-        <div class="voter-progress-target"
-          :style="{ transform: targetOffset }">
-        </div>
-      </div>
-    </div>
-
-    <div class="layer list-layer full" v-if="mode === 'list'">
-      <div class="bottom-bar">
-        <div class="bottom-title small">
-          <i class="material-icons">record_voice_over</i><span>{{ list.name }}</span>
-        </div>
-        <div class="speaker-indicator" v-if="list.ptr < list.seats.length">
-          <span class="speaker-current">
-            {{ list.seats[list.ptr].name }}
-          </span>
-          <span class="speaker-next" v-if="list.ptr < list.seats.length - 1">
-            {{ list.seats[list.ptr + 1].name }}
-          </span>
-        </div>
-        <div class="timer-current" v-if="list.timerCurrent">
-          <i class="material-icons">person</i>
-          <timer :time="list.timerCurrent.left" :fix-minute="true"></timer>
-        </div>
-        <div class="timer-total" v-if="list.timerTotal && list.timerTotal.value > 0">
-          <i class="material-icons">access_time</i>
-          <timer :time="list.timerTotal.left" :fix-minute="true"></timer>
-        </div>
-      </div>
-      <div class="list speakers" v-el:speakers>
-        <div class="list-item speaker"
-          v-for="speaker of list.seats"
-          track-by="uid"
-          transition="item"
-          :class="{ bold: list.ptr === $index }">
-
-          <div class="list-item-indicator" @transitionend.stop.prevent></div>
-          <div class="list-item-content">{{ speaker.name }}</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="layer full mask" v-show="switching || !ready" transition="opacity"></div>
   </body>
 </html>

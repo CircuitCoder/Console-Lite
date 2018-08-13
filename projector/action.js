@@ -1,6 +1,4 @@
-const Vue = require('vue');
-const VueAnimatedList = require('vue-animated-list');
-Vue.use(VueAnimatedList);
+const Vue = require('vue/dist/vue.common.js');
 
 const { ipcRenderer } = require('electron');
 const BezierEasing = require('bezier-easing');
@@ -10,7 +8,6 @@ const util = require('../shared/util.js');
 require('../shared/components/timer.js');
 
 const desc = {
-  el: 'body',
   data: {
     ready: false,
     switching: false,
@@ -39,16 +36,8 @@ const desc = {
     stashedlist: null,
   },
 
-  transitions: {
-    item: {
-      enter(el, done) {
-        done();
-      },
-
-      leave(el, done) {
-        done();
-      },
-    },
+  mounted() {
+    this.init();
   },
 
   methods: {
@@ -86,12 +75,12 @@ const desc = {
       if(i >= this.list.length) i = this.list.seats.length - 1;
 
       const vw = window.innerWidth;
-      let left = this.$els.speakers.children[i].offsetLeft - (0.3 * vw);
-      if(left + this.$els.speakers.offsetWidth > this.$els.speakers.scrollWidth)
-        left = this.$els.speakers.scrollWidth - this.$els.speakers.offsetWidth;
+      let left = this.$refs.speakers.$el.children[i].offsetLeft - (0.3 * vw);
+      if(left + this.$refs.speakers.$el.offsetWidth > this.$refs.speakers.$el.scrollWidth)
+        left = this.$refs.speakers.$el.scrollWidth - this.$refs.speakers.$el.offsetWidth;
       if(left < 0) left = 0;
 
-      this._scrollSmooth(this.$els.speakers, left);
+      this._scrollSmooth(this.$refs.speakers.$el, left);
     },
 
     performUpdate({ target, data }) {
@@ -115,7 +104,7 @@ const desc = {
       } else if(target === 'vote') {
         if(data.event === 'iterate') {
           this.vote.status = data.status;
-          this._scrollSmooth(this.$els.voters, 0);
+          this._scrollSmooth(this.$refs.voters.$el, 0);
         } else { // update
           this.vote.matrix[data.index].vote = data.vote;
 
@@ -126,12 +115,12 @@ const desc = {
                 break;
             if(i !== this.voteMat.length) {
               const vw = window.innerWidth;
-              let left = this.$els.voters.children[i].offsetLeft - (0.3 * vw);
-              if(left + this.$els.voters.offsetWidth > this.$els.voters.scrollWidth)
-                left = this.$els.voters.scrollWidth - this.$els.voters.offsetWidth;
+              let left = this.$refs.voters.$el.children[i].offsetLeft - (0.3 * vw);
+              if(left + this.$refs.voters.$el.offsetWidth > this.$refs.voters.$el.scrollWidth)
+                left = this.$refs.voters.$el.scrollWidth - this.$refs.voters.$el.offsetWidth;
               if(left < 0) left = 0;
 
-              this._scrollSmooth(this.$els.voters, left);
+              this._scrollSmooth(this.$refs.voters.$el, left);
             }
           }
         }
@@ -180,7 +169,7 @@ const desc = {
           return util.renderPDF(
             new Uint8Array(this.fileCont),
             -1,
-            this.$els.pages,
+            this.$refs.pages,
             window.innerWidth * 0.8,
           );
         } else if(this.fileType === 'image') {
@@ -209,9 +198,9 @@ const desc = {
     },
 
     clearPages() {
-      while(this.$els.pages.firstChild)
-        this.$els.pages.removeChild(this.$els.pages.firstChild);
-      this.$els.pages.scrollTop = 0;
+      while(this.$refs.pages.firstChild)
+        this.$refs.pages.removeChild(this.$refs.pages.firstChild);
+      this.$refs.pages.scrollTop = 0;
     },
 
     voteCount(status) {
@@ -293,5 +282,5 @@ const desc = {
 // eslint-disable-next-line no-unused-vars
 function setup() {
   const instance = new Vue(desc);
-  instance.init();
+  instance.$mount('#app');
 }
