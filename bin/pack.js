@@ -20,7 +20,6 @@ function pack(cb, silent) {
       /^\/Console Lite/,
       /^\/Console-Lite-/,
     ], // Ignores databases, files and artifacts
-    tmpdir: false,
     icon: path.join(__dirname, '../images/icon'),
   };
 
@@ -29,19 +28,20 @@ function pack(cb, silent) {
       mirror: process.env.ELECTRON_MIRROR,
     };
 
-  packager(opt, (err, paths) => {
-    if(err) {
+  packager(opt)
+    .then(paths => {
+      console.log(paths);
+      if(!silent)
+        console.log(`Package outputted to: ${paths}`);
+      if(cb) cb(null, paths);
+    })
+    .catch(e => {
       if(!silent) {
         console.error('Packager failed:');
         console.error(err.stack);
       }
       if(cb) cb(err);
-    } else {
-      if(!silent)
-        console.log(`Package outputted to: ${paths}`);
-      if(cb) cb(null, paths);
-    }
-  });
+    })
 }
 
 /* eslint-disable global-require */

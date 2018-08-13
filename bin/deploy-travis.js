@@ -3,7 +3,6 @@ const { upload, trim, runTasks, Ping, getAppDir } = require('./deploy-util');
 
 const assert = require('assert');
 const fs = require('fs');
-const fstream = require('fstream');
 const listr = require('listr');
 const os = require('os');
 const path = require('path');
@@ -67,11 +66,7 @@ const mainTasks = [
 
             ob.next(`Writing to: ${fname}`);
 
-            fstream.Reader({
-              path: targetdir,
-              type: 'Directory',
-            })
-              .pipe(tar.Pack())
+            tar.c({}, [targetdir])
               .pipe(zlib.createGzip(gzipOpt))
               .pipe(fs.createWriteStream(path.join(basedir, fname)))
               .on('finish', () => {
@@ -91,11 +86,7 @@ const mainTasks = [
 
             ob.next(`Writing to: ${fname}`);
 
-            fstream.Reader({
-              path: targetdir,
-              type: 'Directory',
-            })
-              .pipe(tar.Pack())
+            tar.c({}, [targetdir])
               .pipe(zlib.createGzip(gzipOpt))
               .pipe(fs.createWriteStream(path.join(basedir, fname)))
               .on('finish', () => {
