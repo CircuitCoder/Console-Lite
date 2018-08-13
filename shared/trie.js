@@ -1,26 +1,32 @@
+function normalizeCode(code) {
+  if(code >= 65 && code <= 90) return code - 65 + 97;
+  if(code > 127) return null;
+  return code;
+}
+
 class Node {
   constructor() {
     this.entries = new Set();
-    this.children = new Array(26); // Only lower cases
+    this.children = new Map();
   }
 
   put(string) {
     if(string.length === 0) return this;
 
-    const i = string.charCodeAt(0) - 97;
-    if(i < 0 || i > 25) return null;
+    const i = normalizeCode(string.charCodeAt(0));
+    if(i === null) return null;
 
-    if(!this.children[i]) this.children[i] = new Node();
-    return this.children[i].put(string.substring(1));
+    if(!this.children.has(i)) this.children.set(i, new Node());
+    return this.children.get(i).put(string.substring(1));
   }
 
   get(string) {
     if(string.length === 0) return this;
 
-    const i = string.charCodeAt(0) - 97;
-    if(i < 0 || i > 25) return null;
-    else if(!this.children[i]) return null;
-    else return this.children[i].get(string.substring(1));
+    const i = normalizeCode(string.charCodeAt(0));
+    if(i === null) return null;
+    else if(!this.children.has(i)) return null;
+    else return this.children.get(i).get(string.substring(1));
   }
 
   addEntry(entry) {
@@ -33,17 +39,14 @@ class Node {
 
   forEach(fn) {
     fn(this);
-    for(const l of this.children) if(l) l.forEach(fn);
+    for(const l of this.children.values()) l.forEach(fn);
   }
 
   forEachLeaf(fn) {
-    let isLeaf = true;
-    for(const l of this.childrens) if(l) {
-      l.forEachLeaf(fn);
-      isLeaf = false;
-    }
+    if(this.children.size === 0) return fn(this);
 
-    if(isLeaf) fn(this);
+    for(const l of this.children.values())
+      l.forEachLeaf(fn);
   }
 
   // Deep copy a node, return leaves
@@ -53,12 +56,11 @@ class Node {
 
     let leaves = [];
 
-    for(let i = 0; i < 26; ++i)
-      if(this.children[i]) {
-        const [node, subleaves] = this.children[i].deepCopy();
-        result.children[i] = node;
-        leaves = leaves.concat(subleaves);
-      }
+    for(let k of this.children.keys()) {
+      const [node, subleaves] = this.children.get(k).deepCopy();
+      result.children.set(k, node);
+      leaves = leaves.concat(subleaves);
+    }
 
     if(leaves.length === 0) leaves = [result];
 
@@ -77,13 +79,12 @@ class Node {
 
     let leaves = [];
 
-    for(let i = 0; i < 26; ++i)
-      if(this.children[i])
-        if(!ano.children[i]) {
-          const [node, subleaves] = this.children[i].deepCopy();
-          ano.children[i] = node;
-          leaves = leaves.concat(subleaves);
-        } else leaves = leaves.concat(this.children[i].applyTo(ano.children[i]));
+    for(let k of this.children.keys())
+      if(!ano.children.has(k)) {
+        const [node, subleaves] = this.children.get(k).deepCopy();
+        ano.children.set(k, node);
+        leaves = leaves.concat(subleaves);
+      } else leaves = leaves.concat(this.children.get(k).applyTo(ano.children.get(k)));
 
     if(leaves.length === 0) leaves = [ano];
     return leaves;
