@@ -54,15 +54,16 @@
     </div>
   </div>
 
-  <div class="list list-seats" v-el:seats :class="{ 'ac-on-top': attachOnTop }">
-    <div class="list-window-drag-handle"></div>
-    <div class="list-item list-seat" v-for="seat of (dragMode ? dragList : list.seats)" track-by="uid"
-      :class="{ dragging: dragging === seat, overlap: overlap === seat, bold: $index === list.ptr }"
+  <transition-group name="item" tag="div" class="list list-seats" :class="{ 'ac-on-top': attachOnTop }" ref="seats" :durition="500">
+    <div class="list-window-drag-handle" key="__DRAG_HANDLE"></div>
+    <div class="list-item list-seat" v-for="(seat, index) of renderedList" 
+      :class="{ dragging: dragging === seat, overlap: overlap === seat, bold: index === list.ptr }"
       :draggable="authorized"
-      @click.stop="edit(seat, $index)"
+      @click.stop="edit(seat, index)"
       @drag="drag"
-      @dragstart="dragstart(seat, $index, $event)"
-      transition="item">
+      @dragstart="dragstart(seat, index, $event)"
+      :key="seat.uid">
+
       <div class="list-item-indicator"></div>
       <div class="list-item-content list-seat-edit"
         v-if="editTarget == seat.uid"
@@ -75,14 +76,17 @@
           @keydown.down="moveACDown"
           @keydown.up="moveACUp"
           @input="updateAC"
-          v-el:add-input>
+          ref="addInput">
 
         <i class="material-icons list-seat-input-icon">keyboard_return</i>
 
         <div class="list-seat-ac">
-          <div class="list-seat-ac-entry" v-for="entry of acList" @click="performAC(entry)" transition="autocompletion" stagger="100">
-            <span class="ac-content">{{ entry }}</span>
-          </div>
+          <transition-group name="autocompletion" appear :durition="200">
+            <!-- TODO: stagger: 25 -->
+            <div class="list-seat-ac-entry autocompletion-item" v-for="entry of acList" @click="performAC(entry)" :key="entry">
+              <span class="ac-content">{{ entry }}</span>
+            </div>
+          </transition-group>
 
           <div class="list-seat-ac-indicator"
             :style="{ transform: indicatorTransform }">
@@ -95,7 +99,7 @@
       </div>
     </div>
 
-    <div class="list-item list-seat" v-show="addFlag" v-el:add-item>
+    <div class="list-item list-seat" v-if="addFlag" ref="addItem" key="__ADD_SLOT">
       <div class="list-item-indicator"></div>
       <div class="list-item-content list-seat-edit" @click.stop>
 
@@ -106,14 +110,17 @@
           @keydown.down="moveACDown"
           @keydown.up="moveACUp"
           @input="updateAC"
-          v-el:add-input>
+          ref="addInput">
 
         <i class="material-icons list-seat-input-icon">keyboard_return</i>
 
         <div class="list-seat-ac">
-          <div class="list-seat-ac-entry" v-for="entry of acList" @click="performAC(entry)" transition="autocompletion" stagger="25">
-            <span class="ac-content">{{ entry }}</span>
-          </div>
+          <transition-group name="autocompletion" appear :durition="200">
+            <!-- TODO: stagger: 25 -->
+            <div class="list-seat-ac-entry autocompletion-item" v-for="entry of acList" @click="performAC(entry)" :key="entry">
+              <span class="ac-content">{{ entry }}</span>
+            </div>
+          </transition-group>
 
           <div class="list-seat-ac-indicator"
             :style="{ transform: indicatorTransform }">
@@ -123,29 +130,32 @@
       </div>
     </div>
 
-    <div class="list-item clickable list-seat-add" @click.stop="add" v-if="authorized">
+    <div class="list-item clickable list-seat-add" @click.stop="add" v-if="authorized && !addFlag" key="__ADD_SLOT">
       <div class="list-item-indicator"></div>
       <div class="list-item-content">
         <i class="material-icons">add</i> 添加
       </div>
     </div>
-  </div>
-  <div class="dialog-overlap" transition="opacity" v-show="editTimerFlag" @click="editTimerFlag = false">
-    <div class="dialog" @click.stop.prevent>
-      <div class="dialog-title">
-        修改时长
-      </div>
-      <div class="dialog-content">
-        <div class="timer-input-hint">总时长 ( 0 = 不限 )</div>
-        <timer-input :time.sync="totTime"></timer-input>
-        <div class="timer-input-hint">每名代表</div>
-        <timer-input :time.sync="eachTime"></timer-input>
-        <button @click="performTimerEdit" class="confirmation-btn">
-          提交
-          <i class="material-icons">keyboard_arrow_right</i>
-        </button>
-        <div class="clearfix"></div>
+  </transition-group>
+
+  <transition name="opacity">
+    <div class="dialog-overlap" v-show="editTimerFlag" @click="editTimerFlag = false">
+      <div class="dialog" @click.stop.prevent>
+        <div class="dialog-title">
+          修改时长
+        </div>
+        <div class="dialog-content">
+          <div class="timer-input-hint">总时长 ( 0 = 不限 )</div>
+          <timer-input v-model="totTime"></timer-input>
+          <div class="timer-input-hint">每名代表</div>
+          <timer-input v-model="eachTime"></timer-input>
+          <button @click="performTimerEdit" class="confirmation-btn">
+            提交
+            <i class="material-icons">keyboard_arrow_right</i>
+          </button>
+          <div class="clearfix"></div>
+        </div>
       </div>
     </div>
-  </div>
+  </transition>
 </div>

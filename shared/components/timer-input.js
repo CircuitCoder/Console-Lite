@@ -1,74 +1,82 @@
-const Vue = require('vue');
+const Vue = require('vue/dist/vue.common.js');
 const fs = require('fs');
 
-function normalizeInt(val) {
+function normalizeInt(val, upper = 60) {
   val = parseInt(val, 10);
   if(Number.isNaN(val)) return 0;
-  return Math.floor(val);
+  val = Math.floor(val);
+  if(val < 0) val = 0;
+  if(val >= upper) val = upper - 1;
+  return val;
 }
 
 const TimerInput = Vue.extend({
   template: fs.readFileSync(`${__dirname}/timer-input.html`).toString('utf-8'),
   props: {
-    time: {
-      twoWay: true,
+    value: {
       type: Number,
       validator: val => Number.isInteger(val),
       required: true,
     },
   },
 
-  computed: {
-    second: {
-      get() {
-        return this.time % 60;
-      },
+  data: () => ({
+    second: null,
+    minute: null,
+    hour: null,
+  }),
 
-      set(val) {
-        val = normalizeInt(val);
+  created() {
+    this.downsync();
+  },
 
-        if(val > 59) val = 59;
-        else if(val < 0) val = 0;
-
-        const min = Math.floor(this.time / 60);
-        this.time = (min * 60) + val;
-      },
+  methods: {
+    downsync() {
+      let value = this.value;
+      this.second = value % 60;
+      value = Math.floor(value / 60);
+      this.minute = value % 60;
+      value = Math.floor(value / 60);
+      this.hour = value;
     },
 
-    minute: {
-      get() {
-        return Math.floor(this.time / 60) % 60;
-      },
+    upsync() {
+      let hour = normalizeInt(this.hour, 24);
+      this.hour = hour;
 
-      set(val) {
-        val = normalizeInt(val);
+      let minute = normalizeInt(this.minute);
+      this.minute = minute;
 
-        if(val > 59) val = 59;
-        else if(val < 0) val = 0;
+      let second = normalizeInt(this.second);
+      this.second = second;
 
-        const sec = this.time % 60;
-        const hour = Math.floor(this.time / 3600);
-        this.time = (hour * 3600) + (val * 60) + sec;
-      },
+      const value =
+        hour * 3600 +
+        minute * 60 +
+        second;
+
+      if(value !== this.value)
+        this.$emit('input', value);
+    },
+  },
+
+  watch: {
+    value() {
+      this.downsync();
     },
 
-    hour: {
-      get() {
-        return Math.floor(this.time / 3600);
-      },
+    hour() {
+      this.upsync();
+    },
 
-      set(val) {
-        val = normalizeInt(val);
+    minute() {
+      this.upsync();
+    },
 
-        if(val < 0) val = 0;
-
-        const sec = this.time % 3600;
-        this.time = (val * 3600) + sec;
-      },
+    second() {
+      this.upsync();
     },
   },
 });
 
-Vue.component('timer-input', TimerInput);
-
-module.exports = TimerInput;
+module.exports = Vue.component('timer-input', TimerInput);

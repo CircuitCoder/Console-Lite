@@ -5,259 +5,275 @@
     <link href="style.css" rel="stylesheet">
     <script src="action.js"></script>
   </head>
-  <body onload="setup()" tabindex="0" @keydown="checkKeyHold" @keyup="checkKeyRelease">
+  <body onload="setup()">
+    <div id="app" tabindex="0" @keydown="checkKeyHold" @keyup="checkKeyRelease">
+      <div class="frame">
+        <transition name="opacity">
+          <component
+            :is="activeView"
+            ref="internal"
 
-    <div class="frame">
-      <component
-        :is="activeView"
-        transition="opacity"
+            :timers="timers"
+            :seats="seats"
+            :files="files"
+            :votes="votes"
+            :lists="lists"
 
-        :timers="timers"
-        :seats="seats"
-        :files="files"
-        :votes="votes"
-        :lists="lists"
+            :vote="vote"
+            :file="file"
+            :list="list"
 
-        :vote="vote"
-        :file="file"
-        :list="list"
+            :search-input="searchInput"
+            :alt-hold="altHold"
+            :authorized="authorized"
+            :title="title"
 
-        :list-current-timers="listCurrentTimers",
-        :list-total-timers="listTotalTimers",
+            @navigate="navigate"
 
-        :search-input="searchInput"
-        :alt-hold="altHold"
-        :authorized="authorized"
-        :title="title"
+            @update-seats="updateSeats"
 
-        @navigate="navigate"
+            @add-timer="addTimer"
+            @manipulate-timer="manipulateTimer"
+            @update-timer="updateTimer"
+            @project-timer="projectTimer"
 
-        @update-seats="updateSeats"
+            @add-file="addFile"
+            @edit-file="editFile"
+            @get-file="getFile"
+            @view-file="viewFile"
+            @project-file="projectFile"
+            
+            @add-vote="addVote"
+            @view-vote="viewVote"
+            @update-vote="updateVote"
+            @iterate-vote="iterateVote"
+            @project-vote="projectVote"
+            
+            @add-list="addList"
+            @update-list="updateList"
+            @update-list-total="updateListTotal"
+            @update-list-current="updateListCurrent"
+            @start-list="startList"
+            @stop-list="stopList"
+            @iterate-list="iterateList"
+            @view-list="viewList"
+            @project-list="projectList">
 
-        @add-timer="addTimer"
-        @manipulate-timer="manipulateTimer"
-        @update-timer="updateTimer"
-        @project-timer="projectTimer"
+          </component>
+          <!-- Events will loop back through server broadcast -->
+          <!-- So we are using one way binding -->
+        </transition>
 
-        @add-file="addFile"
-        @edit-file="editFile"
-        @get-file="getFile"
-        @view-file="viewFile"
-        @project-file="projectFile"
-        
-        @add-vote="addVote"
-        @view-vote="viewVote"
-        @update-vote="updateVote"
-        @iterate-vote="iterateVote"
-        @project-vote="projectVote"
-        
-        @add-list="addList"
-        @update-list="updateList"
-        @update-list-total="updateListTotal"
-        @update-list-current="updateListCurrent"
-        @start-list="startList"
-        @stop-list="stopList"
-        @iterate-list="iterateList"
-        @view-list="viewList"
-        @project-list="projectList">
-
-      </component>
-      <!-- Events will loop back through server broadcast -->
-      <!-- So we are using one way binding -->
-
-      <div class="action-bar">
-        <div class="counter-group">
-          <i class="material-icons">person</i>
-          <div class="counter">
-            <div class="present">{{ presentCount }}</div>
-            <div class="separator">/</div>
-            <div class="all">{{ seatCount }}</div>
-          </div>
-          <div class="counter-indicator">
-            <div class="counter-indicator-hint">简单多数</div>
-            <div class="counter-indicator-value">{{ simpleHalfCount }}</div>
-          </div>
-          <div class="counter-indicator">
-            <div class="counter-indicator-hint">三分之二多数</div>
-            <div class="counter-indicator-value">{{ twoThirdCount }}</div>
-          </div>
-          <div class="counter-indicator">
-            <div class="counter-indicator-hint">20%数</div>
-            <div class="counter-indicator-value">{{ twentyPercentCount }}</div>
-          </div>
-        </div>
-        <div class="actions">
-          <div class="action" @click="navigate('home')">
-            <i class="material-icons">home</i>
-          </div>
-          <div class="action" @click="navigate('seats')">
-            <i class="material-icons">event_seat</i>
-          </div>
-          <div class="action" @click="navigate('lists')">
-            <i class="material-icons">record_voice_over</i>
-          </div>
-          <div class="action" @click="navigate('timers')">
-            <i class="material-icons">timer</i>
-          </div>
-          <div class="action" @click="navigate('files')">
-            <i class="material-icons">folder</i>
-          </div>
-          <div class="action" @click="navigate('votes')">
-            <i class="material-icons">thumbs_up_down</i>
-          </div>
-          <div class="action" @click="clearProjector" v-if="altHold && projOn">
-            <i class="material-icons">layers_clear</i>
-          </div>
-          <div class="action" @click="toggleProjector" v-else>
-            <i class="material-icons" v-show="projOn">cast_connected</i>
-            <i class="material-icons" v-else>cast</i>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="picker" transition="opacity" v-show="!frame">
-      <div class="picker-content">
-        <div class="picker-title">请选择委员会</div>
-        <div class="selector">
-          <div class="selector-item" v-for="conf of confs" @click="connectConf(conf.id, conf.name)">
-            {{ conf.name }}
-          </div>
-          <div class="selector-item" @click="createConf" v-if="authorized">
-            <i class="material-icons">add</i>创建一个新委员会
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="startup" :class="{ ready: ready }" v-show="!picker" transition="opacity">
-      <div class="brand">
-        Console Lite
-      </div>
-      <div class="selector">
-        <div class="loading-hint" transition="opacity" v-show="loading">
-          喵喵喵...
-        </div>
-        <div class="selector-item" @click="createBackend" v-if="!server">
-          <i class="material-icons">wifi_tethering</i>
-          <div class="selector-item-spanning">在本地创建一个新会话</div>
-          <i class="material-icons selector-optional-btn" @click.stop="advancedBackend">more_vert</i>
-        </div>
-        <div class="selector-item" @click="createBackend" v-if="server">
-          <i class="material-icons">home</i>连接到本地已启动的会话
-        </div>
-        <div class="selector-item" @click="connectBackend">
-          <i class="material-icons">settings_ethernet</i>连接到会话...
-        </div>
-      </div>
-    </div>
-
-    <div class="mask" transition="opacity" v-show="!started"></div>
-
-    <div class="dialog-overlap" transition="opacity" v-show="createConfFlag" @click="discardConfCreation">
-      <div class="dialog" @click.stop.prevent>
-        <div class="dialog-title">
-          创建委员会
-        </div>
-        <div class="dialog-content">
-          <div class="input-group">
-            <div class="hint">委员会名</div>
-            <input v-model="confName" @keydown.enter="performConfCreation" @keydown.esc="discardConfCreation" v-el:conf-name-input>
-            <div class="border-line"></div>
-          </div>
-          <button @click="performConfCreation" class="confirmation-btn">
-            创建
-            <i class="material-icons">keyboard_arrow_right</i>
-          </button>
-          <div class="clearfix"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="dialog-overlap" transition="opacity" v-show="connectBackendFlag" @click="discardBackendConnection" v-el:connect-overlap>
-      <div class="dialog" @click.stop.prevent>
-        <div class="dialog-title">
-          连接到...
-        </div>
-        <div class="dialog-content">
-          <div class="selector">
-            <div class="selector-hint" v-show="services.length > 0">局域网内的服务</div>
-            <div class="selector-item" v-for="service of services" @click="applyService(service)">
-              <i class="material-icons">router</i>{{ service.idkey }} <span v-if="service.hint" class="selector-item-hint">{{ service.hint }}</span>
+        <div class="action-bar">
+          <div class="counter-group">
+            <i class="material-icons">person</i>
+            <div class="counter">
+              <div class="present">{{ presentCount }}</div>
+              <div class="separator">/</div>
+              <div class="all">{{ seatCount }}</div>
+            </div>
+            <div class="counter-indicator">
+              <div class="counter-indicator-hint">简单多数</div>
+              <div class="counter-indicator-value">{{ simpleHalfCount }}</div>
+            </div>
+            <div class="counter-indicator">
+              <div class="counter-indicator-hint">三分之二多数</div>
+              <div class="counter-indicator-value">{{ twoThirdCount }}</div>
+            </div>
+            <div class="counter-indicator">
+              <div class="counter-indicator-hint">20%数</div>
+              <div class="counter-indicator-value">{{ twentyPercentCount }}</div>
             </div>
           </div>
-
-          <div class="input-group">
-            <div class="hint">服务器URL</div>
-            <input v-model="backendUrl">
-            <div class="border-line"></div>
-          </div>
-
-          <div class="input-group">
-            <div class="hint">密码 ( 留空只读登陆 )</div>
-            <input v-model="backendPasskey">
-            <div class="border-line"></div>
-          </div>
-
-          <button @click="performBackendConnection" class="confirmation-btn">
-            连接
-            <i class="material-icons">keyboard_arrow_right</i>
-          </button>
-          <div class="clearfix"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="dialog-overlap" transition="opacity" v-show="advancedBackendFlag" @click="discardAdvancedBackend" v-el:connect-overlap>
-      <div class="dialog" @click.stop.prevent>
-        <div class="dialog-title">
-          本地会话设置
-        </div>
-        <div class="dialog-content">
-          <div class="input-group">
-            <div class="hint">注释</div>
-            <input v-model="backendHint">
-            <div class="border-line"></div>
-          </div>
-
-          <div class="input-group">
-            <div class="hint">端口</div>
-            <input v-model="backendPort">
-            <div class="border-line"></div>
-          </div>
-
-          <div class="input-group">
-            <div class="hint">密码 ( 留空以自动生成 )</div>
-            <input v-model="backendPasskeySetting">
-            <div class="border-line"></div>
-          </div>
-
-          <button @click="createBackend" class="confirmation-btn">
-            创建会话
-            <i class="material-icons">keyboard_arrow_right</i>
-          </button>
-          <div class="clearfix"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="dialog-overlap" transition="opacity" v-show="picker && (showServerFlag || backquoteHold)" @click="showServerFlag = false">
-      <div class="dialog" style="-webkit-app-region: no-drag" @click.stop.prevent>
-        <div class="dialog-title">
-          服务器信息:
-        </div>
-        <div class="dialog-content">
-          <div class="dialog-supporting">
-            URL: <strong>{{ backendUrl }}</strong>
-          </div>
-          <div class="dialog-supporting" @click="copyServerSetting('idkey')">
-            ID: <strong>{{ backendIDKey }}</strong> <span v-show="copied === 'idkey'" transition="opacity">已复制</span>
-          </div>
-          <div class="dialog-supporting" @click="copyServerSetting('passkey')">
-            密码: <strong>{{ backendPasskey }}</strong> <span v-show="copied === 'passkey'" transition="opacity">已复制</span>
+          <div class="actions">
+            <div class="action" @click="navigate('home')">
+              <i class="material-icons">home</i>
+            </div>
+            <div class="action" @click="navigate('seats')">
+              <i class="material-icons">event_seat</i>
+            </div>
+            <div class="action" @click="navigate('lists')">
+              <i class="material-icons">record_voice_over</i>
+            </div>
+            <div class="action" @click="navigate('timers')">
+              <i class="material-icons">timer</i>
+            </div>
+            <div class="action" @click="navigate('files')">
+              <i class="material-icons">folder</i>
+            </div>
+            <div class="action" @click="navigate('votes')">
+              <i class="material-icons">thumbs_up_down</i>
+            </div>
+            <div class="action" @click="clearProjector" v-if="altHold && projOn">
+              <i class="material-icons">layers_clear</i>
+            </div>
+            <div class="action" @click="toggleProjector" v-else>
+              <i class="material-icons" v-show="projOn">cast_connected</i>
+              <i class="material-icons" v-show="!projOn">cast</i>
+            </div>
           </div>
         </div>
       </div>
+
+      <transition name="opacity">
+        <div class="picker" v-show="!frame">
+          <div class="picker-content">
+            <div class="picker-title">请选择委员会</div>
+            <div class="selector">
+              <div class="selector-item" v-for="conf of confs" @click="connectConf(conf.id, conf.name)">
+                {{ conf.name }}
+              </div>
+              <div class="selector-item" @click="createConf" v-if="authorized">
+                <i class="material-icons">add</i>创建一个新委员会
+              </div>
+            </div>
+          </div>
+        </div>
+      </transition>
+
+      <transition name="opacity">
+        <div class="startup" :class="{ ready: ready }" v-show="!picker">
+          <div class="brand">
+            Console Lite
+          </div>
+          <div class="selector">
+            <transition name="opacity">
+              <div class="loading-hint" v-show="loading">
+                喵喵喵...
+              </div>
+            </transition>
+            <div class="selector-item" @click="createBackend" v-if="!server">
+              <i class="material-icons">wifi_tethering</i>
+              <div class="selector-item-spanning">在本地创建一个新会话</div>
+              <i class="material-icons selector-optional-btn" @click.stop="advancedBackend">more_vert</i>
+            </div>
+            <div class="selector-item" @click="createBackend" v-if="server">
+              <i class="material-icons">home</i>连接到本地已启动的会话
+            </div>
+            <div class="selector-item" @click="connectBackend">
+              <i class="material-icons">settings_ethernet</i>连接到会话...
+            </div>
+          </div>
+        </div>
+      </transition>
+
+      <transition name="opacity">
+        <div class="mask" v-show="!started"></div>
+      </transition>
+
+      <transition name="opacity">
+        <div class="dialog-overlap" v-show="createConfFlag" @click="discardConfCreation">
+          <div class="dialog" @click.stop.prevent>
+            <div class="dialog-title">
+              创建委员会
+            </div>
+            <div class="dialog-content">
+              <div class="input-group">
+                <div class="hint">委员会名</div>
+                <input v-model="confName" @keydown.enter="performConfCreation" @keydown.esc="discardConfCreation" ref="confNameInput">
+                <div class="border-line"></div>
+              </div>
+              <button @click="performConfCreation" class="confirmation-btn">
+                创建
+                <i class="material-icons">keyboard_arrow_right</i>
+              </button>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+        </div>
+      </transition>
+
+      <transition name="opacity">
+        <div class="dialog-overlap" v-show="connectBackendFlag" @click="discardBackendConnection" ref="connectOverlap">
+          <div class="dialog" @click.stop.prevent>
+            <div class="dialog-title">
+              连接到...
+            </div>
+            <div class="dialog-content">
+              <div class="selector">
+                <div class="selector-hint" v-show="services.length > 0">局域网内的服务</div>
+                <div class="selector-item" v-for="service of services" @click="applyService(service)">
+                  <i class="material-icons">router</i>{{ service.idkey }} <span v-if="service.hint" class="selector-item-hint">{{ service.hint }}</span>
+                </div>
+              </div>
+
+              <div class="input-group">
+                <div class="hint">服务器URL</div>
+                <input v-model="backendUrl">
+                <div class="border-line"></div>
+              </div>
+
+              <div class="input-group">
+                <div class="hint">密码 ( 留空只读登陆 )</div>
+                <input v-model="backendPasskey">
+                <div class="border-line"></div>
+              </div>
+
+              <button @click="performBackendConnection" class="confirmation-btn">
+                连接
+                <i class="material-icons">keyboard_arrow_right</i>
+              </button>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+        </div>
+      </transition>
+
+      <transition name="opacity">
+        <div class="dialog-overlap" v-show="advancedBackendFlag" @click="discardAdvancedBackend" ref="connectOverlap">
+          <div class="dialog" @click.stop.prevent>
+            <div class="dialog-title">
+              本地会话设置
+            </div>
+            <div class="dialog-content">
+              <div class="input-group">
+                <div class="hint">注释</div>
+                <input v-model="backendHint">
+                <div class="border-line"></div>
+              </div>
+
+              <div class="input-group">
+                <div class="hint">端口</div>
+                <input v-model="backendPort">
+                <div class="border-line"></div>
+              </div>
+
+              <div class="input-group">
+                <div class="hint">密码 ( 留空以自动生成 )</div>
+                <input v-model="backendPasskeySetting">
+                <div class="border-line"></div>
+              </div>
+
+              <button @click="createBackend" class="confirmation-btn">
+                创建会话
+                <i class="material-icons">keyboard_arrow_right</i>
+              </button>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+        </div>
+      </transition>
+
+      <transition name="opacity">
+        <div class="dialog-overlap" v-show="picker && (showServerFlag || backquoteHold)" @click="showServerFlag = false">
+          <div class="dialog" style="-webkit-app-region: no-drag" @click.stop.prevent>
+            <div class="dialog-title">
+              服务器信息:
+            </div>
+            <div class="dialog-content">
+              <div class="dialog-supporting">
+                URL: <strong>{{ backendUrl }}</strong>
+              </div>
+              <div class="dialog-supporting" @click="copyServerSetting('idkey')">
+                ID: <strong>{{ backendIDKey }}</strong> <transition name="opacity"><span v-show="copied === 'idkey'">已复制</span></transition>
+              </div>
+              <div class="dialog-supporting" @click="copyServerSetting('passkey')">
+                密码: <strong>{{ backendPasskey }}</strong> <transition name="opacity"><span v-show="copied === 'passkey'">已复制</span></transition>
+              </div>
+            </div>
+          </div>
+        </div>
+      </transition>
     </div>
   </body>
 </html>

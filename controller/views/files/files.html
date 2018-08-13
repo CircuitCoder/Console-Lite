@@ -15,13 +15,15 @@
       <input v-model="searchInput" @keydown.esc="searchInput = ''">
       <div class="border-line"></div>
     </div>
-    <div class="clear-btn" @click="searchInput = ''" v-show="searchInput" transition="opacity">
-      <i class="material-icons">close</i>
-    </div>
+    <transition name="opacity">
+      <div class="clear-btn" @click="searchInput = ''" v-show="searchInput">
+        <i class="material-icons">close</i>
+      </div>
+    </transition>
   </div>
 
   <div class="files list">
-    <div class="list-item file clickable" v-for="file of files | filterBy searchInput in 'name' 'type'" @click="viewFile(file)" :class="{ bold: file.highlight }">
+    <div class="list-item file clickable" v-for="file of filteredFiles" @click="viewFile(file)" :class="{ bold: file.highlight }">
       <div class="list-item-indicator"></div>
       <div class="list-item-content">
         <div class="file-name">
@@ -39,8 +41,10 @@
     <div class="empty-hint" v-else>无搜索结果</div>
   </div>
 
-  <div class="dnd-mask" transition="opacity" v-show="dragging">
-    <i class="dnd-icon material-icons">file_upload</i>
-    <div class="dnd-hint">拖放以上传</div>
-  </div>
+  <transition name="opacity">
+    <div class="dnd-mask" v-show="dragging">
+      <i class="dnd-icon material-icons">file_upload</i>
+      <div class="dnd-hint">拖放以上传</div>
+    </div>
+  </transition>
 </div>

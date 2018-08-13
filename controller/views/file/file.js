@@ -1,4 +1,4 @@
-const Vue = require('vue');
+const Vue = require('vue/dist/vue.common.js');
 const fs = require('fs');
 const { dialog } = require('electron').remote;
 const { shell } = require('electron');
@@ -18,8 +18,8 @@ const FileView = Vue.extend({
     rendered: '',
   }),
 
-  activate(done) {
-    this.$dispatch('get-file', this.file.id, (err, cont) => {
+  mounted() {
+    this.$emit('get-file', this.file.id, (err, cont) => {
       if(err) return alert('加载失败!');
       else {
         this.type = util.getFileType(this.file.type);
@@ -27,30 +27,30 @@ const FileView = Vue.extend({
 
         if(this.type === 'pdf') {
           this.clearPDF();
-          return this.renderPDF(1).then(done);
+          return this.renderPDF(1);
         } else if(this.type === 'image')
-          return done();
+          return;
         else if(this.type === 'markdown')
-          return done();
+          return;
         else
           // Display download link
-          return done();
+          return;
       }
     });
   },
 
   methods: {
     clearPDF() {
-      while(this.$els.pages.firstChild)
-        this.$els.pages.removeChild(this.$els.pages.firstChild);
+      while(this.$refs.pages.firstChild)
+        this.$refs.pages.removeChild(this.$refs.pages.firstChild);
     },
 
     renderPDF(scale) {
-      return util.renderPDF(new Uint8Array(this.fileCont), scale, this.$els.pages);
+      return util.renderPDF(new Uint8Array(this.fileCont), scale, this.$refs.pages);
     },
 
     project() {
-      this.$dispatch('project-file', this.file);
+      this.$emit('project-file', this.file);
     },
 
     save() {
@@ -107,7 +107,7 @@ const FileView = Vue.extend({
       }
 
       fs.readFile(dt.files[0].path, (err, data) => {
-        this.$dispatch('edit-file', this.file.id, data);
+        this.$emit('edit-file', this.file.id, data);
       });
 
       this.dragging = false;

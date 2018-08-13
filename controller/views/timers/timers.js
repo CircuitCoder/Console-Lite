@@ -1,16 +1,13 @@
-const Vue = require('vue');
+const Vue = require('vue/dist/vue.common.js');
 const fs = require('fs');
 
 const TimersView = Vue.extend({
   template: fs.readFileSync(`${__dirname}/timers.html`).toString('utf-8'),
-  props: [
-    'timers',
-    'authorized',
-    {
-      name: 'searchInput',
-      default: '',
-    },
-  ],
+  props: {
+    timers: {},
+    authorized: {},
+    searchInput: { default: '' },
+  },
   data: () => ({
     editFlag: false,
     timerName: '',
@@ -43,23 +40,32 @@ const TimersView = Vue.extend({
 
     performEdit() {
       if(this.timerName === '' || this.timerValue <= 0) return;
-      if(this.additionMode) this.$dispatch('add-timer', this.timerName, this.timerValue);
-      else this.$dispatch('update-timer', this.timerId, this.timerValue);
+      if(this.additionMode) this.$emit('add-timer', this.timerName, this.timerValue);
+      else this.$emit('update-timer', this.timerId, this.timerValue);
       this.editFlag = false;
     },
 
     toggle(timer) {
-      if(timer.active) this.$dispatch('manipulate-timer', 'stop', timer.id);
-      else if(timer.left === 0) this.$dispatch('manipulate-timer', 'restart', timer.id);
-      else this.$dispatch('manipulate-timer', 'start', timer.id);
+      if(timer.active) this.$emit('manipulate-timer', 'stop', timer.id);
+      else if(timer.left === 0) this.$emit('manipulate-timer', 'restart', timer.id);
+      else this.$emit('manipulate-timer', 'start', timer.id);
     },
 
     project(timer) {
-      this.$dispatch('project-timer', timer);
+      this.$emit('project-timer', timer);
     },
 
     isStandaloneTimer(timer) {
       return timer.type === 'standalone';
+    },
+  },
+
+  computed: {
+    filteredTimers() {
+      const timers = this.timers.filter(e => this.isStandaloneTimer(e));
+
+      if(this.searchInput) return timers.filter(e => e.indexOf(this.searchInput) !== -1);
+      return timers;
     },
   },
 });

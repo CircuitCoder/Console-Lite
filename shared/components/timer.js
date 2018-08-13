@@ -1,4 +1,4 @@
-const Vue = require('vue');
+const Vue = require('vue/dist/vue.common.js');
 const fs = require('fs');
 
 const Timer = Vue.extend({
@@ -37,6 +37,4 @@ const Timer = Vue.extend({
   },
 });
 
-Vue.component('timer', Timer);
-
-module.exports = Timer;
+module.exports = Vue.component('timer', Timer);

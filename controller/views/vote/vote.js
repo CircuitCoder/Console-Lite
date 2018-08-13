@@ -1,4 +1,4 @@
-const Vue = require('vue');
+const Vue = require('vue/dist/vue.common.js');
 const fs = require('fs');
 
 const util = require('../../../shared/util.js');
@@ -42,8 +42,7 @@ const VoteView = Vue.extend({
     },
   },
 
-
-  activate(done) {
+  created() {
     // Generate id for voters
 
     this.mat = [...this.vote.matrix];
@@ -60,8 +59,6 @@ const VoteView = Vue.extend({
         this.rearrange();
       }, 100);
     });
-
-    done();
   },
 
   methods: {
@@ -79,7 +76,7 @@ const VoteView = Vue.extend({
       if(this.emptyCount === 0)
         if(!confirm('现在所有席位都已经完成投票，是否开始下一轮?')) return false;
 
-      this.$dispatch('iterate-vote', this.vote.id, {
+      this.$emit('iterate-vote', this.vote.id, {
         iteration: this.vote.status.iteration + 1,
         running: true,
       });
@@ -123,7 +120,7 @@ const VoteView = Vue.extend({
         if(this.vote.matrix.some(e => e.vote === 0))
           if(!confirm('这是最后一轮投票了，还有投票为过的席位，是否结束这轮投票?')) return false;
 
-      this.$dispatch('iterate-vote', this.vote.id, {
+      this.$emit('iterate-vote', this.vote.id, {
         iteration: this.vote.status.iteration,
         running: false,
       });
@@ -158,7 +155,7 @@ const VoteView = Vue.extend({
         else this._overrideSetVote = true;
 
       if(this.targetVote !== this.targetVoter.vote) // Changed
-        this.$dispatch('update-vote', this.vote.id, this.targetVoter.originalId, this.targetVote);
+        this.$emit('update-vote', this.vote.id, this.targetVoter.originalId, this.targetVote);
 
       if(this.autoMode)
         this.autoManipulate(this.autoIndex + 1);
@@ -167,7 +164,7 @@ const VoteView = Vue.extend({
     },
 
     project() {
-      this.$dispatch('project-vote', this.vote);
+      this.$emit('project-vote', this.vote);
     },
   },
 

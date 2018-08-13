@@ -1,4 +1,4 @@
-const Vue = require('vue');
+const Vue = require('vue/dist/vue.common.js');
 const fs = require('fs');
 
 const HomeView = Vue.extend({
@@ -7,7 +7,7 @@ const HomeView = Vue.extend({
 
   methods: {
     navigateTo(dest) {
-      this.$dispatch('navigate', dest);
+      this.$emit('navigate', dest);
     },
 
     activeList(list) {
@@ -15,7 +15,7 @@ const HomeView = Vue.extend({
     },
 
     viewList(list) {
-      this.$dispatch('view-list', list);
+      this.$emit('view-list', list);
     },
 
     activeStandaloneTimer(timer) {
@@ -23,7 +23,7 @@ const HomeView = Vue.extend({
     },
 
     gotoTimer(name) {
-      this.$dispatch('navigate', 'timers', { search: name });
+      this.$emit('navigate', 'timers', { search: name });
     },
 
     activeVote(vote) {
@@ -38,7 +38,21 @@ const HomeView = Vue.extend({
     },
 
     viewVote(vote) {
-      this.$dispatch('view-vote', vote);
+      this.$emit('view-vote', vote);
+    },
+  },
+
+  computed: {
+    filteredLists() {
+      return this.lists.filter(e => this.activeList(e)).slice(0, 5);
+    },
+
+    filteredTimers() {
+      return this.timers.filter(e => this.activeStandaloneTimer(e)).slice(0, 5);
+    },
+
+    filteredVotes() {
+      return this.votes.filter(e => this.activeVote(e)).slice(0, 5);
     },
   },
 });

@@ -1,4 +1,4 @@
-const Vue = require('vue');
+const Vue = require('vue/dist/vue.common.js');
 const fs = require('fs');
 const crypto = require('crypto');
 
@@ -40,18 +40,6 @@ const ListView = Vue.extend({
     _overrideStart: false,
   }),
 
-  transitions: {
-    item: {
-      enter(el, done) {
-        done();
-      },
-
-      leave(el, done) {
-        done();
-      },
-    },
-  },
-
   methods: {
     updateAC() {
       this.acList = util.resolveAC(this.editInput).splice(0, 5);
@@ -91,17 +79,15 @@ const ListView = Vue.extend({
       this.editInput = '';
       this.updateAC();
       this.editTarget = null;
+      this.addFlag = true;
 
-      if(!this.altHold) {
-        this.addFlag = true;
-        this.$nextTick(() => {
-          this.acBottomGap = this.$els.seats.offsetHeight
-            - (this.$els.addItem.offsetTop + this.$els.addItem.offsetHeight);
+      this.$nextTick(() => {
+        this.acBottomGap = this.$refs.seats.$el.offsetHeight
+          - (this.$refs.addItem.offsetTop + this.$refs.addItem.offsetHeight);
 
-          this.acInput = this.$els.addInput;
-          this.$els.addInput.focus();
-        });
-      }
+        this.acInput = this.$refs.addInput;
+        this.$refs.addInput.focus();
+      });
     },
 
     edit(seat, index) {
@@ -110,11 +96,11 @@ const ListView = Vue.extend({
       this.editInput = seat.name;
       this.editTarget = seat.uid;
 
-      const wrapper = this.$els.seats.children[index + 1];
-      this.acBottomGap = this.$els.seats.offsetHeight - (wrapper.offsetTop + wrapper.offsetHeight);
+      const wrapper = this.$refs.seats.$el.children[index + 1];
+      this.acBottomGap = this.$refs.seats.$el.offsetHeight - (wrapper.offsetTop + wrapper.offsetHeight);
 
       this.$nextTick(() => {
-        const el = this.$els.seats.children[index + 1].getElementsByTagName('input')[0];
+        const el = this.$refs.seats.$el.children[index + 1].getElementsByTagName('input')[0];
         this.acInput = el;
         el.focus();
         el.select();
@@ -139,14 +125,14 @@ const ListView = Vue.extend({
         uid: crypto.randomBytes(16).toString('hex'),
       });
 
-      this.$dispatch('update-list', this.list, seats);
+      this.$emit('update-list', this.list, seats);
 
       this.acList = [];
       this.addFlag = false;
 
       const watcher = this.$watch('list.seats', () => {
         this.$nextTick(() => watcher());
-        this.add();
+        if(!this.altHold) this.add();
       });
     },
 
@@ -181,7 +167,7 @@ const ListView = Vue.extend({
 
       if(!foundFlag) return;
 
-      this.$dispatch('update-list', this.list, seats);
+      this.$emit('update-list', this.list, seats);
     },
 
     /* Dragging */
@@ -208,8 +194,8 @@ const ListView = Vue.extend({
 
       if(this.draggingCounter > 0)
         for(let i = 0; i < this.dragList.length; ++i) {
-          const elem = this.$els.seats.children[i + 1];
-          const centerX = elem.offsetLeft + (elem.offsetWidth / 2);
+          const elem = this.$refs.seats.$el.children[i + 1];
+          const centerX = elem.offsetLeft + (elem.offsetWidth / 2) - this.$refs.seats.$el.scrollLeft;
           const centerY = elem.offsetTop + (elem.offsetHeight / 2);
 
           // Manhattan distance
@@ -248,7 +234,7 @@ const ListView = Vue.extend({
     },
 
     drop() {
-      this.$dispatch('update-list', this.list, this.dragList);
+      this.$emit('update-list', this.list, this.dragList);
     },
 
     start() {
@@ -261,16 +247,16 @@ const ListView = Vue.extend({
               this._overrideStart = true;
             }
 
-      this.$dispatch('start-list', this.list);
+      this.$emit('start-list', this.list);
     },
 
     stop() {
-      this.$dispatch('stop-list', this.list);
+      this.$emit('stop-list', this.list);
     },
 
     next() {
       if(this.list.ptr >= this.list.seats.length) return;
-      this.$dispatch('iterate-list', this.list, this.list.ptr + 1);
+      this.$emit('iterate-list', this.list, this.list.ptr + 1);
     },
 
     editTimer() {
@@ -288,16 +274,16 @@ const ListView = Vue.extend({
     performTimerEdit() {
       if(this.eachTime === 0) return;
       if(!this.list.timerCurrent || this.eachTime !== this.list.timerCurrent.value)
-        this.$dispatch('update-list-current', this.list, this.eachTime);
+        this.$emit('update-list-current', this.list, this.eachTime);
 
       if(!this.list.timerTotal || this.totTime !== this.list.timerTotal.value)
-        this.$dispatch('update-list-total', this.list, this.totTime);
+        this.$emit('update-list-total', this.list, this.totTime);
 
       this.editTimerFlag = false;
     },
 
     project() {
-      this.$dispatch('project-list', this.list);
+      this.$emit('project-list', this.list);
     },
   },
 
@@ -308,6 +294,11 @@ const ListView = Vue.extend({
 
     attachOnTop() {
       return this.acBottomGap < 200;
+    },
+
+    renderedList() {
+      if(this.dragMode) return this.dragList;
+      else return this.list.seats;
     },
   },
 });

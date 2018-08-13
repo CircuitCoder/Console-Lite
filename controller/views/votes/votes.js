@@ -1,17 +1,14 @@
-const Vue = require('vue');
+const Vue = require('vue/dist/vue.common.js');
 const fs = require('fs');
 
 const VoteView = Vue.extend({
   template: fs.readFileSync(`${__dirname}/votes.html`).toString('utf-8'),
-  props: [
-    'votes',
-    'seats',
-    'authorized',
-    {
-      name: 'searchInput',
-      default: '',
-    },
-  ],
+  props: {
+    votes: {},
+    seats: {},
+    authorized: {},
+    searchInput: { default: '' },
+  },
 
   data: () => ({
     addFlag: false,
@@ -37,7 +34,7 @@ const VoteView = Vue.extend({
     performAddition() {
       if(this.inputName.length === 0) return;
 
-      this.$dispatch('add-vote',
+      this.$emit('add-vote',
         this.inputName,
         this.isSubstantive ? -1 : this.inputTarget,
         this.inputRounds,
@@ -47,7 +44,7 @@ const VoteView = Vue.extend({
     },
 
     viewVote(vote) {
-      this.$dispatch('view-vote', vote);
+      this.$emit('view-vote', vote);
     },
 
     setToHalf() {
@@ -70,6 +67,12 @@ const VoteView = Vue.extend({
   computed: {
     presentCount() {
       return this.seats.reduce((prev, e) => e.present ? prev + 1 : prev, 0);
+    },
+
+    filteredVotes() {
+      if(this.searchInput) 
+        return this.votes.filter(e => e.name.indexOf(this.searchInput) !== -1);
+      return this.votes;
     },
   },
 });

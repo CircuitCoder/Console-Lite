@@ -12,15 +12,17 @@
       <input v-model="searchInput" @keydown.esc="searchInput = ''">
       <div class="border-line"></div>
     </div>
-    <div class="clear-btn" @click="searchInput = ''" v-show="searchInput" transition="opacity">
-      <i class="material-icons">close</i>
-    </div>
+    <transition name="opacity">
+      <div class="clear-btn" @click="searchInput = ''" v-show="searchInput">
+        <i class="material-icons">close</i>
+      </div>
+    </transition>
   </div>
 
   <div class="list">
     <div class="list-item clickable"
-      v-for="vote of votes | filterBy searchInput in 'name'"
-      track-by="$index"
+      v-for="(vote, index) of filteredVotes"
+      :key="index"
       :class="{ bold: vote.status.running }"
       @click="viewVote(vote)">
 
@@ -31,7 +33,7 @@
         </div>
         <div class="vote-rounds-wrapper">
           <span class="vote-iteration" v-show="vote.status.iteration > 0">{{ vote.status.iteration }}</span>
-          <span class="vote-iteration" v-else>未启动</span>
+          <span class="vote-iteration" v-show="vote.status.iteration === 0">未启动</span>
           <template v-if="vote.rounds > 0">
             <span class="vote-rounds-separator">/</span>
             <span class="vote-rounds">{{ vote.rounds }}</span>
@@ -64,46 +66,48 @@
     <div class="empty-hint" v-else>无搜索结果</div>
   </div>
 
-  <div class="dialog-overlap" transition="opacity" v-show="addFlag" @click="discardAddition">
-    <div class="dialog" @click.stop.prevent>
-      <div class="dialog-title">
-        添加投票
-      </div>
-      <div class="dialog-content">
-        <div class="dialog-supporting">
-          注: 参与投票的席位为提交时出席的席位，在添加投票后无法更改。
+  <transition name="opacity">
+    <div class="dialog-overlap" v-show="addFlag" @click="discardAddition">
+      <div class="dialog" @click.stop.prevent>
+        <div class="dialog-title">
+          添加投票
         </div>
-        <div class="input-group">
-          <div class="hint">显示名</div>
-          <input v-model="inputName">
-          <div class="border-line"></div>
-        </div>
-        <div class="input-group">
-          <div class="hint">轮数 ( 0 = 不限 )</div>
-          <input v-model="inputRounds" type='number' min='0' number>
-          <div class="border-line"></div>
-        </div>
-        <div class="list">
-          <div class="list-item clickable" :class="{ bold: isSubstantive }" @click="isSubstantive = !isSubstantive">
-            <div class="list-item-indicator"></div>
-            <div class="list-item-content">使用不计弃权三分之二多数</div>
+        <div class="dialog-content">
+          <div class="dialog-supporting">
+            注: 参与投票的席位为提交时出席的席位，在添加投票后无法更改。
           </div>
-        </div>
-        <template v-if="!isSubstantive">
           <div class="input-group">
-            <div class="hint">目标 ( 0 = 未定 )</div>
-            <input v-model="inputTarget" type='number' min='0' number>
+            <div class="hint">显示名</div>
+            <input v-model="inputName">
             <div class="border-line"></div>
           </div>
-          <button @click="setToHalf" class="embedded">设为简单半数</button>
-          <button @click="setToTwoThird" class="embedded">设为三分之二</button>
-        </template>
-        <button @click="performAddition" class="confirmation-btn">
-          提交
-          <i class="material-icons">keyboard_arrow_right</i>
-        </button>
-        <div class="clearfix"></div>
+          <div class="input-group">
+            <div class="hint">轮数 ( 0 = 不限 )</div>
+            <input v-model.number="inputRounds" type='number' min='0'>
+            <div class="border-line"></div>
+          </div>
+          <div class="list">
+            <div class="list-item clickable" :class="{ bold: isSubstantive }" @click="isSubstantive = !isSubstantive">
+              <div class="list-item-indicator"></div>
+              <div class="list-item-content">使用不计弃权三分之二多数</div>
+            </div>
+          </div>
+          <template v-if="!isSubstantive">
+            <div class="input-group">
+              <div class="hint">目标 ( 0 = 未定 )</div>
+              <input v-model.number="inputTarget" type='number' min='0'>
+              <div class="border-line"></div>
+            </div>
+            <button @click="setToHalf" class="embedded">设为简单半数</button>
+            <button @click="setToTwoThird" class="embedded">设为三分之二</button>
+          </template>
+          <button @click="performAddition" class="confirmation-btn">
+            提交
+            <i class="material-icons">keyboard_arrow_right</i>
+          </button>
+          <div class="clearfix"></div>
+        </div>
       </div>
     </div>
-  </div>
+  </transition>
 </div>

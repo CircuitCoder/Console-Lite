@@ -1,16 +1,13 @@
-const Vue = require('vue');
+const Vue = require('vue/dist/vue.common.js');
 const fs = require('fs');
 
 const FilesView = Vue.extend({
   template: fs.readFileSync(`${__dirname}/files.html`).toString('utf-8'),
-  props: [
-    'files',
-    'authorized',
-    {
-      name: 'searchInput',
-      default: '',
-    },
-  ],
+  props: {
+    files: {},
+    authorized: {},
+    searchInput: { default: '', },
+  },
 
   data: () => ({
     dragging: false,
@@ -41,14 +38,22 @@ const FilesView = Vue.extend({
       const { name, type } = dt.files[0];
 
       fs.readFile(dt.files[0].path, (err, data) => {
-        this.$dispatch('add-file', name, type, data);
+        this.$emit('add-file', name, type, data);
       });
 
       this.dragging = false;
     },
 
     viewFile(file) {
-      this.$dispatch('view-file', file);
+      this.$emit('view-file', file);
+    },
+  },
+
+  computed: {
+    filteredFiles() {
+      if(this.searchInput) return this.files.filter(e =>
+        e.name.indexOf(this.searchInput) !== -1 || e.type.indexOf(this.searchInput) !== -1);
+      return this.files;
     },
   },
 });

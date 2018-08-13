@@ -1,6 +1,4 @@
-const Vue = require('vue');
-const VueAnimatedList = require('vue-animated-list');
-Vue.use(VueAnimatedList);
+const Vue = require('vue/dist/vue.common.js');
 
 const io = require('socket.io-client');
 const Push = require('push.js');
@@ -14,8 +12,8 @@ const ConferenceConnection = require('./connection/conference');
 
 const util = require('../shared/util.js');
 
-require('../shared/components/timer');
-require('../shared/components/timer-input');
+const Timer = require('../shared/components/timer');
+const TimerInput = require('../shared/components/timer-input');
 
 let globalConn;
 let confConn;
@@ -25,7 +23,6 @@ let serverConfig;
 let connectedConf;
 
 const desc = {
-  el: 'body',
   data: {
     started: false,
     ready: false,
@@ -100,8 +97,15 @@ const desc = {
     file: require('./views/file/file'),
     vote: require('./views/vote/vote'),
     list: require('./views/list/list'),
+
+    Timer,
+    TimerInput,
   },
   /* eslint-enable global-require */
+
+  mounted() {
+    this.init();
+  },
 
   methods: {
     init() {
@@ -143,9 +147,9 @@ const desc = {
       });
 
       poloRepo.on('down', name => {
-        for(const s of this.services)
-          if(s.name === name) {
-            this.services.$remove(s);
+        for(let id = 0; id < this.services.length; ++id)
+          if(this.services[id].name === name) {
+            this.services.splice(id, 1);
             break;
           }
       });
@@ -191,8 +195,8 @@ const desc = {
       this.backendUrl = `http://${service.host}:${service.port}`;
 
       /* eslint-disable-next-line */ // Overflows
-      this.$els.connectOverlap.scrollTop =
-        this.$els.connectOverlap.scrollHeight - this.$els.connectOverlap.offsetHeight;
+      this.$refs.connectOverlap.scrollTop =
+        this.$refs.connectOverlap.scrollHeight - this.$refs.connectOverlap.offsetHeight;
     },
 
     connectBackend() {
@@ -479,7 +483,7 @@ const desc = {
             v.matrix[index].vote = vote;
 
             if(v === this.vote && !v.status.running)
-              this.$broadcast('vote-rearrange');
+              this.$refs.internal.$emit('vote-rearrange');
 
             if(this.proj.mode === 'vote' && v === this.proj.target)
               this.sendToProjector({
@@ -497,7 +501,7 @@ const desc = {
             v.status = status;
 
             if(v === this.vote && !status.running)
-              this.$broadcast('vote-rearrange');
+              this.$refs.internal.$emit('vote-rearrange');
 
             if(this.proj.mode === 'vote' && v === this.proj.target)
               this.sendToProjector({
@@ -520,8 +524,15 @@ const desc = {
               if(timer.type === 'list-total') timerTotal = timer;
               else if(timer.type === 'list-current') timerCurrent = timer;
 
-          if(timerTotal) this.timerWaitingList.$remove(timerTotal);
-          if(timerCurrent) this.timerWaitingList.$remove(timerCurrent);
+          if(timerTotal) {
+            const index = this.timerWaitingList.indexOf(timerTotal);
+            if(index >= 0) this.timerWaitingList.splice(index, 1);
+          }
+
+          if(timerCurrent) {
+            const index = this.timerWaitingList.indexOf(timerCurrent);
+            if(index >= 0) this.timerWaitingList.splice(index, 1);
+          }
 
           this.lists.unshift({
             id, name, seats, timerTotal, timerCurrent, ptr: 0,
@@ -555,7 +566,7 @@ const desc = {
     createConf() {
       this.confName = '';
       this.createConfFlag = true;
-      setTimeout(() => this.$els.confNameInput.focus(), 0);
+      setTimeout(() => this.$refs.confNameInput.focus(), 0);
     },
 
     performConfCreation() {
@@ -903,10 +914,7 @@ const desc = {
 // eslint-disable-next-line no-unused-vars
 function setup() {
   const instance = new Vue(desc);
-
-  setTimeout(() => {
-    instance.init();
-  });
+  instance.$mount('#app');
 
   document.addEventListener('drop', e => {
     e.preventDefault();

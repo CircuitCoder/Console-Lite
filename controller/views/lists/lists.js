@@ -1,16 +1,13 @@
-const Vue = require('vue');
+const Vue = require('vue/dist/vue.common.js');
 const fs = require('fs');
 
 const ListsView = Vue.extend({
   template: fs.readFileSync(`${__dirname}/lists.html`).toString('utf-8'),
-  props: [
-    'lists',
-    'authorized',
-    {
-      name: 'searchInput',
-      default: '',
-    },
-  ],
+  props: {
+    lists: {},
+    authorized: {},
+    searchInput: { default: '' },
+  },
 
   data: () => ({
     addFlag: false,
@@ -30,16 +27,23 @@ const ListsView = Vue.extend({
       if(this.eachTime === 0) return;
       if(this.name === '') return;
 
-      this.$dispatch('add-list', this.name, [], this.totTime, this.eachTime);
+      this.$emit('add-list', this.name, [], this.totTime, this.eachTime);
       this.addFlag = false;
     },
 
     project(list) {
-      this.$dispatch('project-list', list);
+      this.$emit('project-list', list);
     },
 
     navigateTo(list) {
-      this.$dispatch('view-list', list);
+      this.$emit('view-list', list);
+    },
+  },
+
+  computed: {
+    filteredLists() {
+      if(this.searchInput) return this.lists.filter(e => e.name.indexOf(this.searchInput) !== -1);
+      return this.lists;
     },
   },
 });

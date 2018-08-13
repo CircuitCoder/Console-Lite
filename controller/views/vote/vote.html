@@ -78,43 +78,44 @@
             开始第{{ vote.status.iteration + 1 }}轮
           </button>
         </template>
-    </template>
+      </template>
       <button class="light" @click="project()">
         <i class="material-icons">cast</i>
       </button>
     </div>
   </div>
 
-  <div class="voters list">
+  <transition-group name="item" class="voters list" tag="div">
     <div
       class="voter list-item"
       v-for="voter of mat"
-      track-by="originalId"
-      transition="item"
+      :key="voter.originalId"
       :class="{ positive: voter.vote === 1, abstained: voter.vote === -1, negative: voter.vote === -2, clickable: authorized }"
       @click="manipulate(voter)">
 
       <div class="list-item-indicator"></div>
       <div class="list-item-content">{{ voter.name }}</div>
     </div>
-  </div>
+  </transition-group>
 
-  <div class="dialog-overlap" transition="opacity" v-show="manipulateFlag" @click="discardManipulation">
-    <div class="dialog wide" @click.stop.prevent>
-      <div class="dialog-title">{{ targetVoter.name }}</div>
-      <div class="dialog-content">
-        <div class="list">
-          <div class="list-item clickable" v-for="row in VOTE_ROWS" @click="targetVote = row.code" :class="{ bold: targetVote === row.code }">
-            <div class="list-item-indicator"></div>
-            <div class="list-item-content">{{ row.text }}</div>
+  <transition name="opacity">
+    <div class="dialog-overlap" v-show="manipulateFlag" @click="discardManipulation">
+      <div class="dialog wide" @click.stop.prevent>
+        <div class="dialog-title">{{ targetVoter.name }}</div>
+        <div class="dialog-content">
+          <div class="list">
+            <div class="list-item clickable" v-for="row in VOTE_ROWS" @click="targetVote = row.code" :class="{ bold: targetVote === row.code }">
+              <div class="list-item-indicator"></div>
+              <div class="list-item-content">{{ row.text }}</div>
+            </div>
           </div>
+          <button @click="performManipulation" class="confirmation-btn">
+            确定
+            <i class="material-icons">keyboard_arrow_right</i>
+          </button>
+          <div class="clearfix"></div>
         </div>
-        <button @click="performManipulation" class="confirmation-btn">
-          确定
-          <i class="material-icons">keyboard_arrow_right</i>
-        </button>
-        <div class="clearfix"></div>
       </div>
     </div>
-  </div>
+  </transition>
 </div>

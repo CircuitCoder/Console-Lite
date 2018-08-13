@@ -3,7 +3,7 @@
   <div class="view-pagetitle clickable" @click="navigateTo('lists')">活跃发言名单</div>
   <div class="list inline">
     <div class="list-item clickable"
-      v-for="list of lists | filterBy activeList"
+      v-for="list of filteredLists"
       :class="{ bold: list.timerCurrent && list.timerCurrent.active }"
       @click="viewList(list)">
       <div class="list-item-indicator"></div>
@@ -44,7 +44,7 @@
   </div>
   <div class="view-pagetitle clickable" @click="navigateTo('timers')">活跃计时器</div>
   <div class="list inline">
-    <div class="list-item clickable" v-for="timer of timers | filterBy activeStandaloneTimer | limitBy 5" @click="gotoTimer(timer.name)">
+    <div class="list-item clickable" v-for="timer of filteredTimers" @click="gotoTimer(timer.name)">
       <div class="list-item-indicator"></div>
       <div class="list-item-content timer-row">
         <div class="timer-name">
@@ -62,7 +62,7 @@
   <div class="view-pagetitle clickable" @click="navigateTo('votes')">活跃投票</div>
   <div class="list inline">
     <div class="list-item clickable"
-      v-for="vote of votes | filterBy activeVote | limitBy 5"
+      v-for="vote of filteredVotes"
       :class="{ bold: vote.status.running }"
       @click="viewVote(vote)">
 
@@ -73,7 +73,7 @@
         </div>
         <div class="vote-rounds-wrapper">
           <span class="vote-iteration" v-show="vote.status.iteration > 0">{{ vote.status.iteration }}</span>
-          <span class="vote-iteration" v-else>未启动</span>
+          <span class="vote-iteration" v-show="vote.status.iteration === 0">未启动</span>
           <template v-if="vote.rounds > 0">
             <span class="vote-rounds-separator">/</span>
             <span class="vote-rounds">{{ vote.rounds }}</span>
@@ -82,9 +82,9 @@
         <div class="vote-values">
           <span class="vote-value positive">{{ countVotes(vote, 1) }}</span>
           <span class="vote-value-separator">/</span>
-          <span class="vote-value abstained">{{ countVotes(vote, -1) }}</span>
-          <span class="vote-value-separator">/</span>
           <span class="vote-value negative">{{ countVotes(vote, -2) }}</span>
+          <span class="vote-value-separator">/</span>
+          <span class="vote-value abstained">{{ countVotes(vote, -1) }}</span>
           <span class="vote-value-separator" v-if="vote.target > 0">/</span>
           <span class="vote-value target" v-if="vote.target > 0">{{ vote.target }}</span>
         </div>

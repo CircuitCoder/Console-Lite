@@ -1,4 +1,4 @@
-const Vue = require('vue');
+const Vue = require('vue/dist/vue.common.js');
 const fs = require('fs');
 const pinyin = require('pinyin');
 
@@ -15,15 +15,15 @@ const SeatsView = Vue.extend({
   methods: {
     edit() {
       this.editFlag = true;
-      this.$els.seatsInput.innerHTML = this.seats ? this.seats.map(e => e.name).join('<br>') : '';
+      this.$refs.seatsInput.innerHTML = this.seats ? this.seats.map(e => e.name).join('<br>') : '';
     },
 
     performEditing() {
-      const str = this.$els.seatsInput.innerHTML;
+      const str = this.$refs.seatsInput.innerHTML;
       const seats = str.split('<br>')
         .filter(e => e.length > 0)
         .map(e => ({ name: e, present: false }));
-      this.$dispatch('update-seats', seats);
+      this.$emit('update-seats', seats);
       this.editFlag = false;
     },
 
@@ -35,11 +35,11 @@ const SeatsView = Vue.extend({
       if(!this.authorized) return;
       // TODO: immutables
       seat.present = !seat.present;
-      this.$dispatch('update-seats', this.seats);
+      this.$emit('update-seats', this.seats);
     },
 
     sort() {
-      this.$els.seatsInput.innerHTML = this.$els.seatsInput.innerHTML
+      this.$refs.seatsInput.innerHTML = this.$refs.seatsInput.innerHTML
         .split('<br>')
         .filter(e => e.length > 0)
         .map(e => ({
