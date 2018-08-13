@@ -7,6 +7,7 @@ const os = require('os');
 const rimraf = require('rimraf');
 
 const server = require('./server/server');
+const serverUtil = require('./server/util');
 const util = require('./util');
 
 const name = 'Console Lite';
@@ -73,7 +74,7 @@ function initProjector() {
 
 function createExportStream() {
   if(serverStarted) throw new Error('Server is running');
-  const dir = path.join(__dirname, 'server', 'backend', 'storage');
+  const dir = serverUtil.storagePath()
 
   return tar.c({}, [dir]);
 }
@@ -207,7 +208,7 @@ ipcMain.on('checkForUpdate', ev => {
 });
 
 ipcMain.on('doImport', (ev, data) => {
-  const targetDir = path.join(__dirname, 'server', 'backend', 'storage');
+  const targetDir = serverUtil.storagePath();
 
   rimraf(path.join(targetDir, '*'), err => {
     if(err) return void ev.sender.send('importCb', err);

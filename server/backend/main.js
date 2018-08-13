@@ -5,6 +5,8 @@ const leveldown = require('leveldown');
 const crypto = require('crypto');
 const path = require('path');
 
+const { dbPath, filePath } = require('../util');
+
 const Conference = require('./conference');
 
 let main;
@@ -21,7 +23,7 @@ function startDB(dir, cb) {
 }
 
 function init(cb) {
-  main = startDB(path.resolve(__dirname, 'storage', 'main.db'), err => {
+  main = startDB(dbPath('main'), err => {
     if(err) return void cb(err);
 
     main.get('list', (err, list) => {
@@ -33,8 +35,8 @@ function init(cb) {
       else {
         confList = list;
         for(const conf of list) {
-          const db = startDB(`${__dirname}/storage/${conf.id}.db`);
-          const filedir = `${__dirname}/storage/${conf.id}.files`;
+          const db = startDB(dbPath(conf.id));
+          const filedir = filePath(conf.id);
           confs.set(conf.id, new Conference(conf.name, db, filedir));
         }
         return void cb(null);
@@ -65,8 +67,8 @@ function shutdown(cb) {
 function add(name, cb) {
   const id = crypto.randomBytes(16).toString('hex');
 
-  const db = startDB(`${__dirname}/storage/${id}.db`);
-  const filedir = `${__dirname}/storage/${id}.files`;
+  const db = startDB(dbPath(id));
+  const filedir = filePath(id);
   const instance = new Conference(name, db, filedir);
   instance.setup(err => {
     if(err) return void cb(err);
