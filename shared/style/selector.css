@@ -13,10 +13,9 @@
 
   border-bottom: 1px solid rgba(0,0,0,.12);
 
-  color: rgba(0,0,0,.87);
+  color: rgba(0,0,0,.54);
 
-  opacity: 0.7;
-  transition: opacity 0.2s ease;
+  transition: color 0.2s ease;
 
   white-space: nowrap;
 
@@ -49,7 +48,7 @@
 }
 
 .selector-item:hover {
-  opacity: 1;
+  color: rgba(0,0,0,.87);
 }
 
 .selector-item .material-icons {
@@ -61,10 +60,10 @@
 }
 
 .selector-optional-btn {
-  transition: opacity .2s ease;
-  opacity: .54;
+  transition: color .2s ease;
+  color: rgba(0,0,0,.54);
 }
 
 .selector-optional-btn:hover {
-  opacity: 1;
+  color: rgba(0,0,0,.87);
 }

@@ -87,6 +87,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-bottom: 12.5vw;
 }
 
 .brand {
