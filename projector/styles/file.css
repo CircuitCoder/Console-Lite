@@ -13,7 +13,7 @@
 }
 
 .file-pdf canvas {
-  margin: auto auto 20px auto;
+  margin: auto auto 2.5vw auto;
   box-shadow: rgba(0,0,0,.12) 0 .25vw .375vw;
   display: block;
 }
