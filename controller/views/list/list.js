@@ -89,16 +89,19 @@ const ListView = Vue.extend({
           }
 
       this.editInput = '';
-      this.addFlag = true;
-      this.$nextTick(() => {
-        this.acBottomGap = this.$els.seats.offsetHeight
-          - (this.$els.addItem.offsetTop + this.$els.addItem.offsetHeight);
-
-        this.acInput = this.$els.addInput;
-        this.$els.addInput.focus();
-      });
       this.updateAC();
       this.editTarget = null;
+
+      if(!this.altHold) {
+        this.addFlag = true;
+        this.$nextTick(() => {
+          this.acBottomGap = this.$els.seats.offsetHeight
+            - (this.$els.addItem.offsetTop + this.$els.addItem.offsetHeight);
+
+          this.acInput = this.$els.addInput;
+          this.$els.addInput.focus();
+        });
+      }
     },
 
     edit(seat, index) {
