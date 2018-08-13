@@ -46,6 +46,19 @@
   box-shadow: rgba(0,0,0,.12) 0 .25vw .375vw;
 }
 
+.file-markdown {
+  position: absolute;
+  top: 0;
+  bottom: 12.5vw;
+  right: 0;
+  left: 0;
+
+  padding: 5vw 10vw;
+  font-size: 2.5vw;
+
+  overflow: auto;
+}
+
 .file-shadow {
   position: absolute;
   top: 0;

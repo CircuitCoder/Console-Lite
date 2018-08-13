@@ -30,6 +30,8 @@ const FileView = Vue.extend({
           return this.renderPDF(1).then(done);
         } else if(this.type === 'image')
           return done();
+        else if(this.type === 'markdown')
+          return done();
         else
           // Display download link
           return done();
@@ -124,6 +126,11 @@ const FileView = Vue.extend({
     imgRendered() {
       const blob = new Blob([this.fileCont], { type: this.file.type });
       return URL.createObjectURL(blob);
+    },
+
+    mdRendered() {
+      const str = new TextDecoder('utf-8').decode(this.fileCont);
+      return util.renderMD(str);
     },
   },
 });

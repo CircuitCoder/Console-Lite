@@ -1,6 +1,7 @@
 const pdfjs = require('pdfjs-dist/build/pdf.js');
 const Trie = require('./trie');
 const pinyin = require('pinyin');
+const MarkdownIt = require('markdown-it');
 
 pdfjs.GlobalWorkerOptions.workerSrc = require.resolve('pdfjs-dist/build/pdf.worker.js');
 
@@ -38,6 +39,7 @@ function renderPDF(content, scale, elem, targetWidth) {
 
 function getFileType(mime) {
   if(mime === 'application/pdf') return 'pdf';
+  else if(mime === 'text/markdown') return 'markdown';
   else if(mime.split('/')[0] === 'image') return 'image';
   else return 'download';
 }
@@ -107,6 +109,16 @@ function resolveAC(prefix, trie = _trie) {
   else return [];
 }
 
+const md = new MarkdownIt({
+  html: true,
+  breaks: true,
+  typographer: true,
+});
+
+function renderMD(str) {
+  return md.render(str);
+}
+
 module.exports = {
   renderPDF,
   getFileType,
@@ -114,4 +126,5 @@ module.exports = {
   buildTrie,
   registerTrie,
   resolveAC,
+  renderMD,
 };

@@ -177,7 +177,12 @@ const desc = {
 
         if(this.fileType === 'pdf') {
           this.clearPages();
-          return util.renderPDF(new Uint8Array(this.fileCont), -1, this.$els.pages, window.innerWidth * 0.8);
+          return util.renderPDF(
+            new Uint8Array(this.fileCont),
+            -1,
+            this.$els.pages,
+            window.innerWidth * 0.8,
+          );
         } else if(this.fileType === 'image') {
           // Does nothing
         }
@@ -241,6 +246,11 @@ const desc = {
     imgRendered() {
       const blob = new Blob([this.fileCont], { type: this.fileType });
       return URL.createObjectURL(blob);
+    },
+
+    mdRendered() {
+      const str = new TextDecoder('utf-8').decode(this.fileCont);
+      return util.renderMD(str);
     },
 
     fileTwoThird() {

@@ -27,6 +27,10 @@
       <img :src="imgRendered">
     </div>
 
+    <div class="file-markdown" v-if="type === 'markdown'">
+      <div class="file-markdown-rendered" v-html="mdRendered"></div>
+    </div>
+
     <div class="file-download" v-if="type === 'download'">
       <button @click="save"><i class="material-icons">save</i> 保存</button>
     </div>

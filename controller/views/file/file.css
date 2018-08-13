@@ -1,6 +1,6 @@
 .file-container {
   display: flex;
-  padding: 100px 0;
+  padding: 40px 0;
   align-items: center;
   justify-content: center;
 
@@ -41,6 +41,18 @@
 .file-image img {
   box-shadow: rgba(0,0,0,.12) 0 2px 3px;
   max-width: 100%;
+}
+
+.file-markdown {
+  margin: auto;
+  width: 100%;
+  padding: 0 40px;
+}
+
+.file-markdown .file-markdown-rendered {
+  box-shadow: rgba(0,0,0,.12) 0 2px 3px;
+  background: white;
+  padding: 20px 40px;
 }
 
 .dnd-mask.dnd-edit {

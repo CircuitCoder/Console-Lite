@@ -57,7 +57,10 @@
       </div>
       <div class="file-pdf" v-el:pages v-show="fileType === 'pdf'"></div>
       <div class="file-image" v-if="fileType === 'image'">
-        <img :src="imgRendered"></img>
+        <img :src="imgRendered">
+      </div>
+      <div class="file-markdown" v-if="fileType === 'markdown'">
+        <div v-html="mdRendered"></div>
       </div>
       <div class="file-shadow"></div>
     </div>
