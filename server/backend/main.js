@@ -45,8 +45,12 @@ function init(cb) {
 
 function shutdown(cb) {
   main.close(err => {
-    if(err && cb) return void cb(err);
-    else return void Promise.all([...confs.values()].map(
+    if(err) {
+      if(cb) return void cb(err);
+      return;
+    }
+
+    Promise.all([...confs.values()].map(
       e => new Promise((resolve, reject) => e.db.close(err => err ? reject(err) : resolve())),
     ))
       .then(() => {
