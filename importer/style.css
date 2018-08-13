@@ -13,6 +13,14 @@ body {
   font-family: 'Roboto', 'NotoSansCJK SC', sans-serif;
 
   overflow: hidden;
+}
+
+#app {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
 
   display: flex;
 

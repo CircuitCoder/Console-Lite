@@ -4,7 +4,6 @@ const path = require('path');
 const tar = require('tar');
 const fs = require('fs');
 const os = require('os');
-const fstream = require('fstream');
 const rimraf = require('rimraf');
 
 const server = require('./server/server');
@@ -17,6 +16,8 @@ app.setName(name);
 // Windows, not the OS, but windows
 let controller;
 let projector;
+
+let serverStarted = false;
 
 const controllerOpt = {
   width: 800,
@@ -70,18 +71,19 @@ function initProjector() {
   });
 }
 
+function createExportStream() {
+  if(serverStarted) throw new Error('Server is running');
+  const dir = path.join(__dirname, 'server', 'backend', 'storage');
+
+  return tar.c({}, [dir]);
+}
+
 function setupExportHandler() {
   protocol.registerBufferProtocol('clexport', (request, callback) => {
-    if(this.serverStarted) return void callback({ error: 'Server is running' });
-
-    const dir = path.join(__dirname, 'server', 'backend', 'storage');
+    if(serverStarted) return void callback({ error: 'Server is running' });
 
     const buffers = [];
-    fstream.Reader({
-      path: dir,
-      type: 'Directory',
-    })
-      .pipe(tar.Pack())
+    createExportStream()
       .on('data', data => {
         buffers.push(data);
       })
@@ -115,8 +117,6 @@ app.on('activate', () => {
   if(!controller)
     initController();
 });
-
-let serverStarted = false;
 
 let passkey;
 let idkey;
@@ -219,6 +219,18 @@ ipcMain.on('doImport', (ev, data) => {
       .on('end', () => ev.sender.send('importCb', null))
       .on('error', err => ev.sender.send('importCb', err));
   });
+});
+
+ipcMain.on('directExport', (ev, dir) => {
+  const f = fs.createWriteStream(dir);
+  createExportStream().pipe(f)
+    .on('finish', () => {
+      f.close(() => ev.sender.send('exportCb', null));
+    })
+    .on('error', e => {
+      fs.unlinkSync(dir);
+      ev.sender.send('exportCb', e);
+    })
 });
 
 app.on('quit', () => {

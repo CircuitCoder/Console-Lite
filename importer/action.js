@@ -1,11 +1,17 @@
-const Vue = require('vue');
+const Vue = require('vue/dist/vue.common.js');
 const { remote, ipcRenderer } = require('electron');
 
+const http = require('http');
+const fs = require('fs');
+
 const desc = {
-  el: 'body',
   data: {
     status: 0,
     disabled: false,
+  },
+
+  mounted() {
+    this.init();
   },
 
   methods: {
@@ -23,6 +29,11 @@ const desc = {
       if(this.status === 1) this.status = 0;
     },
 
+    ofilename() {
+      const now = new Date();
+      return `clexport.${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}.tar`;
+    },
+
     odrag() {
       if(this.disabled) return;
 
@@ -32,13 +43,31 @@ const desc = {
     odragstart(e) {
       if(this.disabled) return;
 
-      const now = new Date();
       e.dataTransfer.setData('DownloadURL',
-        `application/x-tar:clexport.${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}.tar:clexport://down`); // eslint-disable-line max-len
+        `application/x-tar:${this.ofilename()}:clexport://down`); // eslint-disable-line max-len
     },
 
     oundrag() {
       if(this.status === -1) this.status = 0;
+    },
+
+    odirect() {
+      const opath = remote.dialog.showSaveDialog({
+        defaultPath: this.ofilename(),
+      });
+
+      if(!opath) return; // Cancelled
+
+      ipcRenderer.send('directExport', opath);
+      ipcRenderer.once('exportCb', (ev, err) => {
+        if(err) {
+          alert('导出失败');
+          console.error(err);
+        } else {
+          alert('导出成功!');
+          this.exit()
+        }
+      });
     },
 
     drop(e) {
@@ -65,8 +94,10 @@ const desc = {
         if(err) {
           alert('导入失败');
           console.error(err);
-        } else
+        } else {
           alert('导入成功!');
+          this.exit()
+        }
       });
     },
 
@@ -79,5 +110,10 @@ const desc = {
 // eslint-disable-next-line no-unused-vars
 function setup() {
   const inst = new Vue(desc);
-  inst.init();
+  inst.$mount('#app');
+
+  window.addEventListener('keydown', ev => {
+    if(ev.key === 'Escape') inst.exit();
+    else if(ev.key === 'e') inst.odirect();
+  });
 }

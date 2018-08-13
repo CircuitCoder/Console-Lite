@@ -7,26 +7,27 @@
     <link rel="stylesheet" href="./style.css">
     <script src="./action.js"></script>
   </head>
-  <body onload="setup()" :class="{ import: status > 0, export: status < 0, disabled: disabled }"
-    @dragover.prevent.stop="idrag" @dragleave.prevent.stop="iundrag" @drop.stop.prevent="drop"
-    @keydown.esc="exit">
-    <div class="importer">
-      <div class="box">
-        <i class="material-icons">archive</i>
-        <div class="main-hint">导入</div>
+  <body onload="setup()">
+    <div id="app" :class="{ import: status > 0, export: status < 0, disabled: disabled }"
+      @dragover.prevent.stop="idrag" @dragleave.prevent.stop="iundrag" @drop.stop.prevent="drop">
+      <div class="importer">
+        <div class="box">
+          <i class="material-icons">archive</i>
+          <div class="main-hint">导入</div>
+        </div>
       </div>
-    </div>
-    <div class="exporter">
-      <div class="box" :draggable="!disabled" @dragstart="odragstart" @drag.stop.prevent="odrag" @dragend="oundrag">
-        <i class="material-icons">unarchive</i>
-        <div class="main-hint">导出</div>
+      <div class="exporter">
+        <div class="box" :draggable="!disabled" @dragstart="odragstart" @drag.stop.prevent="odrag" @dragend="oundrag">
+          <i class="material-icons">unarchive</i>
+          <div class="main-hint">导出</div>
+        </div>
       </div>
-    </div>
-    <div class="hint" v-if="disabled">
-      服务器正在运行，无法进行导入导出 - Esc 退出
-    </div>
-    <div class="hint" v-else>
-      请拖拽文件或图标 - Esc 退出
+      <div class="hint" v-if="disabled">
+        服务器正在运行，无法进行导入导出 - Esc 退出
+      </div>
+      <div class="hint" v-else>
+        请拖拽文件或图标 - E 手动导出 - Esc 退出
+      </div>
     </div>
   </body>
 </html>
