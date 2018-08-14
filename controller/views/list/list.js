@@ -97,7 +97,8 @@ const ListView = Vue.extend({
       this.editTarget = seat.uid;
 
       const wrapper = this.$refs.seats.$el.children[index + 1];
-      this.acBottomGap = this.$refs.seats.$el.offsetHeight - (wrapper.offsetTop + wrapper.offsetHeight);
+      this.acBottomGap = this.$refs.seats.$el.offsetHeight
+        - (wrapper.offsetTop + wrapper.offsetHeight);
 
       this.$nextTick(() => {
         const el = this.$refs.seats.$el.children[index + 1].getElementsByTagName('input')[0];
@@ -195,7 +196,8 @@ const ListView = Vue.extend({
       if(this.draggingCounter > 0)
         for(let i = 0; i < this.dragList.length; ++i) {
           const elem = this.$refs.seats.$el.children[i + 1];
-          const centerX = elem.offsetLeft + (elem.offsetWidth / 2) - this.$refs.seats.$el.scrollLeft;
+          const centerX = elem.offsetLeft + (elem.offsetWidth / 2)
+            - this.$refs.seats.$el.scrollLeft;
           const centerY = elem.offsetTop + (elem.offsetHeight / 2);
 
           // Manhattan distance

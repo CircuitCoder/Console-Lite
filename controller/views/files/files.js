@@ -6,7 +6,7 @@ const FilesView = Vue.extend({
   props: {
     files: {},
     authorized: {},
-    searchInput: { default: '', },
+    searchInput: { default: '' },
   },
 
   data: () => ({

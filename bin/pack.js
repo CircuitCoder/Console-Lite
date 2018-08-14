@@ -35,13 +35,13 @@ function pack(cb, silent) {
         console.log(`Package outputted to: ${paths}`);
       if(cb) cb(null, paths);
     })
-    .catch(e => {
+    .catch(err => {
       if(!silent) {
         console.error('Packager failed:');
         console.error(err.stack);
       }
       if(cb) cb(err);
-    })
+    });
 }
 
 /* eslint-disable global-require */

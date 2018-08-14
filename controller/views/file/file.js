@@ -20,21 +20,17 @@ const FileView = Vue.extend({
 
   mounted() {
     this.$emit('get-file', this.file.id, (err, cont) => {
-      if(err) return alert('加载失败!');
+      if(err) return void alert('加载失败!');
       else {
         this.type = util.getFileType(this.file.type);
         this.fileCont = cont;
 
         if(this.type === 'pdf') {
           this.clearPDF();
-          return this.renderPDF(1);
-        } else if(this.type === 'image')
-          return;
-        else if(this.type === 'markdown')
-          return;
-        else
-          // Display download link
-          return;
+          this.renderPDF(1);
+        }
+
+        /* Images, markdown files and other types are handled automatically */
       }
     });
   },

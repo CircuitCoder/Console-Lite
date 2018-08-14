@@ -77,7 +77,7 @@ function initProjector() {
 
 function createExportStream() {
   if(serverStarted) throw new Error('Server is running');
-  const dir = serverUtil.storagePath()
+  const dir = serverUtil.storagePath();
 
   return tar.c({
     C: dir,
@@ -237,7 +237,7 @@ ipcMain.on('directExport', (ev, dir) => {
     .on('error', e => {
       fs.unlinkSync(dir);
       ev.sender.send('exportCb', e);
-    })
+    });
 });
 
 app.on('quit', () => {

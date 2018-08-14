@@ -43,7 +43,7 @@ class Node {
   }
 
   forEachLeaf(fn) {
-    if(this.children.size === 0) return fn(this);
+    if(this.children.size === 0) return void fn(this);
 
     for(const l of this.children.values())
       l.forEachLeaf(fn);
@@ -56,7 +56,7 @@ class Node {
 
     let leaves = [];
 
-    for(let k of this.children.keys()) {
+    for(const k of this.children.keys()) {
       const [node, subleaves] = this.children.get(k).deepCopy();
       result.children.set(k, node);
       leaves = leaves.concat(subleaves);
@@ -79,7 +79,7 @@ class Node {
 
     let leaves = [];
 
-    for(let k of this.children.keys())
+    for(const k of this.children.keys())
       if(!ano.children.has(k)) {
         const [node, subleaves] = this.children.get(k).deepCopy();
         ano.children.set(k, node);

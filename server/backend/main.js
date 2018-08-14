@@ -3,7 +3,6 @@ const encodingDown = require('encoding-down');
 const leveldown = require('leveldown');
 
 const crypto = require('crypto');
-const path = require('path');
 
 const { dbPath, filePath } = require('../util');
 

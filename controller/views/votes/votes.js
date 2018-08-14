@@ -70,7 +70,7 @@ const VoteView = Vue.extend({
     },
 
     filteredVotes() {
-      if(this.searchInput) 
+      if(this.searchInput)
         return this.votes.filter(e => e.name.indexOf(this.searchInput) !== -1);
       return this.votes;
     },

@@ -1,9 +1,6 @@
 const Vue = require('vue/dist/vue.common.js');
 const { remote, ipcRenderer } = require('electron');
 
-const http = require('http');
-const fs = require('fs');
-
 const desc = {
   data: {
     status: 0,
@@ -65,7 +62,7 @@ const desc = {
           console.error(err);
         } else {
           alert('导出成功!');
-          this.exit()
+          this.exit();
         }
       });
     },
@@ -96,7 +93,7 @@ const desc = {
           console.error(err);
         } else {
           alert('导入成功!');
-          this.exit()
+          this.exit();
         }
       });
     },

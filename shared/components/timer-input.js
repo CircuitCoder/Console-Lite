@@ -32,28 +32,27 @@ const TimerInput = Vue.extend({
 
   methods: {
     downsync() {
-      let value = this.value;
-      this.second = value % 60;
-      value = Math.floor(value / 60);
-      this.minute = value % 60;
-      value = Math.floor(value / 60);
-      this.hour = value;
+      let v = this.value;
+      this.second = v % 60;
+      v = Math.floor(v / 60);
+      this.minute = v % 60;
+      v = Math.floor(v / 60);
+      this.hour = v;
     },
 
     upsync() {
-      let hour = normalizeInt(this.hour, 24);
+      const hour = normalizeInt(this.hour, 24);
       this.hour = hour;
 
-      let minute = normalizeInt(this.minute);
+      const minute = normalizeInt(this.minute);
       this.minute = minute;
 
-      let second = normalizeInt(this.second);
+      const second = normalizeInt(this.second);
       this.second = second;
 
-      const value =
-        hour * 3600 +
-        minute * 60 +
-        second;
+      const value = (hour * 3600)
+        + (minute * 60)
+        + second;
 
       if(value !== this.value)
         this.$emit('input', value);

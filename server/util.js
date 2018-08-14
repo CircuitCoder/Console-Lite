@@ -3,13 +3,13 @@ const mkdirp = require('mkdirp');
 
 let dataDir = path.resolve(__dirname, 'backend');
 
+function storagePath() {
+  return path.resolve(dataDir, './storage');
+}
+
 function setDataDir(dir) {
   dataDir = dir;
   mkdirp.sync(storagePath());
-}
-
-function storagePath() {
-  return path.resolve(dataDir, './storage');
 }
 
 function dbPath(name) {
