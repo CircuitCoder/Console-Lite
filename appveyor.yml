@@ -4,9 +4,9 @@ platform:
 
 environment:
   minio_access_key:
-    secure: aOwS1IlypK95hry5rCGimEwXWuDgwlqbq6cmYYK+lnk=
+    secure: oh6G/f2cuM4BMz6aVFwlbsWfQkVBg+Kemmgb9lxIeys=
   minio_secret_key:
-    secure: sJ5F0ZI6+OfzZ+0NIcPpE27uhifUa5btEP2APubrKlt/Rb24eJkqhGqyXwr/Xbnk
+    secure: PK4qqRFcAI01yZGbw4aZNRLtXTfKx8T4c+RZSaXQJRZdxPwv3lZeRShmOsJyNDds
 
 matrix:
   fast_finish: true
