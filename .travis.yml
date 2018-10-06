@@ -12,7 +12,7 @@ install:
 - yarn install --frozen-lockfile --network-concurrency 1
 language: node_js
 node_js:
-- '6'
+- '10'
 script:
 - yarn run rebuildNative
 - yarn test

@@ -19,7 +19,7 @@ init:
 shallow_clone: true
 
 install:
-- ps: Install-Product node 6 $env:platform
+- ps: Install-Product node 10 $env:platform
 - node -e "console.log(process.platform + '-' + process.arch)"
 - node -e "console.log(require('os').platform() + '-' + require('os').arch())"
 - yarn install --frozen-lockfile --network-concurrency 1
