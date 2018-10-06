@@ -9,7 +9,7 @@ addons:
 install:
 - export CXX="clang++"
 - npm install yarn --global
-- yarn install
+- yarn install --frozen-lockfile --network-concurrency 1
 language: node_js
 node_js:
 - '6'

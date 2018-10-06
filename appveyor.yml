@@ -22,7 +22,7 @@ install:
 - ps: Install-Product node 6 $env:platform
 - node -e "console.log(process.platform + '-' + process.arch)"
 - node -e "console.log(require('os').platform() + '-' + require('os').arch())"
-- yarn
+- yarn install --frozen-lockfile --network-concurrency 1
 
 build_script:
 - yarn run rebuildNative
