@@ -73,7 +73,7 @@ const mainTasks = [
                 artifacts.push([
                   fname,
                   path.join(basedir, fname),
-                  { 'Content-Type': 'application/7z' },
+                  { 'Content-Type': 'application/tar+gzip' },
                 ]);
 
                 ob.complete();
@@ -96,8 +96,9 @@ const mainTasks = [
               .pipe(fs.createWriteStream(path.join(basedir, fname)))
               .on('finish', () => {
                 artifacts.push([
-                  fname, path.join(basedir, fname),
-                  'application/tar+gzip',
+                  fname,
+                  path.join(basedir, fname),
+                  { 'Content-Type': 'application/tar+gzip' },
                 ]);
                 ob.complete();
               })
