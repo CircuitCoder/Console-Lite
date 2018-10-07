@@ -23,7 +23,7 @@ deploy:
   on:
     repo: CircuitCoder/Console-Lite
     all_branches: true
-    node: '6'
+    node: '10'
 env:
   global:
     - secure: "OSjU4VxRmQFh/PNf9soSqxQ1gEk3Zb0KBSF9C0Xqy1cCD+bEklF9lEOrVPfUrMCKaa3TMsm9aTUoRymj1oYByo5msnG3s3AYCjuJ/NXM03rUTb9QfrlxZglAQsiFZgMpQEhijgF4o3EPAKqgcmHJsCj8ndpC6FRaSIap9Si7uAZAkpM1FUdL1vJ0pg4mXZsAhigLUXpfqOgvY/b4ryYBl24EOCw1ZYnE37bUawX13K43+O+rZkVygG3GlA/8OlbFLh96GoDscB9ho/zTXNMsjJ1gTr0IGR5qkdxo4IV7cBc/DZqiRWam17iF/uXA4qyKglTGYnkiXnPO/Zpul1VqP56xAIT1Q0V9hxJPDzSzuiSLzu3dYVwChQwD9e7EszlvZZSkT89OGAgSMm8FRqB8+bdMF/ZLm93Qfh5Ty4Eyulqypn/6M/BGqwzyes+YwQHWswPAX83YNzCrzali2vwc1XXeS4Gn2HuXvtjtxcfGST/Y+qaOEhEmQrP42wgtszF9kzxnNf0MSPWBFpfjCiBx0j55Kw5NpnO2l76WA9vM2q5ItB6nZEyHmdddj8LroPj8Ax4voViFQlqBjIMSRIun0yEd4JzwqGDFk7HEuSaW7IButETFu+Am4see1YLrcJ6lIIXGpQEQ2TT9WFYcklc55EafvTVfGJgzPh1nsDU/UN8="
