@@ -82,7 +82,12 @@ const mainTasks = [
               .spawnSync('7z', ['a', '-t7z', '-m0=lzma', '-mx=9',
                 path.join(basedir, fname), targetdir]);
 
-            artifacts.push([fname, path.join(basedir, fname), { 'Content-Type': 'application/7z' }]);
+            artifacts.push([
+              fname,
+              path.join(basedir, fname),
+              { 'Content-Type': 'application/7z' },
+            ]);
+
             ob.complete();
           }),
         },

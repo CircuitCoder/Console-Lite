@@ -70,7 +70,12 @@ const mainTasks = [
               .pipe(zlib.createGzip(gzipOpt))
               .pipe(fs.createWriteStream(path.join(basedir, fname)))
               .on('finish', () => {
-                artifacts.push([fname, path.join(basedir, fname), { 'Content-Type': 'application/7z' }]);
+                artifacts.push([
+                  fname,
+                  path.join(basedir, fname),
+                  { 'Content-Type': 'application/7z' },
+                ]);
+
                 ob.complete();
               })
               .on('error', err => ob.error(err));
