@@ -6,7 +6,7 @@ const rimraf = require('rimraf');
 
 const mc = new minio.Client({
   endPoint: 'store.easymun.com',
-  secure: true,
+  useSSL: true,
   accessKey: process.env.MINIO_ACCESS_KEY,
   secretKey: process.env.MINIO_SECRET_KEY,
 });
