@@ -1804,9 +1804,9 @@ minimist@^1.1.0, minimist@^1.1.3, minimist@^1.2.0:
   version "1.2.0"
   resolved "http://registry.yarnpkg.com/minimist/download/minimist-1.2.0.tgz#a35008b20f41383eec1fb914f4cd5df79a264284"
 
-minio@^6.0.0:
-  version "6.0.0"
-  resolved "http://registry.yarnpkg.com/minio/download/minio-6.0.0.tgz#7e514d38eaacf2264556b232f1c2c063cc6ca7ba"
+minio@^7.0.0:
+  version "7.0.1"
+  resolved "http://registry.yarnpkg.com/minio/download/minio-7.0.1.tgz#61b3a94607657ee51f91f0ada188f88c2e66553e"
   dependencies:
     async "^1.5.2"
     block-stream2 "^1.0.0"
@@ -1817,7 +1817,6 @@ minio@^6.0.0:
     mime-types "^2.1.14"
     mkdirp "^0.5.1"
     querystring "0.2.0"
-    source-map-support "^0.4.12"
     through2 "^0.6.5"
     uuid "^3.1.0"
     xml "^1.0.0"
@@ -2654,16 +2653,6 @@ socket.io@^2.1.1:
     socket.io-adapter "~1.1.0"
     socket.io-client "2.1.1"
     socket.io-parser "~3.2.0"
-
-source-map-support@^0.4.12:
-  version "0.4.18"
-  resolved "http://registry.yarnpkg.com/source-map-support/download/source-map-support-0.4.18.tgz#0286a6de8be42641338594e97ccea75f0a2c585f"
-  dependencies:
-    source-map "^0.5.6"
-
-source-map@^0.5.6:
-  version "0.5.7"
-  resolved "http://registry.yarnpkg.com/source-map/download/source-map-0.5.7.tgz#8a039d2d1021d22d1ea14c80d8ea468ba2ef3fcc"
 
 spawn-rx@^2.0.10:
   version "2.0.12"
