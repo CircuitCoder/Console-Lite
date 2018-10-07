@@ -13,6 +13,9 @@ const mc = new minio.Client({
 
 function upload(artifacts) {
   return artifacts.map(([name, dir, meta]) => new Promise((resolve, reject) => {
+    console.log(name);
+    console.log(dir);
+    console.log(meta);
     mc.fPutObject('console-lite', name, dir, meta,
       (err, etag) => err ? reject(err) : resolve([name, dir, etag]));
   }));
