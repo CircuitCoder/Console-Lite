@@ -5,38 +5,28 @@
 [![David](https://img.shields.io/david/CircuitCoder/Console-Lite.svg?style=flat-square)](https://david-dm.org/CircuitCoder/Console-Lite)
 [![David Dev](https://img.shields.io/david/dev/CircuitCoder/Console-Lite.svg?style=flat-square)](https://david-dm.org/CircuitCoder/Console-Lite)
 
-可以，这很现代化
-
-## 开发
-在 Clone 项目过后，请使用以下指令安装依赖:
+## Develop
 
 ```bash
-npm install
-npm run rebuildNative # Rebuild native modules for Electron
+# Install dependencies
+yarn install --frozen-lockfile
+yarn rebuildNative # Rebuild native modules for Electron
+
+# Start from source:
+yarn start
+
+# Start only the server:
+yarn server 
 ```
 
-启动应用：
+To build the executable package, please run the following commands.
 
 ```bash
-npm start
+yarn pack
 ```
 
-启动服务器：
+If you want to run from source again, you need to reinstall the dev dependencies
 
-```bash
-npm run server 
-```
+## License
 
-生成可执行文件：
-
-```bash
-npm prune --producation # 删除开发依赖
-npm install electron-packager # 重新安装打包器
-npm install electron # 重新安装Electron
-npm run pack
-npm install # 重新安装开发依赖
-```
-
-## 许可证
-
-本项目所有代码在 MIT 协议下发布，详细信息请参考 LICENSE 文件
+All source code within this repository are released under the MIT License. For a detailed license file, please refer to LICENSE.
