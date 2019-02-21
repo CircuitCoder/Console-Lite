@@ -1,5 +1,5 @@
 const electron = require('electron');
-const { ipcMain, app, protocol, globalShortcut, BrowserWindow, screen, } = electron;
+const { ipcMain, app, protocol, globalShortcut, BrowserWindow, screen } = electron;
 const path = require('path');
 const tar = require('tar');
 const fs = require('fs');
