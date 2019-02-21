@@ -21,6 +21,9 @@ function pack(cb, silent) {
       /^\/Console-Lite-/,
     ], // Ignores databases, files and artifacts
     icon: path.join(__dirname, '../images/icon'),
+    win32metadata: {
+      'requested-execution-level': 'requireAdministrator',
+    },
   };
 
   if(process.env.ELECTRON_MIRROR)

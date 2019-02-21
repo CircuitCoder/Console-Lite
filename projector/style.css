@@ -46,21 +46,21 @@ body {
   bottom: 0;
 }
 
-.bottom-bar {
+.top-bar {
   position: absolute;
-  bottom: 0;
+  top: 0vw;
   right: 0;
   left: 0;
   height: 12.5vw;
   box-sizing: border-box;
-  border-top: rgba(0,0,0,.12) .125vw solid;
+  border-bottom: rgba(0,0,0,.12) .125vw solid;
 
   display: flex;
   align-items: center;
   padding: 0 5vw;
 }
 
-.bottom-title {
+.top-title {
   font-size: 4vw;
   overflow: hidden;
   display: flex;
@@ -69,16 +69,24 @@ body {
   white-space: nowrap;
 }
 
-.bottom-title > span {
+.top-title > span {
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.bottom-title.small {
+.top-title.small {
   font-size: 3vw;
 }
 
-.bottom-title .material-icons {
+.top-title.big {
+  font-size: 5vw;
+}
+
+.top-title.clickable {
+  cursor: pointer;
+}
+
+.top-title .material-icons {
   margin-right: 2vw;
   font-size: 4vw;
 }
@@ -87,7 +95,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-bottom: 12.5vw;
+  padding-top: 12.5vw;
 }
 
 .brand {
