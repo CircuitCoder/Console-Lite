@@ -2,12 +2,6 @@ platform:
 - x86
 - x64
 
-environment:
-  minio_access_key:
-    secure: oh6G/f2cuM4BMz6aVFwlbsWfQkVBg+Kemmgb9lxIeys=
-  minio_secret_key:
-    secure: PK4qqRFcAI01yZGbw4aZNRLtXTfKx8T4c+RZSaXQJRZdxPwv3lZeRShmOsJyNDds
-
 matrix:
   fast_finish: true
 
