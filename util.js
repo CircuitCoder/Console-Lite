@@ -243,7 +243,7 @@ function checkForUpdate() {
   return new Promise((resolve, reject) => {
     if(!_mc) _mc = new Minio.Client({
       endPoint: 'store.bjmun.org',
-      secure: true,
+      useSSL: true,
     });
 
     fs.readFile(path.join(__dirname, 'VERSION'), (err, buf) => {

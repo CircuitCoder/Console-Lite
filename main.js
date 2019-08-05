@@ -1,5 +1,5 @@
 const electron = require('electron');
-const { ipcMain, app, protocol, globalShortcut, BrowserWindow } = electron;
+const { ipcMain, app, protocol, globalShortcut, BrowserWindow, screen } = electron;
 const path = require('path');
 const tar = require('tar');
 const fs = require('fs');
@@ -65,9 +65,28 @@ function initProjector() {
   // Ensures that previous windows are closed
   if(projector) projector.close();
 
+  const displays = screen.getAllDisplays();
+  let shouldFillScreen = false;
+  if(displays.length <= 1) {
+    projectorOpt.x = 0;
+    projectorOpt.y = 0;
+  } else
+    for(let i = 0; i < displays.length; i++)
+      if(displays[i].bounds.x !== 0 || displays[i].bounds.y !== 0) {
+        const externalDisp = displays[i];
+        projectorOpt.x = externalDisp.bounds.x;
+        projectorOpt.y = externalDisp.bounds.y;
+        shouldFillScreen = true;
+        break;
+      }
+
   projector = new BrowserWindow(projectorOpt);
   projector.loadURL(`file://${__dirname}/projector/index.html`);
   util.applyProjectorMenu(projector);
+
+  projector.webContents.on('dom-ready', () => {
+    if(shouldFillScreen && projector.isMaximizable()) projector.maximize();
+  });
 
   projector.on('closed', () => {
     projector = null;

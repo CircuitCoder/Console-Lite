@@ -34,6 +34,7 @@ const desc = {
 
     list: null,
     stashedlist: null,
+    titleSize: 'small',
   },
 
   mounted() {
@@ -52,6 +53,11 @@ const desc = {
       });
 
       ipcRenderer.send('projectorInitialized');
+    },
+
+    toggleTitleSize() {
+      if(this.$data.titleSize === 'small') this.$data.titleSize = 'big';
+      else this.$data.titleSize = 'small';
     },
 
     _scrollSmooth(el, to) {
